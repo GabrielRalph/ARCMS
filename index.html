@@ -86,12 +86,10 @@
               {{user.email}}
             </td>
             <td>
-              <lock :open = "user.admin" :fire = "'users/' + user.uid + '/admin'"></lock>
+              <lock :fire = "'users/' + user.uid + '/admin'"></lock>
             </td>
             <td>
-              <div @click = "setUserContent(user)" :class = "{radio: true, selected: user.contentAdmin}">
-
-              </div>
+              <lock :fire = "'users/' + user.uid + '/contentAdmin'"></lock>
             </td>
           </tr>
         </table>
