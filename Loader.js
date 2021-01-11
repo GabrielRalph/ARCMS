@@ -1,4 +1,4 @@
-class Loader extends SvgPlus{
+class LightingLoader extends SvgPlus{
   build(){
     this.box = this.parentNode;
     this.path = this.getElementsByTagName('path')[0];

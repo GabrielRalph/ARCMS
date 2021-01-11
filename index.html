@@ -2,12 +2,13 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>FirebaseUI Auth Demo</title>
+    <title>AR CMS</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://www.svg.plus/vector.js"></script>
     <script src="https://www.svg.plus/2.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
     <script src="Loader.js"></script>
+    <script src="Lock.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script src="FireAuth.js"></script>
@@ -85,9 +86,7 @@
               {{user.email}}
             </td>
             <td>
-              <div @click = "setUserAdmin(user)" :class = "{radio: true, selected: user.admin}">
-
-              </div>
+              <lock :open = "user.admin" :fire = "'users/' + user.uid + '/admin'"></lock>
             </td>
             <td>
               <div @click = "setUserContent(user)" :class = "{radio: true, selected: user.contentAdmin}">
@@ -160,7 +159,7 @@
       })
     }
   })
-  let svg = new Loader('logo-loader')
+  let svg = new LightingLoader('logo-loader')
 
   </script>
 
@@ -191,6 +190,10 @@
     width: 1.5em;
     border-radius: 1em;
   }
+
+  svg.lock{
+    height: 1.5em;
+  }
   .radio{
     width: 1em;
     height: 1em;
@@ -218,6 +221,14 @@
     .firebaseui-container{
       background: transparent;
     }
+
+    .lock {
+      height: 10em;
+    }
+    .lock .st0{fill:#EAB52F;}
+    .lock .st1{fill:#D8A003;}
+    .lock .st2{fill:#F9D069;}
+    .lock .st3{fill:#7C7C93;}
 
   </style>
 </html>
