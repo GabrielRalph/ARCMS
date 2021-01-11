@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>FirebaseUI Auth Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://www.svg.plus/vector.js"></script>
+    <script src="https://www.svg.plus/2.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
+    <script src="Loader.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="FireAuth.js"></script>
+    <script src="User.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div id = "loader">
+      <svg id = "logo-loader" viewBox="0 0 500 500">
+        <style type="text/css">
+        .st0{fill:black;stroke-miterlimit:10;}
+        .lighting{
+          stroke: #ffe200;
+          filter: url(#glow);
+          fill: none;
+          stroke-width: 2;
+        }
+        </style>
+        <defs>
+          <filter id="glow">
+            <fegaussianblur class="blur" result="coloredBlur" stddeviation="4"></fegaussianblur>
+            <femerge>
+              <femergenode in="coloredBlur"></femergenode>
+              <femergenode in="coloredBlur"></femergenode>
+              <femergenode in="coloredBlur"></femergenode>
+              <femergenode in="SourceGraphic"></femergenode>
+            </femerge>
+          </filter>
+        </defs>
+        <path class="st0" d="M269.7,201.1c1.3-5.5,4.6-11.5,20.6-11.5c-0.3,0,0-9.6,0-9.6l-61.4,0.7l0-0.8v9.6c15.1,0,22.8,0.8,21.8,11.6
+        c-30,3.8-56.7,24.2-61.9,48.9c-5.2,24.6,12.6,45,40.8,48.8c-1.2,4.5-4.2,11.8-19.9,11.8l-0.1,9.3l55.8,0.1v-9.6
+        c-8,0-19.4-0.3-17.1-10.7l0.2-0.7c30.2-3.5,57.4-24.1,62.6-49C316.4,225.2,298.3,204.7,269.7,201.1z M248,213.4l-9.2,43.5l-7.4,33.6
+        c-17.4-4.4-27.5-20.9-23.3-40.5c4.2-19.7,21.5-36.2,40.8-40.6L248,213.4z M291.8,250c-4.3,20-21.9,36.7-41.6,40.7l0.7-3.2L260,245
+        l4.9-22.6l1.5-6.9c0,0,0.7-2.5,1.5-6.1C285.6,213.6,296,230.2,291.8,250z"/>
+      </svg>
+    </div>
+    <div id = "app">
+      <div v-if = "validUser">
+        <div class = "header">
+          <img :src = "user.photoURL" @click = "signOut" />
+          <h1 @click = "getAdmin">Admin</h1>
+          <h1>Content</h1>
+        </div>
+
+        <table class = "admin" v-if = "mode == 'admin'">
+          <th>
+            <td>
+              Name
+            </td>
+            <td>
+              Email
+            </td>
+            <td>
+              Admin
+            </td>
+            <td>
+              Content
+            </td>
+          </th>
+          <tr v-for = "user in users">
+            <td>
+              <img :src = "user.photoURL"/>
+            </td>
+            <td>
+              {{user.name}}
+            </td>
+            <td>
+              {{user.email}}
+            </td>
+            <td>
+              <div @click = "setUserAdmin(user)" :class = "{radio: true, selected: user.admin}">
+
+              </div>
+            </td>
+            <td>
+              <div @click = "setUserContent(user)" :class = "{radio: true, selected: user.contentAdmin}">
+
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+  let fireAuth = new FireAuth(false);
+  let app = new Vue({
+    el: "#app",
+    data: {
+      user: null,
+      users: [],
+      mode: 'no-mode'
+    },
+    computed: {
+      validUser: function(){
+        return this.user instanceof User
+      }
+    },
+    methods:{
+      signOut: function() {
+        fireAuth.signOut()
+      },
+      setUserAdmin: async function(user){
+        if (this.user.uid == user.uid){
+          let res = confirm('Do you want to revoke your self of admin privilidges')
+          if (!res){
+            return;
+          }else{
+            this.mode = "no-mode"
+          }
+        }
+        if (user.uid){
+          await firebase.database().ref('users/'+user.uid+'/admin').set(!user.admin);
+          this.getAdmin();
+        }
+      },
+      setUserContent: async function(user){
+        if (user.uid){
+          await firebase.database().ref('users/'+user.uid+'/contentAdmin').set(!user.contentAdmin);
+          this.getAdmin();
+        }
+      },
+      getAdmin: async function(){
+        try{
+          let userssc = await firebase.database().ref('users').once('value');
+          let users = userssc.val();
+          this.users = users;
+          this.mode = 'admin';
+        }catch(e){
+          console.log(e);
+        }
+
+      }
+    },
+    created(){
+
+      fireAuth.addEventListener('user', (user) => {
+        let myuser = new User(user);
+        setTimeout(() => {
+          svg.stop();
+        }, 500)
+        this.user = myuser;
+      })
+    }
+  })
+  let svg = new Loader('logo-loader')
+
+  </script>
+
+  <style>
+  body{
+    font-family: Roboto;
+  }
+  #app{
+    margin: 20px;
+  }
+  .header{
+    width: 100%;
+    height: 3em;
+  }
+  .header img {
+    width: 2em;
+    border-radius: 1em;
+    float: right;
+  }
+  .header h1{
+    float: left;
+    margin: 0;
+    font-size: 2em;
+    padding-right: 1em;
+  }
+
+  .admin img{
+    width: 1.5em;
+    border-radius: 1em;
+  }
+  .radio{
+    width: 1em;
+    height: 1em;
+    border: 2px solid #633854;
+    border-radius: 1em;
+  }
+  .selected{
+    background: #9f0469;
+  }
+
+    #loader,   #firebaseui-auth-container{
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      background: rgba(255, 240, 255, 0.5);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+    }
+    #firebaseui-auth-container{
+      backdrop-filter: blur(25px);
+
+    }
+    .firebaseui-container{
+      background: transparent;
+    }
+
+  </style>
+</html>
