@@ -1,37 +1,49 @@
-class User{
-  constructor(auth){
-    this.auth = auth;
+class User extends FireAuth{
+  constructor(){
+    super();
+    this.addEventListener('user-auth', (userAuth) => {
+      this.getUser(userAuth)
+    });
+    this._hasUser = false;
   }
 
-  set auth(auth){
-    if (typeof auth === 'object'){
-      this.name = auth.displayName;
-      this.email = auth.email;
-      this.photoURL = auth.photoURL;
-      this.uid = auth.uid;
-      this.getUser(this.uid)
-    }
-
-
+  get hasUser(){
+    return this._hasUser
   }
 
-  async getUser(uid){
-    let userDatabase = await firebase.database().ref('users/' + uid).once('value');
-    let user = userDatabase.val()
-    if (user == null){
-      this.setUser()
-    }else{
-
-    }
+  userRef(user = this){
+    return firebase.database().ref(`users/${user.uid}`);
   }
 
-  setUser(){
-    firebase.database().ref('users/'+this.uid).set({
-      name: this.name,
-      email: this.email,
-      photoURL: this.photoURL,
+  getUser(userAuth){
+    if (userAuth.uid == this.uid) return;
+    if (userAuth.uid != this.uid && this.hasUser) this.userRed().off()
+    this._hasUser = false;
+    this.userRef(userAuth).on('value', (sc) => {
+      let user = sc.val()
+      if (user == null){
+        this.setUser(userAuth)
+      }
+      this.name = user.name;
+      this.email = user.email;
+      this.photoURL = user.photoURL;
+      this.admin = user.admin;
+      this.contentAdmin = user.contentAdmin;
+      this.uid = user.uid;
+      this._hasUser = true;
+      console.log('x');
+      this.runEventListener('user');
+    });
+  }
+
+
+  setUser(userAuth){
+    this.userRef(userAuth).set({
+      name: userAuth.name,
+      email: userAuth.email,
+      photoURL: userAuth.photoURL,
       admin: false,
-      uid: this.uid,
+      uid: userAuth.uid,
       contentAdmin: false
     })
   }

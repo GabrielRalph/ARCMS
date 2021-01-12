@@ -13,7 +13,7 @@ const firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
 
 class FireAuth{
-  constructor(signin = true){
+  constructor(){
     this.init = true;
     this.uiConfig = {
       // Url to redirect to after a successful sign-in.
@@ -44,7 +44,9 @@ class FireAuth{
 
     this.user = null;
     this.onuser = [];
-    this.onuserleave = [];
+    this['onuser-auth'] = [];
+    this['onuserleave'] = [];
+    
 
     // Initialize the FirebaseUI Widget using Firebase.
     this.ui = new firebaseui.auth.AuthUI(firebase.auth());
@@ -62,7 +64,7 @@ class FireAuth{
 
       }else{
         console.log('user');
-        this.runEventListener('user', user);
+        this.runEventListener('user-auth', user);
       }
     });
   }

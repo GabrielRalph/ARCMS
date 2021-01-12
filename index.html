@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script src="FireAuth.js"></script>
     <script src="User.js"></script>
+    <script src="Admin.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
     <style>
@@ -52,150 +53,138 @@
         l4.9-22.6l1.5-6.9c0,0,0.7-2.5,1.5-6.1C285.6,213.6,296,230.2,291.8,250z"/>
       </svg>
     </div>
+    <input type="file" id="file-selector" multiple>
     <div id = "app">
       <div v-if = "validUser">
         <div class = "header">
           <img :src = "user.photoURL" @click = "signOut" />
-          <h1 @click = "getAdmin">Admin</h1>
-          <h1>Content</h1>
+          <h1 :class = "{selected: mode == 'admin'}" @click = "mode = 'admin'" v-if = "user.admin">Admin</h1>
+          <h1 :class = "{selected: mode == 'content'}" @click = "mode = 'content'" v-if = "user.contentAdmin">Content</h1>
         </div>
-
-        <table class = "admin" v-if = "mode == 'admin'">
-          <th>
-            <td>
-              Name
-            </td>
-            <td>
-              Email
-            </td>
-            <td>
-              Admin
-            </td>
-            <td>
-              Content
-            </td>
-          </th>
-          <tr v-for = "user in users">
-            <td>
-              <img :src = "user.photoURL"/>
-            </td>
-            <td>
-              {{user.name}}
-            </td>
-            <td>
-              {{user.email}}
-            </td>
-            <td>
-              <lock :fire = "'users/' + user.uid + '/admin'"></lock>
-            </td>
-            <td>
-              <lock :fire = "'users/' + user.uid + '/contentAdmin'"></lock>
-            </td>
-          </tr>
-        </table>
+        <admin v-if = "mode == 'admin' && user.admin"></admin>
       </div>
     </div>
   </body>
   <script type="text/javascript">
-  let fireAuth = new FireAuth(false);
   let app = new Vue({
     el: "#app",
     data: {
-      user: null,
+      user: new User(),
       users: [],
-      mode: 'no-mode'
+      mode: 'no-mode',
+      mobile: false,
     },
     computed: {
       validUser: function(){
-        return this.user instanceof User
+        return this.user instanceof User && this.user.hasUser
       }
     },
     methods:{
       signOut: function() {
-        fireAuth.signOut()
-      },
-      setUserAdmin: async function(user){
-        if (this.user.uid == user.uid){
-          let res = confirm('Do you want to revoke your self of admin privilidges')
-          if (!res){
-            return;
-          }else{
-            this.mode = "no-mode"
-          }
-        }
-        if (user.uid){
-          await firebase.database().ref('users/'+user.uid+'/admin').set(!user.admin);
-          this.getAdmin();
-        }
-      },
-      setUserContent: async function(user){
-        if (user.uid){
-          await firebase.database().ref('users/'+user.uid+'/contentAdmin').set(!user.contentAdmin);
-          this.getAdmin();
-        }
-      },
-      getAdmin: async function(){
-        try{
-          let userssc = await firebase.database().ref('users').once('value');
-          let users = userssc.val();
-          this.users = users;
-          this.mode = 'admin';
-        }catch(e){
-          console.log(e);
-        }
-
+        this.user.signOut()
       }
     },
     created(){
-
-      fireAuth.addEventListener('user', (user) => {
-        let myuser = new User(user);
-        setTimeout(() => {
-          svg.stop();
-        }, 500)
-        this.user = myuser;
+      this.user.addEventListener('user', () => {
+        svg.stop();
+        this.$forceUpdate();
       })
     }
   })
   let svg = new LightingLoader('logo-loader')
 
+  const fileSelector = document.getElementById('file-selector');
+   fileSelector.addEventListener('change', (event) => {
+     const fileList = event.target.files;
+     console.log(fileList);
+   });
   </script>
 
   <style>
   body{
     font-family: Roboto;
+    --theme: 220;
   }
   #app{
     margin: 20px;
   }
   .header{
     width: 100%;
-    height: 3em;
+    height: 2em;
+    font-size: 32px;
   }
   .header img {
-    width: 2em;
+    width: calc(1em + 6px);
     border-radius: 1em;
     float: right;
   }
   .header h1{
+    font-size: 1em;
     float: left;
     margin: 0;
-    font-size: 2em;
-    padding-right: 1em;
+    line-height: 1em;
+    padding: 0 0.3em;
+    border: 3px solid hsl(var(--theme), 30%, 30%);
+    color: hsl(var(--theme), 30%, 30%);
+    border-radius: 2em;
+    margin-right: 0.5em;
+    cursor: pointer;
+    transition: 0.3s ease-in background;
+  }
+
+  .header h1.selected{
+    background: hsla(var(--theme), 30%, 30%, 0.2);
   }
 
   .admin img{
-    width: 1.5em;
-    border-radius: 1em;
+    height: 2.3em;
+    float: left;
+    border-radius: 1.5em;
+    margin-right: 0.5em;
+  }
+
+  .icon {
+    fill: hsl(var(--theme), 30%, 30%);
+    background: white;
+    height: 1.75em;
+  }
+
+  table.admin .icon {
+    float: right;
+    margin: 0.15em;
+    padding: 0.1em;
   }
 
   table.admin{
     width: 100%;
+    border-spacing: 0 3px;
+  }
+  table.admin tr td:nth-last-child(-n + 2){
+    text-align: left;
+  }
+  table.admin td{
+    padding: 0;
+    background:  hsla(var(--theme), 30%, 80%, .2);
+    border-top: 2px solid hsla(var(--theme), 30%, 80%, .5);
+    border-bottom: 2px solid hsla(var(--theme), 30%, 80%, .5);
+    /* border-radius: 2em; */
+  }
+  table.admin th{
+    text-align: left;
+  }
+  table.admin tr td:first-of-type{
+    border-radius: 1.5em 0 0 1.5em;
+    border-left: 2px solid hsla(var(--theme), 30%, 80%, .5);
+    width: 2em;
+  }
+  table.admin tr td:last-of-type{
+    border-radius: 0 1.5em 1.5em 0;
+    border-right: 2px solid hsla(var(--theme), 30%, 80%, .5);
+    width: 2em;
   }
 
-  svg.lock{
-    height: 1.5em;
-  }
+
+
   .radio{
     width: 1em;
     height: 1em;
@@ -224,9 +213,16 @@
       background: transparent;
     }
 
-    .lock {
-      height: 10em;
+    svg.lock{
+      height: 1.5em;
+      background: white;
+      border-radius: 1em;
+      float: right;
+      border: 2px solid hsla(var(--theme), 30%, 80%, .5);
+      margin: 0.15em;
+      padding: 0.1em;
     }
+
     .lock .st0{fill:#EAB52F;}
     .lock .st1{fill:#D8A003;}
     .lock .st2{fill:#F9D069;}
