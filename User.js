@@ -48,3 +48,62 @@ class User extends FireAuth{
     })
   }
 }
+
+Vue.component('user', {
+  props: {
+    user: {
+      required: true,
+      type: User
+    },
+    options: {
+      required: true,
+      type: Array
+    },
+    value: {
+      type: String,
+      default: 'content'
+    }
+  },
+  data: function() {
+    return {
+      isOptions: false,
+      duration: 500,
+      hidden: 'content',
+    }
+  },
+  methods: {
+    inputHandler(option){
+      this.isOptions = false;
+      this.$emit('input', option);
+      setTimeout(() => {
+        this.hidden = option;
+      }, this.duration);
+    },
+
+
+    toggle(){
+      if (this.isOptions){
+        this.isOptions = false;
+      }else{
+        this.isOptions = true;
+      }
+    }
+  },
+  computed: {
+    availableOptions: function(){
+      return this.options.filter(e => e !== this.hidden);
+    },
+    hider: function(){
+      return `transform: translate(${this.isOptions ? '0' : '100%'}, 0); transition: ${this.duration/1000}s ease transform;`
+    }
+  },
+  template: `
+  <div class = "user">
+      <img :src = "user.photoURL" @click = "isOptions = !isOptions" />
+      <div :style = "hider">
+        <h1 @click = "inputHandler('logout')">logout</h1>
+        <h1 v-for = "option in availableOptions" @click = "inputHandler(option)">{{option}}</h1>
+      </div>
+  </div>
+  `
+})

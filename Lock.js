@@ -61,7 +61,7 @@ Vue.component('lock', {
     }
   },
   template: `
-  <svg class = "lock" viewBox = "-10 -20 120 120" @click = "toggleLock">
+  <svg :class = "{lock: true, selected: this.open}" viewBox = "-10 -20 120 120" @click = "toggleLock">
     <polygon class="st0" points="24.38,50.62 33.02,54.94 33.95,98.05 25.26,93.21"/>
     <path class="st1" d="M75.62,37.82c0,0-22.22,14.99-42.61,17.12l-8.64-4.32c0,0,7.8-9.35,41.18-17.35L75.62,37.82z"/>
     <path class="st2" d="M75.62,81.27V37.82c-0.07-0.14-19.4,13.54-42.61,17.12l0.94,43.11C33.95,98.05,57.65,94.1,75.62,81.27z"/>
