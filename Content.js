@@ -27,15 +27,14 @@ Vue.component('contents', {
         console.log(e);
       }
     },
+
     getFiles(event){
       let data = {};
       const fileList = event.target.files;
       for (var file of fileList){
-        if (file.webkitRelativePath.indexOf('.usdz') != -1 || file.webkitRelativePath.indexOf('.gltf') != -1){
-            let path = file.webkitRelativePath.split('/');
-            path[path.length - 1] = URL.createObjectURL(file)
-            this.addPath(path)
-        }
+        let path = file.webkitRelativePath || file.name;
+        path = path.split(/\/|-|\./g);
+        console.log(path);
       }
       console.log(this.data);
       this.$forceUpdate();
@@ -71,23 +70,11 @@ Vue.component('contents', {
   },
   template: `
   <div class = "content">
-    <model-viewer :class = "{portrait: portrait}" data-js-focus-visible ar camera-controls ios-src="tv_retro.usdz" :src = "modelSrc">
-      <button slot="ar-button" style="background-color: white; border-radius: 4px; border: none; position: absolute; top: 16px; right: 16px; ">
+    <model-viewer :class = "{portrait: portrait}" data-js-focus-visible ar poster = "./blank.png" camera-controls ios-src="tv_retro.usdz" :src = "modelSrc">
+      <button slot="ar-button" style="background-color: #AAAAAAAA; border-radius: 4px; border: none; position: absolute; top: 16px; left: 16px; ">
           AR
       </button>
     </model-viewer>
-    <div :class = "{'input-pannel': true, portrait: portrait}">
-      <input webkitdirectory type="file" id="file-selector" @change = "getFiles" multiple>
-      <div v-if = "data" v-for = "(model, name) in data">
-        <h3>{{name}}</h3>
-        <div v-for = "(sizes, size) in model">
-          <h4>{{size}}</h4>
-          <div v-for = "(name, color) in sizes">
-            <h5>{{color}} - {{name}}</h5>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   `

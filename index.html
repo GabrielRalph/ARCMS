@@ -22,11 +22,14 @@
     <style>
       body {
         margin: 0;
+        --mcm-beige: rgb(240, 235, 233);
+        background: var(--mcm-beige);
       }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
+
     <div id = "loader">
     </div>
     <div id = "app">
@@ -39,6 +42,7 @@
   </body>
   <script type="text/javascript">
   let loader = new PhiLoader('loader');
+  loader.start();
   let app = new Vue({
     el: "#app",
     data: {
@@ -65,7 +69,6 @@
       })
     }
   })
-  loader.start();
 
 
 
@@ -77,6 +80,8 @@
     position: fixed;
     top: 0;
     right: 0;
+    background: transparent;
+    --poster-color: transparent;
   }
   model-viewer.portrait {
     width: 100vw;
@@ -89,8 +94,12 @@
 
   body{
     font-family: Roboto;
-    --theme: 220;
+    --theme: 17;
+    background: url('https://cdn.booooooom.com/wp-content/uploads/2017/06/simon-davidson15.jpg');
+    background-size: 300vmax;
+    background-position: 0% 40%;
   }
+
   div.input-pannel{
     position: fixed;
     bottom: 0;
@@ -112,20 +121,31 @@
     padding-left: 20px;
   }
   #app{
-    --margin: 20px;
-    margin: var(--margin);
+    --margin: 10px;
+    margin: 0;
+
     font-size: 4vh;
-    margin-top: calc(var(--margin) + 2em);
-  }
-  .user{
+    /* margin-top: calc(var(--margin) + 2em); */
+    background: #FFF4;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     position: fixed;
-    font-size: 1.5em;
+    padding:  var(--margin);
     top: 0;
     left: 0;
     right: 0;
-    padding-right: var(--margin);
-    margin: var(--margin);
-    margin-right: 1em;
+    bottom: 0;
+  }
+  #app > div{
+      margin-top: 1.6em;
+  }
+
+  .user{
+    position: fixed;
+    font-size: 1.5em;
+    top: var(--margin);
+    left: var(--margin);
+    right: calc(var(--margin) + 1em);
     z-index: 1000;
     height: 1em;
     overflow: hidden;
@@ -155,7 +175,7 @@
 
 
   .selected{
-    background: hsla(var(--theme), 30%, 30%, 0.1);
+    background: hsla(var(--theme), 100%, 98%, 1);
   }
 
   .admin img{
@@ -167,7 +187,7 @@
 
   .icon {
     fill: hsl(var(--theme), 30%, 30%);
-    background: white;
+    /* background: white; */
     height: 1.75em;
   }
 
@@ -181,15 +201,16 @@
     width: 100%;
     font-size: 0.5em;
     border-spacing: 0 3px;
+    --border-color: hsla(var(--theme), 30%, 80%, 0.9);
   }
   table.admin tr td:nth-last-child(-n + 2){
     text-align: left;
   }
   table.admin td{
     padding: 0;
-    background:  hsla(var(--theme), 30%, 80%, .2);
-    border-top: 2px solid hsla(var(--theme), 30%, 80%, .5);
-    border-bottom: 2px solid hsla(var(--theme), 30%, 80%, .5);
+    background:  hsla(var(--theme), 10%, 95%, .8);
+    border-top: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
     /* border-radius: 2em; */
   }
   table.admin th{
@@ -197,12 +218,12 @@
   }
   table.admin tr td:first-of-type{
     border-radius: 1.5em 0 0 1.5em;
-    border-left: 2px solid hsla(var(--theme), 30%, 80%, .5);
+    border-left: 2px solid var(--border-color);
     width: 2em;
   }
   table.admin tr td:last-of-type{
     border-radius: 0 1.5em 1.5em 0;
-    border-right: 2px solid hsla(var(--theme), 30%, 80%, .5);
+    border-right: 2px solid var(--border-color);
     width: 2em;
   }
 
@@ -224,6 +245,7 @@
       bottom: 0;
       right: 0;
       left: 0;
+      z-index: 100000;
       background: rgba(255, 240, 255, 0.5);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
@@ -236,11 +258,16 @@
       background: transparent;
     }
 
+    .admin .lock {
+      border: 2px solid var(--border-color);
+    }
+    svg.lock:not(.selected){
+      background: var(--border-color);
+    }
     svg.lock{
       height: 1.5em;
       border-radius: 1em;
       float: right;
-      border: 2px solid hsla(var(--theme), 30%, 80%, .5);
       margin: 0.15em;
       padding: 0.1em;
     }

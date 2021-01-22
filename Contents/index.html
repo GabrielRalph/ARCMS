@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>AR CMS</title>
+    <link rel="stylesheet" href="https://use.typekit.net/ifw8gqm.css">
+    <script src="https://www.svg.plus/vector.js"></script>
+    <script src="https://www.svg.plus/2.js"></script>
+    <script src="VList.js"></script>
+    <script src="Uploader.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+
+  </body>
+  <style>
+  body{
+    font-family: 'futura-pt',sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  h1, h2{
+    margin: 0px;
+  }
+
+  .v-list {
+    font-size: 5vw;
+  }
+
+  .list{
+    padding-left: 2em;
+  }
+
+  table.list {
+
+  }
+
+  div.v-list h1{
+    font-size: 1em;
+  }
+  div.v-list h2{
+    font-size: 0.85em;
+  }
+  div.v-list div.v-list{
+    font-size: 0.85em;
+  }
+
+  div.folder{
+    font-size: 14vw;
+    text-align: center;
+  }
+
+  div.folder div.folder{
+    font-size: 0.84em;
+  }
+
+  div.folder h2{
+    font-size: 0.84em;
+  }
+  div.folder h1{
+    font-size: 1em;
+  }
+  div.header {
+    padding-top: 1em;
+  }
+  div.header h2, div.header h1{
+    display: inline-block;
+
+    padding-right: 0.5em;
+  }
+  div.list-header h2{
+    font-size: 0.7em;
+  }
+
+  </style>
+  <script type="text/javascript">
+    // let folder =new Folder({
+    //   'Sofas': {
+    //     'Joe Sofas': {
+    //
+    //     },
+    //     'All Sofas':{
+    //
+    //     },
+    //     'Modular Sofas':{
+    //
+    //     },
+    //     'Ottomans':{
+    //
+    //     }
+    //   },
+    //   'Chairs':{
+    //
+    //     'Bar Stools':{
+    //       'Alta Bar Stool': {
+    //         'Large': {
+    //           'Red':{
+    //             'usdz': 'link',
+    //             'gbl': 'link',
+    //             'obj': 'link'
+    //           },
+    //           'Blue':{
+    //             'usdz': 'link',
+    //             'gbl': 'link',
+    //             'obj': 'link'
+    //           }
+    //         },
+    //         'Small': {
+    //           'Red':{
+    //             'usdz': 'link',
+    //             'gbl': 'link',
+    //             'obj': 'link'
+    //           },
+    //           'Blue':{
+    //             'usdz': 'link',
+    //             'gbl': 'link',
+    //             'obj': 'link'
+    //           }
+    //         }
+    //       }
+    //     },
+    //     'Barstools': {
+    //       'Kiki Bar Stool': {
+    //         'Large': {
+    //           'Red':{
+    //             'usdz': 'link',
+    //             'gbl': 'link',
+    //             'obj': 'link'
+    //           },
+    //           'Blue':{
+    //             'usdz': 'link',
+    //             'gbl': 'link',
+    //             'obj': 'link'
+    //           }
+    //         },
+    //         'Small': {
+    //           'Red':{
+    //             'usdz': 'link',
+    //             'gbl': 'link',
+    //             'obj': 'link'
+    //           },
+    //           'Blue':{
+    //             'usdz': 'link',
+    //             'gbl': 'link',
+    //             'obj': 'link'
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }, 'Furniture');
+    let uploader = new Uploader();
+    document.body.appendChild(uploader)
+  </script>
+
+</html>

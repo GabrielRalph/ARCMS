@@ -98,7 +98,7 @@ Vue.component('user', {
     }
   },
   template: `
-  <div class = "user">
+  <div class = "user" style = "overflow: hidden">
       <img :src = "user.photoURL" @click = "isOptions = !isOptions" />
       <div :style = "hider">
         <h1 @click = "inputHandler('logout')">logout</h1>

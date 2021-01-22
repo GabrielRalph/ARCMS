@@ -1,0 +1,29 @@
+File paths
+category/ .. /category/ .. /collection/model/variant/file
+
+
+ ------ Variant ------
+A valid variant is a folder who's name is the variant name and
+who's contents are:
+
+VariantName
+ | 1 x name.glb,
+ | 1 x name.fbx,
+ | 1 x thumbnail.png/jpg,            note: thumbnail must have filename thumbnail
+ | n x textureName[#hexColor].png    note: textures must have a display colors
+                                           hex value in the filename in square
+                                           brackets. Otherwise the texture is
+                                           invalid.
+
+ ------ Model ------
+A model is a folder who's name is the model name
+and who's contents are only valid variants.
+
+ ------ Collection ------
+A collection is a folder who's name is the collection name
+and who's contents are only valid models.
+
+ ------ Category ------
+A category is a folder who's name is the category name
+and who's contents are either valid categories or
+valid collections.
