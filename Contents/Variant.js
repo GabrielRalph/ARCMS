@@ -12,6 +12,15 @@ class Variant extends SvgPlus{
   buildElement(){
     this.nameCell = this.createChild('TD');
     this.textureCell = this.createChild('TD');
+    this.buttons = this.createChild('TD');
+    this.trash = new TrashIcon();
+    this.upload = new UploadToCloudIcon();
+    this.buttons.appendChild(this.trash);
+    this.buttons.appendChild(this.upload);
+
+    this.trash.props = {fill: '#ff330c'}
+    this.upload.props = {fill: '#0c89ff'}
+
   }
 
   set name(name){

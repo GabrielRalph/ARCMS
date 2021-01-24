@@ -40,7 +40,7 @@ class VList extends SvgPlus{
     return this._headerElement.createChild(name);
   }
   appendChildToHead(element){
-    this._headerElement.appendChild(element);
+    return this._headerElement.appendChild(element);
   }
   removeChildFromHead(element){
     this._headerElement.remove(element);

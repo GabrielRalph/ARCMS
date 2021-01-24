@@ -101,7 +101,6 @@ class Collection extends VList{
         this.add(model)
       }else{
         let subcollection = new Collection(value, key);
-        console.log(subcollection, value);
         this.add(subcollection)
       }
     }
