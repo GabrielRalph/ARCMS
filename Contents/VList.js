@@ -117,6 +117,15 @@ class VList extends SvgPlus{
     this._changeState(true);
   }
 
+  async showAll(duration = 100){
+    await this.show();
+    for (var element of this.list){
+      if (SvgPlus.is(element, Collection)){
+        element.showAll(duration);
+      }
+    }
+  }
+
   async hide(duration = 100){
     this._changeState(null);
     for (var i = this.list.length - 1; i >= 0; i--){

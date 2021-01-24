@@ -174,9 +174,6 @@
   }
 
 
-  .selected{
-    background: hsla(var(--theme), 100%, 98%, 1);
-  }
 
   .admin img{
     height: 2.3em;
@@ -258,11 +255,20 @@
       background: transparent;
     }
 
+
+/* Lock Css */
+    .selected{
+      background: hsla(var(--theme), 100%, 98%, 1);
+    }
     .admin .lock {
       border: 2px solid var(--border-color);
     }
     svg.lock:not(.selected){
-      background: var(--border-color);
+      background: hsla(var(--theme), 20%, 45%, 1);
+    }
+
+    svg.lock:not(.selected) .st3{
+      fill: #BBB;
     }
     svg.lock{
       height: 1.5em;

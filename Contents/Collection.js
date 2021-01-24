@@ -34,10 +34,7 @@ class Collection extends VList{
   }
 
   get isValid(){
-    return this._keys !== null;
-  }
-  get keys(){
-    return this._keys;
+    return this._collection !== null;
   }
 
 
@@ -63,6 +60,9 @@ class Collection extends VList{
 
 
   add(el, name = el.name){
+    if (this._collection == null) {
+      this._collection = {};
+    }
     if (SvgPlus.is(el, Model) && el.isValid){
       if (this._mode == null || this._mode === 'models'){
 
@@ -84,6 +84,9 @@ class Collection extends VList{
         this._collection[name] = el;
       }
     }
+    if (Object.keys(this._collection).length == 0){
+      this._collection = null;
+    }
   }
 
   set json(json){
@@ -98,6 +101,7 @@ class Collection extends VList{
         this.add(model)
       }else{
         let subcollection = new Collection(value, key);
+        console.log(subcollection, value);
         this.add(subcollection)
       }
     }
