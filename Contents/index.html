@@ -7,7 +7,11 @@
     <script src="https://www.svg.plus/vector.js"></script>
     <script src="https://www.svg.plus/2.js"></script>
     <script src="VList.js"></script>
-    <script src="Uploader.js"></script>
+    <script src="Variant.js"></script>
+    <script src="Model.js"></script>
+    <script src="Collection.js"></script>
+    <script src="AddCollection.js"></script>
+    <script src="Content.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
@@ -19,13 +23,26 @@
     font-weight: 400;
     font-style: normal;
   }
+  .dark{opacity:0.5;fill:#4FAE32;}
+  .light{opacity:0.3;fill:#4FAE32;}
+  .arrow{opacity:0.97;fill:#FDFFFD;}
   h1, h2{
     margin: 0px;
   }
-
-  .v-list {
-    font-size: 5vw;
+  .content-uploader{
+    --collection: #6aa84f;
+    --model: #f1c232;
+    --variant: #ff6a05
   }
+  div.content > div.collection > .header > h1{
+    font-size: 1em;
+    color: black;
+  }
+
+  div.content > div.collection{
+    font-size: 7vw;
+  }
+
 
   .list{
     padding-left: 2em;
@@ -35,121 +52,40 @@
 
   }
 
-  div.v-list h1{
-    font-size: 1em;
+  .variant{
+    color: var(--variant);
+    font-weight: bold;
   }
-  div.v-list h2{
+
+  .collection h1{
+    font-size: 1em;
+    color: var(--collection);
+  }
+  .model h1{
+    color: var(--model);
+  }
+  .collection h2{
     font-size: 0.85em;
   }
-  div.v-list div.v-list{
+  .list{
     font-size: 0.85em;
   }
 
-  div.folder{
-    font-size: 14vw;
-    text-align: center;
-  }
 
-  div.folder div.folder{
-    font-size: 0.84em;
+  .add-collection{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    cursor: pointer;
   }
-
-  div.folder h2{
-    font-size: 0.84em;
-  }
-  div.folder h1{
-    font-size: 1em;
-  }
-  div.header {
-    padding-top: 1em;
-  }
-  div.header h2, div.header h1{
-    display: inline-block;
-
-    padding-right: 0.5em;
-  }
-  div.list-header h2{
-    font-size: 0.7em;
+  .add-collection svg{
+    height: 3em;
   }
 
   </style>
   <script type="text/javascript">
-    // let folder =new Folder({
-    //   'Sofas': {
-    //     'Joe Sofas': {
-    //
-    //     },
-    //     'All Sofas':{
-    //
-    //     },
-    //     'Modular Sofas':{
-    //
-    //     },
-    //     'Ottomans':{
-    //
-    //     }
-    //   },
-    //   'Chairs':{
-    //
-    //     'Bar Stools':{
-    //       'Alta Bar Stool': {
-    //         'Large': {
-    //           'Red':{
-    //             'usdz': 'link',
-    //             'gbl': 'link',
-    //             'obj': 'link'
-    //           },
-    //           'Blue':{
-    //             'usdz': 'link',
-    //             'gbl': 'link',
-    //             'obj': 'link'
-    //           }
-    //         },
-    //         'Small': {
-    //           'Red':{
-    //             'usdz': 'link',
-    //             'gbl': 'link',
-    //             'obj': 'link'
-    //           },
-    //           'Blue':{
-    //             'usdz': 'link',
-    //             'gbl': 'link',
-    //             'obj': 'link'
-    //           }
-    //         }
-    //       }
-    //     },
-    //     'Barstools': {
-    //       'Kiki Bar Stool': {
-    //         'Large': {
-    //           'Red':{
-    //             'usdz': 'link',
-    //             'gbl': 'link',
-    //             'obj': 'link'
-    //           },
-    //           'Blue':{
-    //             'usdz': 'link',
-    //             'gbl': 'link',
-    //             'obj': 'link'
-    //           }
-    //         },
-    //         'Small': {
-    //           'Red':{
-    //             'usdz': 'link',
-    //             'gbl': 'link',
-    //             'obj': 'link'
-    //           },
-    //           'Blue':{
-    //             'usdz': 'link',
-    //             'gbl': 'link',
-    //             'obj': 'link'
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }, 'Furniture');
-    let uploader = new Uploader();
+    let uploader = new Content();
     document.body.appendChild(uploader)
   </script>
 

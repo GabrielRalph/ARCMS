@@ -54,7 +54,6 @@ class VList extends SvgPlus{
   }
 
   pushElement(element){
-    console.log(element);
     if (Array.isArray(this._list)){
       this._list.push(element);
       this.list = this._list;
@@ -90,10 +89,12 @@ class VList extends SvgPlus{
   }
 
   set open(state){
-    if (this.open == false && state == true){
-      this.show();
-    }else if(this.open == true && state == false){
-      this.hide();
+    if (Array.isArray(this._list)){
+      if (this.open == false && state == true){
+        this.show();
+      }else if(this.open == true && state == false){
+        this.hide();
+      }
     }
   }
 
@@ -159,54 +160,5 @@ class VList extends SvgPlus{
       }
       window.requestAnimationFrame(next);
     })
-  }
-}
-
-class Folder extends VList{
-  constructor(folder, name){
-    super();
-    this.props = {class: 'folder'}
-    this.headerTitle = this.createChildOfHead('H1');
-    // this.headerShow= this.headerElement.createChild('H2');
-    // this.headerShow.innerHTML = '&#709;';
-
-    this.folder = folder;
-    this.name = name;
-
-    this.headerTitle.addEventListener('click', () => {
-      this.open = !this.open
-    })
-  }
-
-  onstatechange(state){
-    // let arrow = '&#709;';
-    // if (state) arrow = '&#708;';
-    // if (state == null) arrow = '-'
-    // this.headerShow.innerHTML = arrow;
-  }
-
-  set name(name){
-    this.headerTitle.innerHTML= '' + name;
-  }
-
-  get name(){
-    return this.headerTitle.innerHTML;
-  }
-
-  set folder(folder){
-    let elements = [];
-    if (typeof folder === 'object'){
-      for (var name in folder){
-        let file = folder[name];
-        if (typeof file === 'object'){
-          let newFolder = new Folder(file, name);
-          elements.push(newFolder);
-        } else if (typeof file === 'string'){
-          let header = new Header(file, 2);
-          elements.push(header);
-        }
-      }
-      this.list = elements;
-    }
   }
 }
