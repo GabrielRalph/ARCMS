@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>AR CMS</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://www.svg.plus/vector.js"></script>
+    <script src="https://www.svg.plus/2.js"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+    <script src="Loader.js"></script>
+    <script src="Lock.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="FireAuth.js"></script>
+    <script src="User.js"></script>
+    <script src="Admin.js"></script>
+    <script src="Content.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+    <style>
+      body {
+        margin: 0;
+        --mcm-beige: rgb(240, 235, 233);
+        background: var(--mcm-beige);
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+
+    <div id = "loader">
+    </div>
+    <div id = "app">
+      <div v-if = "validUser">
+        <user v-model = "mode" :user = "user" :options = "['admin', 'content']"></user>
+        <admin v-if = "mode == 'admin' && user.admin"></admin>
+        <contents v-if = "mode == 'content' && user.contentAdmin"></contents>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+  let loader = new PhiLoader('loader');
+  loader.start();
+  let app = new Vue({
+    el: "#app",
+    data: {
+      user: new User(),
+      users: [],
+      mode: 'content',
+      mobile: false,
+    },
+    computed: {
+      validUser: function(){
+        return this.user instanceof User && this.user.hasUser
+      }
+    },
+    methods:{
+      signOut: function() {
+        this.user.signOut()
+      }
+    },
+    created(){
+
+      this.user.addEventListener('user', () => {
+        loader.stop();
+        this.$forceUpdate();
+      })
+    }
+  })
+
+
+
+  </script>
+
+  <style>
+
+  model-viewer{
+    position: fixed;
+    top: 0;
+    right: 0;
+    background: transparent;
+    --poster-color: transparent;
+  }
+  model-viewer.portrait {
+    width: 100vw;
+    height: 40vh;
+  }
+  model-viewer:not(.portrait) {
+    width: 50vw;
+    height: 100vh;
+  }
+
+  body{
+    font-family: Roboto;
+    --theme: 17;
+    background: url('https://cdn.booooooom.com/wp-content/uploads/2017/06/simon-davidson15.jpg');
+    background-size: 300vmax;
+    background-position: 0% 40%;
+  }
+
+  div.input-pannel{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+  div.content div.portrait{
+    width: 100vw;
+    height: 60vh;
+  }
+  div.content div:not(.portrait){
+    width: 50vw;
+    height: 100vh;
+  }
+
+  .content h4{
+    padding-left: 10px;
+  }
+  .content h5{
+    padding-left: 20px;
+  }
+  #app{
+    --margin: 10px;
+    margin: 0;
+
+    font-size: 4vh;
+    /* margin-top: calc(var(--margin) + 2em); */
+    background: #FFF4;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: fixed;
+    padding:  var(--margin);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  #app > div{
+      margin-top: 1.6em;
+  }
+
+  .user{
+    position: fixed;
+    font-size: 1.5em;
+    top: var(--margin);
+    left: var(--margin);
+    right: calc(var(--margin) + 1em);
+    z-index: 1000;
+    height: 1em;
+    overflow: hidden;
+  }
+  .user > div{
+    height: 100%;
+    float: right;
+
+  }
+
+  .user img {
+    position: fixed;
+    z-index: 2000;
+    top: var(--margin);
+    right: var(--margin);
+    height: 1em;
+    border-radius: 50%;
+    float: right;
+  }
+  .user h1{
+    line-height: 2em;
+    font-size: 0.5em;
+    float: left;
+    margin: 0;
+    padding-right: 0.5em;
+  }
+
+
+
+  .admin img{
+    height: 2.3em;
+    float: left;
+    border-radius: 1.5em;
+    margin-right: 0.5em;
+  }
+
+  .icon {
+    fill: hsl(var(--theme), 30%, 30%);
+    /* background: white; */
+    height: 1.75em;
+  }
+
+  table.admin .icon {
+    float: right;
+    margin: 0.15em;
+    padding: 0.1em;
+  }
+
+  table.admin{
+    width: 100%;
+    font-size: 0.5em;
+    border-spacing: 0 3px;
+    --border-color: hsla(var(--theme), 30%, 80%, 0.9);
+  }
+  table.admin tr td:nth-last-child(-n + 2){
+    text-align: left;
+  }
+  table.admin td{
+    padding: 0;
+    background:  hsla(var(--theme), 10%, 95%, .8);
+    border-top: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
+    /* border-radius: 2em; */
+  }
+  table.admin th{
+    text-align: left;
+  }
+  table.admin tr td:first-of-type{
+    border-radius: 1.5em 0 0 1.5em;
+    border-left: 2px solid var(--border-color);
+    width: 2em;
+  }
+  table.admin tr td:last-of-type{
+    border-radius: 0 1.5em 1.5em 0;
+    border-right: 2px solid var(--border-color);
+    width: 2em;
+  }
+
+
+
+  .radio{
+    width: 1em;
+    height: 1em;
+    border: 2px solid #633854;
+    border-radius: 1em;
+  }
+  /* .selected{
+    background: #9f0469;
+  } */
+
+    #loader,   #firebaseui-auth-container{
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: 100000;
+      background: rgba(255, 240, 255, 0.5);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+    }
+    #firebaseui-auth-container{
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+    }
+    .firebaseui-container{
+      background: transparent;
+    }
+
+
+/* Lock Css */
+    .selected{
+      background: hsla(var(--theme), 100%, 98%, 1);
+    }
+    .admin .lock {
+      border: 2px solid var(--border-color);
+    }
+    svg.lock:not(.selected){
+      background: hsla(var(--theme), 20%, 45%, 1);
+    }
+
+    svg.lock:not(.selected) .st3{
+      fill: #BBB;
+    }
+    svg.lock{
+      height: 1.5em;
+      border-radius: 1em;
+      float: right;
+      margin: 0.15em;
+      padding: 0.1em;
+    }
+
+    .lock .st0{fill:#EAB52F;}
+    .lock .st1{fill:#D8A003;}
+    .lock .st2{fill:#F9D069;}
+    .lock .st3{fill:#7C7C93;}
+
+  </style>
+</html>

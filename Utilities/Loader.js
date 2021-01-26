@@ -56,6 +56,7 @@ class AnimationSvg extends SvgPlus{
 
 class PhiLoader extends AnimationSvg {
   build(){
+    this.class = "phi-loader"
     this.innerHTML = `<svg id = "logo-loader" viewBox="0 0 500 500">
       <style type="text/css">
       .st0{fill:black;stroke-miterlimit:10;}
@@ -200,3 +201,5 @@ class LightningPath extends SvgPath{
     }
   }
 }
+
+export {PhiLoader}

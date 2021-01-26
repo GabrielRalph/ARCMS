@@ -3,9 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <title>AR CMS</title>
-    <link rel="stylesheet" href="https://use.typekit.net/ifw8gqm.css">
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
     <script src="https://www.svg.plus/vector.js"></script>
     <script src="https://www.svg.plus/2.js"></script>
+
+    <script src="../FireAuth.js"></script>
     <script src="Icons.js"></script>
     <script src="VList.js"></script>
     <script src="Variant.js"></script>
@@ -36,6 +38,7 @@
     --model: #f1c232;
     --variant: #ff934a;
     --line-height: 1.3em;
+    user-select: none;
     letter-spacing: 0.01em;
     font-size: 5vw;
     line-height: var(--line-height);
@@ -45,6 +48,10 @@
     right: 0;
     bottom: 0;
     margin: 0.5em;
+  }
+
+  div.content > div.collection{
+    padding-bottom: 2em;
   }
 
   div.collection{
@@ -57,6 +64,7 @@
     margin: 0px;
   }
 
+
   div.content > div.collection > .header{
     color: black;
   }
@@ -64,6 +72,7 @@
   div.collection div.header{
     font-size: 1em;
     color: var(--collection);
+    /* cursor: pointer; */
     line-height: var(--line-height);
   }
 

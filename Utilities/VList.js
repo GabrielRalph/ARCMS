@@ -10,19 +10,6 @@ class Header extends SvgPlus{
   }
 }
 
-
-function isURL(str) {
-  if (typeof str !== 'string') return false;
-  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-  return !!pattern.test(str);
-}
-
-
 class VList extends SvgPlus{
   constructor(list){
     super('DIV');
@@ -62,10 +49,23 @@ class VList extends SvgPlus{
     }
   }
 
+  removeElement(element){
+    if (this._listElement.contains(element)){
+      this._listElement.removeChild(element);
+    }
+    let newList = []
+    for (var el of this._list){
+      if (el !== element){
+        newList.push(el);
+      }
+    }
+    this._list = newList;
+  }
+
   set list(list){
+    this._listElement.innerHTML='';
+    this._list = [];
     if (Array.isArray(list)){
-      this._listElement.innerHTML='';
-      this._list = [];
       for (var element of list){
         if (element instanceof Element){
           this._list.push(element);
@@ -117,15 +117,6 @@ class VList extends SvgPlus{
     this._changeState(true);
   }
 
-  async showAll(duration = 100){
-    await this.show();
-    for (var element of this.list){
-      if (SvgPlus.is(element, Collection)){
-        element.showAll(duration);
-      }
-    }
-  }
-
   async hide(duration = 100){
     this._changeState(null);
     for (var i = this.list.length - 1; i >= 0; i--){
@@ -171,3 +162,5 @@ class VList extends SvgPlus{
     })
   }
 }
+
+export {VList}

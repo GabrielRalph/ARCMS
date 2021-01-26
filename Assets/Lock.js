@@ -3,6 +3,7 @@ Vue.component('lock', {
     fire: {
       type: String,
     }
+    
   },
   data: function () {
     return{

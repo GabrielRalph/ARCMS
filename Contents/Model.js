@@ -1,3 +1,6 @@
+import {Variant} from './Variant.js'
+import {Collection} from './Collection.js'
+
 class Model extends SvgPlus{
   constructor(variants, name){
     super('div');
@@ -17,14 +20,24 @@ class Model extends SvgPlus{
     this.variantsBody = this.variantsTable.createChild('TBODY');
   }
 
-  get path(){
-    let parent = this.collectionParent;
-    let path = this.name;
-    while (SvgPlus.is(parent, Collection)){
-      path = parent.name + '/' + path;
-      parent = parent.collectionParent;
+  set parentCollection(collection){
+    if (SvgPlus.is(collection, Collection)){
+      this._parentCollection = collection;
+    }else{
+      this._parentCollection = null;
     }
-    return path;
+  }
+
+  get parentCollection(){
+    return this._parentCollection;
+  }
+
+  get path(){
+    if (this.parentCollection == null) {
+      return this.name;
+    }else{
+      return this.parentCollection.path + '/' + this.name;
+    }
   }
 
   set name(name){
@@ -70,10 +83,10 @@ class Model extends SvgPlus{
   removeVariant(variant){
     if (SvgPlus.is(variant, Variant)){
       if (typeof this._variants === 'object'){
+        this.variantsBody.removeChild(variant)
         delete this._variants[variant.name];
         if (Object.keys(this._variants).length == 0){
-          this._variants = null;
-          this.variantsBody.appendChild(variant);
+          this.collectionParent.remove(this);
         }
       }
     }
@@ -87,5 +100,6 @@ class Model extends SvgPlus{
   get variants(){
     return this._variants;
   }
-
 }
+
+export {Model}

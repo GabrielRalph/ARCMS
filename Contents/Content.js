@@ -1,3 +1,6 @@
+import {Collection} from './Collection.js'
+import {AddCollection} from './AddCollection.js'
+
 class Content extends SvgPlus{
   constructor(){
     super('div');
@@ -24,6 +27,7 @@ class Content extends SvgPlus{
     this.loader.props = {fill: '#0c89ff'}
 
     this.input.ontree = (json) => {
+      console.log(json);
       this.additions.json = json;
       this.additions.showAll();
       // console.log(this.additions);
@@ -38,3 +42,5 @@ class Content extends SvgPlus{
     this.input.getFilesFromDrop(items)
   }
 }
+
+export {Content}

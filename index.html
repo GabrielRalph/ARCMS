@@ -3,238 +3,225 @@
   <head>
     <meta charset="UTF-8">
     <title>AR CMS</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://www.svg.plus/vector.js"></script>
     <script src="https://www.svg.plus/2.js"></script>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+    <link rel="stylesheet" href="https://use.typekit.net/ifw8gqm.css">
     <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
-    <script src="Loader.js"></script>
-    <script src="Lock.js"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <script src="FireAuth.js"></script>
-    <script src="User.js"></script>
-    <script src="Admin.js"></script>
-    <script src="Content.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
-    <style>
-      body {
-        margin: 0;
-        --mcm-beige: rgb(240, 235, 233);
-        background: var(--mcm-beige);
-      }
-    </style>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type = "module" src="App.js"></script>
   </head>
   <body>
-
-    <div id = "loader">
-    </div>
-    <div id = "app">
-      <div v-if = "validUser">
-        <user v-model = "mode" :user = "user" :options = "['admin', 'content']"></user>
-        <admin v-if = "mode == 'admin' && user.admin"></admin>
-        <contents v-if = "mode == 'content' && user.contentAdmin"></contents>
-      </div>
-    </div>
   </body>
-  <script type="text/javascript">
-  let loader = new PhiLoader('loader');
-  loader.start();
-  let app = new Vue({
-    el: "#app",
-    data: {
-      user: new User(),
-      users: [],
-      mode: 'content',
-      mobile: false,
-    },
-    computed: {
-      validUser: function(){
-        return this.user instanceof User && this.user.hasUser
-      }
-    },
-    methods:{
-      signOut: function() {
-        this.user.signOut()
-      }
-    },
-    created(){
-
-      this.user.addEventListener('user', () => {
-        loader.stop();
-        this.$forceUpdate();
-      })
-    }
-  })
-
-
-
-  </script>
 
   <style>
-
-  model-viewer{
-    position: fixed;
-    top: 0;
-    right: 0;
-    background: transparent;
-    --poster-color: transparent;
-  }
-  model-viewer.portrait {
-    width: 100vw;
-    height: 40vh;
-  }
-  model-viewer:not(.portrait) {
-    width: 50vw;
-    height: 100vh;
-  }
-
   body{
-    font-family: Roboto;
+    font-family: 'futura-pt', Arial ,sans-serif;
     --theme: 17;
+    --margin: 0.5em;
+    margin: 0;
+    font-size: min(5vw, 50px);
     background: url('https://cdn.booooooom.com/wp-content/uploads/2017/06/simon-davidson15.jpg');
     background-size: 300vmax;
     background-position: 0% 40%;
   }
 
-  div.input-pannel{
-    position: fixed;
-    bottom: 0;
-    left: 0;
-  }
-  div.content div.portrait{
-    width: 100vw;
-    height: 60vh;
-  }
-  div.content div:not(.portrait){
-    width: 50vw;
-    height: 100vh;
-  }
+    .app{
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      background: #FFF7;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+    }
 
-  .content h4{
-    padding-left: 10px;
-  }
-  .content h5{
-    padding-left: 20px;
-  }
-  #app{
-    --margin: 10px;
-    margin: 0;
+    .windows{
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    .window{
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    /* Content */
 
-    font-size: 4vh;
-    /* margin-top: calc(var(--margin) + 2em); */
-    background: #FFF4;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    position: fixed;
-    padding:  var(--margin);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  #app > div{
-      margin-top: 1.6em;
-  }
+    .dark{opacity:0.5;fill:#4FAE32;}
+    .light{opacity:0.3;fill:#4FAE32;}
+    .arrow{opacity:0.97;fill:#FDFFFD;}
 
-  .user{
-    position: fixed;
-    font-size: 1.5em;
-    top: var(--margin);
-    left: var(--margin);
-    right: calc(var(--margin) + 1em);
-    z-index: 1000;
-    height: 1em;
-    overflow: hidden;
-  }
-  .user > div{
-    height: 100%;
-    float: right;
+    div.content{
+      --collection: #6aa84f;
+      --model: #f1c232;
+      --variant: #ff934a;
+      --line-height: 1.3em;
+      user-select: none;
+      letter-spacing: 0.01em;
+      line-height: var(--line-height);
+    }
 
-  }
+    .window > div{
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: var(--margin);
+    }
 
-  .user img {
-    position: fixed;
-    z-index: 2000;
-    top: var(--margin);
-    right: var(--margin);
-    height: 1em;
-    border-radius: 50%;
-    float: right;
-  }
-  .user h1{
-    line-height: 2em;
-    font-size: 0.5em;
-    float: left;
-    margin: 0;
-    padding-right: 0.5em;
-  }
+    div.content > div.collection{
+      padding-bottom: 2em;
+    }
+
+    div.collection{
+      font-size: 1em;
+    }
+
+    div.collection div.header h1{
+      font-size: 1em;
+      display: inline;
+      margin: 0px;
+    }
 
 
+    div.content > div.collection > .header{
+      color: black;
+    }
 
-  .admin img{
-    height: 2.3em;
-    float: left;
-    border-radius: 1.5em;
-    margin-right: 0.5em;
-  }
+    div.collection div.header{
+      font-size: 1em;
+      color: var(--collection);
+      /* cursor: pointer; */
+      line-height: var(--line-height);
+    }
 
-  .icon {
-    fill: hsl(var(--theme), 30%, 30%);
-    /* background: white; */
-    height: 1.75em;
-  }
+    div.collection div.list{
+      padding-left: 2em;
+      font-size: 0.85em;
+    }
 
-  table.admin .icon {
-    float: right;
-    margin: 0.15em;
-    padding: 0.1em;
-  }
+    .model > table{
+      padding-left: 2em;
+      font-size: 0.75em;
+    }
 
-  table.admin{
-    width: 100%;
-    font-size: 0.5em;
-    border-spacing: 0 3px;
-    --border-color: hsla(var(--theme), 30%, 80%, 0.9);
-  }
-  table.admin tr td:nth-last-child(-n + 2){
-    text-align: left;
-  }
-  table.admin td{
-    padding: 0;
-    background:  hsla(var(--theme), 10%, 95%, .8);
-    border-top: 2px solid var(--border-color);
-    border-bottom: 2px solid var(--border-color);
-    /* border-radius: 2em; */
-  }
-  table.admin th{
-    text-align: left;
-  }
-  table.admin tr td:first-of-type{
-    border-radius: 1.5em 0 0 1.5em;
-    border-left: 2px solid var(--border-color);
-    width: 2em;
-  }
-  table.admin tr td:last-of-type{
-    border-radius: 0 1.5em 1.5em 0;
-    border-right: 2px solid var(--border-color);
-    width: 2em;
-  }
+    .variant{
+      font-size: 1em;
+      color: var(--variant);
+      font-weight: bold;
+      line-height: var(--line-height);
+    }
+    .variant td:last-of-type{
+      padding-left: 1em;
+
+    }
+
+    .variant b{
+      font-size: 0.5em;
+      vertical-align: middle;
+    }
 
 
 
-  .radio{
-    width: 1em;
-    height: 1em;
-    border: 2px solid #633854;
-    border-radius: 1em;
-  }
-  /* .selected{
-    background: #9f0469;
-  } */
+    .model h1{
+      color: var(--model);
+    }
+
+
+    .add-collection{
+      display: inline;
+      cursor: pointer;
+      margin-left: 0.5em;
+      vertical-align: text-top;
+    }
+
+    .add-collection svg{
+      padding-top: 0.3em;
+    }
+
+    svg.icon{
+      height: 1em;
+      padding-right: 0.5em;
+      cursor: pointer;
+    }
+
+    .loader-icon{
+      font-size: 0.8em;
+      height: 1em;
+    }
+    .add-collection svg{
+      height: 0.8em;
+    }
+
+
+    /* User Controls */
+    .controls {
+      --height: 1.5em;
+
+      position: relative;
+      float: right;
+      display: inline-flex;
+
+      margin: var(--margin);
+      margin-right: calc( var(--margin) + var(--height) / 2);
+      height: var(--height);
+      line-height: var(--height);
+    }
+
+    .controls > div{
+      overflow: hidden;
+    }
+
+    .controls > div > div{
+      background: #FFF8;
+      border-radius: var(--height) 0 0 var(--height);
+      display: flex;
+      padding-right: calc(var(--height) / 2);
+      padding-left: calc(var(--height) / 6);
+    }
+
+    .controls img{
+      height: var(--height);
+      border-radius: var(--height);
+      background: white;
+      position: absolute;
+      top: 0;
+      right: calc(0px - var(--height)/2);
+    }
+
+    .ctr-btn{
+      display: inline;
+      float: right;
+      padding: 0 calc(var(--height) / 4);
+      cursor: pointer;
+      border-radius: var(--height);
+    }
+
+    .lock .st0{fill:#EAB52F;}
+    .lock .st1{fill:#D8A003;}
+    .lock .st2{fill:#F9D069;}
+    .lock .st3{fill:#7C7C93;}
+    .lock {
+      padding: 0 0.075em;
+      padding-bottom: 0.15em;
+      transition: 0.4s ease-in background;
+      background: transparent;
+      border-radius: 2em;
+    }
+    .lock.closed{
+      background: #7C7C93;
+    }
+    .lock.closed .st3{
+      fill: white;
+    }
 
     #loader,   #firebaseui-auth-container{
       position: fixed;
@@ -244,44 +231,93 @@
       left: 0;
       z-index: 100000;
       background: rgba(255, 240, 255, 0.5);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    #firebaseui-auth-container{
-      backdrop-filter: blur(25px);
+    ul.firebaseui-idp-list{
+      padding: 0;
+    }
+    li.firebaseui-list-item{
+      display: block;
+    }
+    button.firebaseui-idp-button{
+      padding: 0;
+      border: none;
+      margin: auto;
+      display: block;
+      outline: none;
+      border-radius: 2em;
 
     }
+    img.firebaseui-idp-icon{
+      height: 4em;
+      float: left;
+    }
+    span.firebaseui-idp-text-long{
+      line-height: 4em;
+      padding: 0 1em;
+    }
+    span.firebaseui-idp-text-short{
+      display:none
+    }
+
     .firebaseui-container{
       background: transparent;
     }
 
+    /* Admin */
 
-/* Lock Css */
-    .selected{
-      background: hsla(var(--theme), 100%, 98%, 1);
-    }
-    .admin .lock {
-      border: 2px solid var(--border-color);
-    }
-    svg.lock:not(.selected){
-      background: hsla(var(--theme), 20%, 45%, 1);
-    }
+        div.admin{
+          /* font-size: 1em; */
+        }
 
-    svg.lock:not(.selected) .st3{
-      fill: #BBB;
-    }
-    svg.lock{
-      height: 1.5em;
-      border-radius: 1em;
-      float: right;
-      margin: 0.15em;
-      padding: 0.1em;
-    }
+        div.admin h1{
+          margin: 0;
+          font-size: 1em;
+          line-height: 1.5em;
+          margin-bottom: var(--margin);
+        }
 
-    .lock .st0{fill:#EAB52F;}
-    .lock .st1{fill:#D8A003;}
-    .lock .st2{fill:#F9D069;}
-    .lock .st3{fill:#7C7C93;}
+        table.admin-users:hover > td{
+          background: grey;
+        }
+
+        table.admin-users{
+          width: 100%;
+          font-size: 0.6em;
+          border-spacing: 0.1em 0.4em;
+        }
+
+        .admin-user td:first-of-type{
+          width: 1.5em;
+        }
+
+        .admin-user td:nth-of-type(n + 2){
+          height: 1.5em;
+          padding-left: 0.5em;
+        }
+
+        .admin-user td:nth-last-of-type(-n + 3){
+          width: 1.5em;
+        }
+
+        .admin-user td:last-of-type{
+          fill: #7C7C93;
+        }
+
+        .admin-user img{
+          height: 1.5em;
+          float: left;
+          border-radius: 1em;
+        }
+
+        .admin-user svg{
+          height: 1.2em;
+          float: left;
+          /* vertical-align: revert; */
+
+        }
+
 
   </style>
 </html>

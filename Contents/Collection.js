@@ -1,3 +1,6 @@
+import {VList} from '../Utilities/VList.js'
+import {Model} from './Model.js'
+
 class Collection extends VList{
   constructor(json = null, name = ''){
     super();
@@ -37,6 +40,26 @@ class Collection extends VList{
     return this._collection !== null;
   }
 
+  set parentCollection(collection){
+    if (SvgPlus.is(collection, Collection)){
+      this._parentCollection = collection;
+    }else{
+      this._parentCollection = null;
+    }
+  }
+
+  get parentCollection(){
+    return this._parentCollection;
+  }
+
+  get path(){
+    if (this.parentCollection == null){
+      return this.name;
+    }else{
+      return this.parentCollection.path + '/' + this.name;
+    }
+  }
+
 
   forEach(callback){
     if (callback instanceof Function){
@@ -58,6 +81,27 @@ class Collection extends VList{
     }
   }
 
+  remove(item){
+    if (SvgPlus.is(item, Collection) || SvgPlus.is(item, Model)){
+      delete this._collection[item.name];
+      item.parentCollection = null;
+      this.removeElement(item);
+
+      if (Object.keys(this._collection).length == 0){
+        this.parentCollection.remove(this);
+      }
+    }
+  }
+
+  async showAll(duration = 100){
+    await this.show();
+    for (var element of this.list){
+      if (SvgPlus.is(element, Collection)){
+        element.showAll(duration);
+      }
+    }
+  }
+
 
   add(el, name = el.name){
     if (this._collection == null) {
@@ -70,7 +114,7 @@ class Collection extends VList{
         this._mode = 'models'
         this.pushElement(el);
 
-        el.collectionParent = this;
+        el.parentCollection = this;
         this._collection[name] = el;
       }
     }else if (SvgPlus.is(el, Collection) && el.isValid){
@@ -80,7 +124,7 @@ class Collection extends VList{
         this._mode = 'category';
         this.pushElement(el)
 
-        el.collectionParent = this;
+        el.parentCollection = this;
         this._collection[name] = el;
       }
     }
@@ -90,6 +134,7 @@ class Collection extends VList{
   }
 
   set json(json){
+    this.clear();
     if (json instanceof File || typeof json !== 'object') return;
 
     for (var key in json) {
@@ -106,3 +151,5 @@ class Collection extends VList{
     }
   }
 }
+
+export {Collection}
