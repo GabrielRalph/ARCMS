@@ -1,5 +1,6 @@
 import {VList} from '../Utilities/VList.js'
 import {Model} from './Model.js'
+import {TrashIcon, UploadToCloudIcon} from '../Utilities/Icons.js'
 
 class Collection extends VList{
   constructor(json = null, name = ''){
@@ -12,6 +13,13 @@ class Collection extends VList{
 
     this.name = name;
     this.json = json;
+  }
+
+  async uploadAll(){
+    let models = this.getAllModels();
+    for (var model of models){
+      await model.uploadToCloud();
+    }
   }
 
   async syncStart(){
@@ -80,7 +88,7 @@ class Collection extends VList{
   forEach(callback){
     if (callback instanceof Function){
       for (var key in this._collection){
-        callback(this[key], key)
+        callback(this._collection[key], key)
       }
     }
   }

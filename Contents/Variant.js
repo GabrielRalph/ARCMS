@@ -23,15 +23,147 @@ class Variant extends SvgPlus{
   buildElement(){
     this.nameCell = this.createChild('TD');
     this.textureCell = this.createChild('TD');
-    this.buttons = this.createChild('TD');
 
     this.trash = new TrashIcon();
     this.upload = new UploadToCloudIcon();
-    this.loader = new LoaderIcon();
 
-    this.trash.props = {fill: '#ff330c'}
-    this.upload.props = {fill: '#0c89ff'}
+
+    this.buttons = this.createChild('TD');
+    this.buttons.appendChild(this.trash);
+    this.buttons.appendChild(this.upload);
+
+    this.statusCell = this.createChild('TD');
+    this.errorsCell = this.createChild('TD');
+
   }
+
+  updateButtons(){
+    if (this.mode === 1) {
+      this.trash.hidden = false;
+      this.trash.onclick = () => {
+        this.parentModel.removeVariant(this);
+      }
+      this.upload.hidden = false;
+      this.upload.onclick = () => {
+        this.uploadToCloud();
+      }
+
+    }else if(this.mode === -1) {
+      this.upload.hidden = true;
+      this.trash.hidden = false;
+      this.trash.onclick = () => {
+        this.deleteFromCloud();
+      }
+    }
+  }
+
+  async uploadToCloud(){
+    if (this.mode !== 1) return;
+
+    for (var fileType of ['glb', 'fbx', 'thumbnail']){
+      let file = this[fileType];
+
+      this[fileType] = await this._uploadFileToCloud(file);
+
+    }
+
+    for (var textureName in this.textures){
+      let file = this.textures[textureName];
+
+      let url = await this._uploadFileToCloud(file);
+      this.textures[textureName] = url;
+    }
+
+    if (this.mode !== -1) {
+      this.errors = 'Error uploading, please refresh and try again';
+      return false;
+    }
+
+    if (!(await this.setDatabase())){
+      this.errors = 'Error updating database, please refresh and try again'
+    }
+
+    this.status = 'upload complete'
+    this.upload.hidden = true;
+    return true;
+  }
+
+
+  async setDatabase(){
+    try{
+      let res = await firebase.database().ref(this.path).set(this.json);
+      return true
+    }catch(e){
+      console.log(e);
+      return false
+    }
+  }
+
+
+  async deleteFromCloud(){
+    let ref = firebase.storage().ref()
+    let childRef = ref.child(this.path)
+    try{
+      let files = await childRef.listAll();
+      files = files.items;
+      for (var file of files){
+        await ref.child(file.fullPath).delete();
+      }
+      await firebase.database().ref(this.path).remove();
+
+      // this.parentModel.removeVariant(this)
+    }catch(e){
+      this.errors = 'Error deleting from cloud, please refresh and try again'
+      return null;
+    }
+    return true;
+  }
+
+
+  async _uploadFileToCloud(file){
+    return new Promise((resolve, reject) => {
+
+      try{
+        var uploadTask = firebase.storage().ref().child(this.path + '/' + file.name).put(file);
+        this._fileDownloading = file;
+      }catch(e){
+        console.log(e);
+        resolve(null)
+      }
+
+      uploadTask.on('state_changed', (snapshot) => {
+
+        // Observe state change events such as progress, pause, and resume
+        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        progress = Math.round(progress);
+        progress = Number.isNaN(progress) ? 0 : progress;
+        this.status = `${Math.round(progress)}% ${file.name}`;
+
+      }, function(error) {
+        resolve(null);
+      }, function() {
+        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+          resolve(downloadURL);
+        });
+      });
+    })
+  }
+
+
+  _update(){
+    if (this.onupdate instanceof Function){
+      this.onupdate();
+    }
+  }
+
+  set errors(e){
+    this.errorsCell.innerHTML = e;
+  }
+
+  set status(s){
+    this.statusCell.innerHTML = s;
+  }
+
 
   set progress(val){
     val = parseFloat(val);
@@ -43,34 +175,6 @@ class Variant extends SvgPlus{
     this.loader.progress = val;
   }
 
-  updateButtons(){
-    this.buttons.innerHTML = "";
-    if (this.mode === 1) {
-
-      this.buttons.appendChild(this.trash);
-      this.trash.onclick = () => {
-        this.parentModel.removeVariant(this);
-      }
-
-      this.buttons.appendChild(this.upload);
-      this.upload.onclick = () => {
-        this.uploadToCloud();
-      }
-
-    }else if(this.mode === -1) {
-      this.buttons.appendChild(this.trash);
-      this.trash.onclick = () => {
-        this.deleteFromCloud();
-      }
-    }
-  }
-
-
-  _update(){
-    if (this.onupdate instanceof Function){
-      this.onupdate();
-    }
-  }
 
   set name(name){
     this.nameCell.innerHTML = name;
@@ -91,17 +195,15 @@ class Variant extends SvgPlus{
    -1: url links to files
   */
   get mode(){
-    if (this._progress !== null) return 2;
-
     if (typeof this._modes === 'object'){
 
       let modeSum = 0;
       for (var name of ['glb', 'fbx', 'thumbnail']){
-        let mode = 0;
-        if (name in this._modes){
-          mode = this._modes[name];
+        if (this[name] instanceof File){
+          modeSum++;
+        }else if (isURL(this[name])){
+          modeSum--;
         }
-        modeSum += mode;
       }
 
       modeSum += this.texturesMode;
@@ -111,6 +213,7 @@ class Variant extends SvgPlus{
     }
     return 0;
   }
+
 
   /*
     texturesMode returns
@@ -122,21 +225,19 @@ class Variant extends SvgPlus{
     let url = 0;
     let file = 0;
     for (var name in this.textures){
-      let mode = 0;
-      if ('textures' in this._modes && name in this._modes.textures){
-        mode = this._modes.textures[name];
-      }
-      url += mode === -1 ? 1 : 0;
-      file += mode === 1 ? 1 : 0;
+      if (this.textures[name] instanceof File) file++;
+      if (isURL(this.textures[name])) url++;
     }
     if (file > 0 && url === 0) return 1;
     if (file === 0 && url > 0) return -1;
     return 0;
   }
 
+
   get isValid(){
     return this.mode !== 0;
   }
+
 
   get filesAreValid(){
     return this.mode === 1;
@@ -146,16 +247,14 @@ class Variant extends SvgPlus{
   set fbx(fbx){
     if (fbx instanceof File && (/\.fbx$/).test(fbx.name)){
       this._fbx = fbx;
-      this._modes['fbx'] = 1;
     }else if(isURL(fbx)){
       this._fbx = fbx;
-      this._modes['fbx'] = -1;
     }else{
       this._fbx = null;
-      this._modes['fbx'] = 0;
     }
     this._update()
   }
+
 
   get fbx(){
     return this._fbx;
@@ -165,16 +264,14 @@ class Variant extends SvgPlus{
   set glb(glb){
     if (glb instanceof File && (/\.glb$/).test(glb.name)){
       this._glb = glb;
-      this._modes['glb'] = 1;
     }else if(isURL(glb)){
       this._glb = glb;
-      this._modes['glb'] = -1;
     }else{
       this._glb = null;
-      this._modes['glb'] = 0;
     }
     this._update();
   }
+
 
   get glb(){
     return this._glb;
@@ -184,16 +281,14 @@ class Variant extends SvgPlus{
   set thumbnail(thumbnail){
     if (thumbnail instanceof File && (/^image/).test(thumbnail.type)){
       this._thumbnail = thumbnail;
-      this._modes['thumbnail'] = 1;
     }else if(isURL(thumbnail)){
       this._thumbnail = thumbnail;
-      this._modes['thumbnail'] = -1;
     }else{
       this._thumbnail = null;
-      this._modes['thumbnail'] = 0;
     }
     this._update();
   }
+
 
   get thumbnail(){
     return this._thumbnail;
@@ -203,6 +298,7 @@ class Variant extends SvgPlus{
   get textures(){
     return this._textures;
   }
+
 
   set textures(files){
     if (typeof files === 'object'){
@@ -217,20 +313,18 @@ class Variant extends SvgPlus{
           this.textureCell.innerHTML += `<b style = "color: #${color[1]}">⬤ </b>`
 
           if( isURL(file) ){
-            this._modes['textures'][name] = -1;
             this._textures[name] = file;
           }else if(file instanceof File && (/^image/).test(file.type)){
             this._textures[name] = file;
-            this._modes['textures'][name] = 1;
           }else{
             this._textures[name] = null;
-            this._modes['textures'][name] = 0;
           }
         }
       }
       this._update();
     }
   }
+
 
   set json(data){
     if (data === null || typeof data !== 'object'){
@@ -246,8 +340,8 @@ class Variant extends SvgPlus{
     this.updateButtons();
   }
 
+
   get json(){
-    if (!this.isValid) return null;
 
     let res =  {
       glb: this.glb,
@@ -255,78 +349,13 @@ class Variant extends SvgPlus{
       thumbnail: this.thumbnail,
       textures: this.textures
     }
+    if (!this.isValid) return null;
     return res;
   }
 
+
   get path(){
     return this.parentModel.path + '/' + this.name
-  }
-
-
-  async uploadToCloud(){
-    if (this.mode !== 1) return;
-
-    this.buttons.innerHTML = "";
-    this.buttons.appendChild(this.loader);
-
-    for (var fileType of ['glb', 'fbx', 'thumbnail']){
-      let file = this[fileType];
-
-      this[fileType] = await this._uploadFileToCloud(file);
-
-    }
-
-    for (var textureName in this.textures){
-      let file = this.textures[textureName];
-
-      let url = await this._uploadFileToCloud(file);
-      this.textures[textureName] = url;
-    }
-
-    if (this.mode === -1) return false;
-    await firebase.database().ref(this.path).set(this.json);
-
-    this.buttons.removeChild(this.loader)
-    return true;
-  }
-
-
-  async _uploadFileToCloud(file){
-    return new Promise((resolve, reject) => {
-
-      var uploadTask = firebase.storage().ref().child(this.path + '/' + file.name).put(file);
-      this._fileDownloading = file;
-
-      uploadTask.on('state_changed', (snapshot) => {
-
-        // Observe state change events such as progress, pause, and resume
-        this.progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-
-      }, function(error) {
-        reject(error);
-      }, function() {
-        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-          resolve(downloadURL)
-        });
-      });
-    })
-  }
-
-  async deleteFromCloud(){
-    let ref = firebase.storage().ref()
-    let childRef = ref.child(this.path)
-    try{
-      let files = await childRef.listAll();
-      files = files.items;
-      for (var file of files){
-        await ref.child(file.fullPath).delete();
-      }
-      await firebase.database().ref(this.path).remove();
-
-      // this.parentModel.removeVariant(this)
-    }catch(e){
-      console.log(e);
-    }
   }
 }
 

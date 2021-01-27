@@ -84,6 +84,7 @@
 
     .content h1{
       font-size: 1em;
+      padding-left: 1em;
       cursor: pointer;
       margin-top: 0;
     }
@@ -134,6 +135,17 @@
       padding-left: 2em;
     }
 
+    h3 svg.icon{
+      height: 2em;
+      vertical-align: top;
+      padding-left: 0.5em;
+    }
+
+    .icon.upload{
+      fill: #a4c534;
+      fill: #0993ff;
+    }
+
     div.collection div.header{
       font-size: 1em;
       color: var(--collection);
@@ -143,12 +155,16 @@
 
     div.collection div.list{
       padding-left: 2em;
-      font-size: 0.85em;
+      font-size: 0.88em;
     }
 
     .model > table{
       padding-left: 2em;
       font-size: 0.75em;
+    }
+
+    .icon.trash{
+      fill: #b10909;
     }
 
     .variant{
@@ -259,7 +275,10 @@
     .lock .st0{fill:#EAB52F;}
     .lock .st1{fill:#D8A003;}
     .lock .st2{fill:#F9D069;}
-    .lock .st3{fill:#7C7C93;}
+    .lock .st3{
+      fill:#7C7C93;
+      transition: 0.4s ease-in fill;
+    }
     .lock {
       padding: 0 0.075em;
       padding-bottom: 0.15em;

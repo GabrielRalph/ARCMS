@@ -1,6 +1,7 @@
 import {Collection} from './Collection.js'
 import {AddCollection} from './AddCollection.js'
 import {Windows} from '../Utilities/Windows.js'
+import {TrashIcon, UploadToCloudIcon} from '../Utilities/Icons.js'
 
 class Content extends Windows{
   constructor(){
@@ -36,13 +37,27 @@ class Content extends Windows{
     this.input.ontree = (json) => {
       let uploads = new Collection(json, 'contents');
       if (!uploads.isValid) return;
-      let btn = uploads.createChildOfHead('H3');
-      btn.styles = {cursor: 'pointer'}
-      btn.innerHTML = "Done";
-      btn.onclick = () => {
-        console.log('x');
+
+      let done = uploads.createChildOfHead('H3');
+      let uploadAll = uploads.createChildOfHead('H3');
+
+      done.styles = {cursor: 'pointer'}
+      uploadAll.styles = {cursor: 'pointer'}
+
+      done.innerHTML = "done";
+      uploadAll.innerHTML = "upload all ";
+      uploadAll.appendChild(new UploadToCloudIcon())
+
+      uploadAll.onclick = async () => {
+        // this.uploadAll();
+        await uploads.uploadAll();
         this.moveTo(this.liveCollectionBody, true)
       }
+
+      done.onclick = () => {
+        this.moveTo(this.liveCollectionBody, true)
+      }
+
       let uploadsBody = this.makeCollectionBody(uploads, 'Upload Assets Collection');
       this.moveTo(uploadsBody)
       uploads.showAll();
