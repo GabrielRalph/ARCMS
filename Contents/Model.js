@@ -86,7 +86,7 @@ class Model extends SvgPlus{
         this.variantsBody.removeChild(variant)
         delete this._variants[variant.name];
         if (Object.keys(this._variants).length == 0){
-          this.collectionParent.remove(this);
+          this.parentCollection.remove(this);
         }
       }
     }

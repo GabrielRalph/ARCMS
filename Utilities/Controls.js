@@ -1,118 +1,44 @@
 class Controls extends SvgPlus{
   constructor(){
     super('div');
-    this.buttonPannel = this.createChild('DIV').createChild('DIV');
-    this._image = this.createChild('IMG');
-    this._init = true;
-    this.image.onclick = () => {this.shown = !this.shown}
-
     this.class = 'controls'
-    this._shown = false;
-    this.xPos = 100;
-
-    this.buildElement();
+    this.image = this.createChild("IMG");
+    this.buttonBox = this.createChild("DIV");
   }
 
-  set buttons(buttons){
-    this._buttons = {}
-    if (typeof buttons !== 'object' || buttons == null){
-      return;
-    }
-    for (var key in buttons){
-      let onclick = buttons[key];
+  set buttons(obj){
+    if (obj === null || typeof obj !== 'object') return;
+    this._buttons = {};
+    for (var buttonName in obj){
+      let onclick = obj[buttonName];
+
       if (onclick instanceof Function){
-        this._buttons[key] = onclick;
+        this._buttons[buttonName] = onclick;
       }
     }
-    if (this._init){
-      this._init = false;
-      this.buildElement();
-    }
+
+    this.updateButtons();
   }
 
   get buttons(){
     return this._buttons;
   }
 
-  buildElement(){
-    this.buttonPannel.innerHTML = "";
+  set imgSrc(src){
+    if (typeof src === 'string'){
+      this.image.props = {src: src};
+    }
+  }
+
+
+  updateButtons(){
+    this.buttonBox.innerHTML = "";
     for (var buttonName in this.buttons){
-      let button = this.buttonPannel.createChild('div');
-      button.class = "ctr-btn";
-      button.onclick = this.buttons[buttonName];
+      console.log(buttonName);
+      let button = this.buttonBox.createChild("H1");
       button.innerHTML = buttonName;
+      button.onclick = this.buttons[buttonName];
     }
-  }
-
-  set shown(val){
-    if (val === true && this._shown === false){
-      this.waveTransistion(val);
-    }else if(val === false && this._shown === true){
-      this.waveTransistion(val);
-    }
-  }
-  get shown(){
-    return this._shown;
-  }
-
-  set xPos(x){
-    x = parseFloat(x);
-
-    let transform = 'translate(0, 0)'
-    this._xPos = 0;
-    if (x >= 0 && x <= 100){
-      this._xPos = x;
-      transform = `translate(${x}%, 0%)`
-    }
-    this.buttonPannel.styles = {transform: transform}
-  }
-
-  get xPos(){
-    return this._xPos;
-  }
-
-  waveTransistion(shown, duration = 400){
-    this._shown = null;
-    shown = !!shown;
-    let theta = 0;
-    let done = false;
-    let startTime = 0;
-
-    let next = (time) => {
-      theta = Math.PI * (time - startTime) / duration;
-      if (theta > Math.PI) {
-        theta = Math.PI;
-        done = true;
-      }
-
-      let x = (Math.cos(theta) + 1) * 50;
-      this.xPos = shown ? x : 100 - x;
-
-      if (done){
-        this._shown = shown;
-        if (!shown){
-          this.buildElement();
-        }
-      }else{
-        window.requestAnimationFrame(next)
-      }
-    }
-
-    window.requestAnimationFrame((time) => {
-      startTime = time;
-      window.requestAnimationFrame(next)
-    })
-  }
-
-
-  set image(val){
-    this._image.props = {
-      src: val
-    }
-  }
-
-  get image(){
-    return this._image;
   }
 }
 

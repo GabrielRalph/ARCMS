@@ -4,6 +4,7 @@ import {Model} from './Model.js'
 class Collection extends VList{
   constructor(json = null, name = ''){
     super();
+    console.log(json);
     this.class = "collection"
     this.buildElement();
 
@@ -135,18 +136,21 @@ class Collection extends VList{
 
   set json(json){
     this.clear();
-    if (json instanceof File || typeof json !== 'object') return;
+    if (json === null || json instanceof File || typeof json !== 'object' || typeof json === 'string') return;
 
     for (var key in json) {
 
       let value = json[key];
+
       let model = new Model(value, key);
 
       if (model.isValid) {
         this.add(model)
       }else{
         let subcollection = new Collection(value, key);
-        this.add(subcollection)
+        if (subcollection.isValid){
+          this.add(subcollection)
+        }
       }
     }
   }

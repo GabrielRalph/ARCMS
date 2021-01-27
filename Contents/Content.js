@@ -1,7 +1,8 @@
 import {Collection} from './Collection.js'
 import {AddCollection} from './AddCollection.js'
+import {Windows} from '../Utilities/Windows.js'
 
-class Content extends SvgPlus{
+class Content extends Windows{
   constructor(){
     super('div');
     this.class = 'content'
@@ -21,16 +22,32 @@ class Content extends SvgPlus{
 
     this.additions = new Collection();
     this.additions.name = "contents"
-    this.appendChild(this.additions);
+    this.moveTo(this.additions);
 
     this.loader = this.additions.appendChildToHead(this.input);
     this.loader.props = {fill: '#0c89ff'}
 
+
+      this.syncFire();
+
     this.input.ontree = (json) => {
-      console.log(json);
-      this.additions.json = json;
-      this.additions.showAll();
+      let uploads = new Collection(json);
+      uploads.name = 'contents'
+      this.moveTo(uploads)
+      uploads.showAll();
       // console.log(this.additions);
+    }
+  }
+
+  async syncFire(){
+
+    try{
+      firebase.database().ref('contents').on('value', (sc) => {
+        this.additions.json = sc.val();
+        this.additions.showAll()
+      });
+    }catch(e){
+      console.log(e);
     }
   }
 

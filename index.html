@@ -15,32 +15,41 @@
   </body>
 
   <style>
+
   body{
     font-family: 'futura-pt', Arial ,sans-serif;
     --theme: 17;
     --margin: 0.5em;
     margin: 0;
     font-size: min(5vw, 50px);
-    background: url('https://cdn.booooooom.com/wp-content/uploads/2017/06/simon-davidson15.jpg');
-    background-size: 300vmax;
-    background-position: 0% 40%;
+
+    background: url('./Assets/background.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    overflow: hidden;
   }
 
-    .app{
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      background: #FFF7;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: -1;
-    }
+
+  .app{
+    backdrop-filter: blur(0.25vw);
+    -webkit-backdrop-filter: blur(0.25vw);
+    background: #FFF7;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    padding-top: 1.5em;
+    overflow-y: scroll;
+  }
 
     .windows{
       position: fixed;
-      top: 0;
+      top: 2em;
       left: 0;
       right: 0;
       bottom: 0;
@@ -51,7 +60,12 @@
       left: 0;
       right: 0;
       bottom: 0;
+      /* overflow: scroll; */
     }
+    .list{
+      overflow: scroll;
+    }
+
     /* Content */
 
     .dark{opacity:0.5;fill:#4FAE32;}
@@ -68,13 +82,16 @@
       line-height: var(--line-height);
     }
 
-    .window > div{
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: var(--margin);
+    div.co{
+      padding-bottom: var(--margin);
+    }
+
+    div.app > div > div.window > div{
+      margin: 0 var(--margin);
+    }
+
+    div.window > div.collection{
+      padding-bottom: 2em;
     }
 
     div.content > div.collection{
@@ -164,7 +181,7 @@
 
     /* User Controls */
     .controls {
-      --height: 1.5em;
+      --height: 1em;
 
       position: relative;
       float: right;
@@ -172,21 +189,22 @@
 
       margin: var(--margin);
       margin-right: calc( var(--margin) + var(--height) / 2);
+      padding-right: calc( var(--height) / 2 + var(--margin));
       height: var(--height);
       line-height: var(--height);
     }
 
-    .controls > div{
+    /* .controls > div{
       overflow: hidden;
-    }
+    } */
 
-    .controls > div > div{
+    /* .controls > div > div{
       background: #FFF8;
       border-radius: var(--height) 0 0 var(--height);
       display: flex;
       padding-right: calc(var(--height) / 2);
       padding-left: calc(var(--height) / 6);
-    }
+    } */
 
     .controls img{
       height: var(--height);
@@ -197,13 +215,25 @@
       right: calc(0px - var(--height)/2);
     }
 
-    .ctr-btn{
+    .controls > div {
+      line-height: 1em;
+    }
+
+    .controls h1{
+      float: left;
+      font-size: 0.6em;
+      cursor: pointer;
+      margin: 0;
+      padding-left: var(--margin);
+    }
+
+    /* .controls{
       display: inline;
       float: right;
       padding: 0 calc(var(--height) / 4);
       cursor: pointer;
       border-radius: var(--height);
-    }
+    } */
 
     .lock .st0{fill:#EAB52F;}
     .lock .st1{fill:#D8A003;}

@@ -52,6 +52,7 @@ class Windows extends SvgPlus{
   }
 
   async moveTo(element, direction){
+    this.scrollTo(0, 0);
     if (element instanceof Element){
       await this.waveTransistion(element, direction);
     }

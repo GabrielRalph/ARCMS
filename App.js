@@ -54,7 +54,7 @@ class App extends Windows{
   onuser(user){
     this.controls.hidden = false;
     this.controls.shown = false;
-    this.controls.image = user.photoURL;
+    this.controls.imgSrc = user.photoURL;
     this.updateControlButtons();
   }
 }

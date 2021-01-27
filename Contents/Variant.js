@@ -2,12 +2,7 @@ import {TrashIcon, UploadToCloudIcon, LoaderIcon} from '../Utilities/Icons.js'
 
 function isURL(str) {
   if (typeof str !== 'string') return false;
-  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  var pattern = new RegExp('^(https?:\\/\\/)'); // fragment locator
   return !!pattern.test(str);
 }
 
@@ -33,18 +28,9 @@ class Variant extends SvgPlus{
     this.trash = new TrashIcon();
     this.upload = new UploadToCloudIcon();
     this.loader = new LoaderIcon();
-    this.buttons.appendChild(this.trash);
-    this.buttons.appendChild(this.upload);
 
     this.trash.props = {fill: '#ff330c'}
-    this.trash.onclick = () => {
-      this.parentModel.removeVariant(this);
-    }
-    this.upload.onclick = () => {
-      this.uploadToCloud();
-    }
     this.upload.props = {fill: '#0c89ff'}
-
   }
 
   set progress(val){
@@ -57,13 +43,34 @@ class Variant extends SvgPlus{
     this.loader.progress = val;
   }
 
+  updateButtons(){
+    this.buttons.innerHTML = "";
+    if (this.mode === 1) {
+
+      this.buttons.appendChild(this.trash);
+      this.trash.onclick = () => {
+        this.parentModel.removeVariant(this);
+      }
+
+      this.buttons.appendChild(this.upload);
+      this.upload.onclick = () => {
+        this.uploadToCloud();
+      }
+
+    }else if(this.mode === -1) {
+      this.buttons.appendChild(this.trash);
+      this.trash.onclick = () => {
+        this.deleteFromCloud();
+      }
+    }
+  }
+
 
   _update(){
     if (this.onupdate instanceof Function){
       this.onupdate();
     }
   }
-
 
   set name(name){
     this.nameCell.innerHTML = name;
@@ -226,6 +233,9 @@ class Variant extends SvgPlus{
   }
 
   set json(data){
+    if (data === null || typeof data !== 'object'){
+      return;
+    }
     for (var name of ['glb', 'fbx', 'thumbnail', 'textures']){
       if (name in data){
         this[name] = data[name];
@@ -233,6 +243,7 @@ class Variant extends SvgPlus{
         this[name] = null;
       }
     }
+    this.updateButtons();
   }
 
   get json(){
@@ -250,6 +261,7 @@ class Variant extends SvgPlus{
   get path(){
     return this.parentModel.path + '/' + this.name
   }
+
 
   async uploadToCloud(){
     if (this.mode !== 1) return;
@@ -298,6 +310,23 @@ class Variant extends SvgPlus{
         });
       });
     })
+  }
+
+  async deleteFromCloud(){
+    let ref = firebase.storage().ref()
+    let childRef = ref.child(this.path)
+    try{
+      let files = await childRef.listAll();
+      files = files.items;
+      for (var file of files){
+        await ref.child(file.fullPath).delete();
+      }
+      await firebase.database().ref(this.path).remove();
+
+      // this.parentModel.removeVariant(this)
+    }catch(e){
+      console.log(e);
+    }
   }
 }
 
