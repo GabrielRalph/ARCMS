@@ -85,6 +85,7 @@ class Variant extends SvgPlus{
 
     this.status = 'upload complete'
     this.upload.hidden = true;
+    this.trash.hidden = true;
     return true;
   }
 
