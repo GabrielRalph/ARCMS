@@ -98,7 +98,7 @@ class Collection extends VList{
     await this.show();
     for (var element of this.list){
       if (SvgPlus.is(element, Collection)){
-        element.showAll(duration);
+        await element.showAll(duration);
       }
     }
   }

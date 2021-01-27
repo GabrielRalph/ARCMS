@@ -24,6 +24,7 @@ class Content extends Windows{
     this.databaseCollection.name = "contents"
     this.moveTo(this.databaseCollection);
 
+
     let header = this.databaseCollection.createChildOfHead('H3');
     header.innerHTML = 'upload assets'
     this.loader = this.databaseCollection.appendChildToHead(this.input);
@@ -31,6 +32,7 @@ class Content extends Windows{
 
 
       this.syncFire();
+
 
     this.input.ontree = (json) => {
       let uploads = new Collection(json);
@@ -46,7 +48,8 @@ class Content extends Windows{
     try{
       firebase.database().ref('contents').on('value', (sc) => {
         this.databaseCollection.json = sc.val();
-        this.databaseCollection.showAll()
+        this.databaseCollection.showAll();
+        
       });
     }catch(e){
       console.log(e);

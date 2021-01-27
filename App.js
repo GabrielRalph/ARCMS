@@ -17,6 +17,9 @@ class App extends Windows{
     this.controls = new Controls();
     this.controls.hidden = true;
 
+    this.admin = new Admin();
+    this.content = new Content();
+
     if (parent instanceof Element){
       parent.appendChild(this.loader)
       parent.appendChild(this.controls)
@@ -37,14 +40,14 @@ class App extends Windows{
     if (this.user.admin && mode !== 'admin') {
       buttons['admin'] = () => {
         this.controls.shown = false;
-        this.moveTo(new Admin(), true);
+        this.moveTo(this.admin, true);
         this.updateControlButtons('admin');
       }
     }
     if (this.user.contentAdmin && mode !== 'content') {
       buttons['content'] = () => {
         this.controls.shown = false;
-        this.moveTo(new Content(), true);
+        this.moveTo(this.content, true);
         this.updateControlButtons('content');
       }
     }
