@@ -4,7 +4,6 @@ import {Model} from './Model.js'
 class Collection extends VList{
   constructor(json = null, name = ''){
     super();
-    console.log(json);
     this.class = "collection"
     this.buildElement();
 
@@ -14,6 +13,22 @@ class Collection extends VList{
     this.name = name;
     this.json = json;
   }
+
+  async syncStart(){
+    try{
+      await firebase.database().ref(this.path).on('value', (sc) => {
+        this.json = sc.val();
+        this.showAll();
+      });
+    }catch(e){
+      console.log(e);
+    }
+  }
+
+  syncStop(){
+    firebase.database().ref(this.path).off();
+  }
+
 
   clear(){
     this._collection = null;

@@ -19,42 +19,47 @@ class Content extends Windows{
       }, false)
     })
 
+    this.liveCollection = new Collection(null, 'contents');
+    this.liveCollection.syncStart();
+    this.liveCollectionBody = this.makeCollectionBody(this.liveCollection, 'Live Assets Collection');
 
-    this.databaseCollection = new Collection();
-    this.databaseCollection.name = "contents"
-    this.moveTo(this.databaseCollection);
+    this.moveTo(this.liveCollectionBody);
 
 
-    let header = this.databaseCollection.createChildOfHead('H3');
+    let header = this.liveCollection.createChildOfHead('H3');
     header.innerHTML = 'upload assets'
-    this.loader = this.databaseCollection.appendChildToHead(this.input);
-    this.loader.props = {fill: '#0c89ff'}
 
-
-      this.syncFire();
+    this.loader = this.liveCollection.appendChildToHead(this.input);
+    this.loader.props = {fill: '#0c89ff'};
 
 
     this.input.ontree = (json) => {
-      let uploads = new Collection(json);
-      uploads.name = 'contents'
-      this.moveTo(uploads)
+      let uploads = new Collection(json, 'contents');
+      if (!uploads.isValid) return;
+      let btn = uploads.createChildOfHead('H3');
+      btn.styles = {cursor: 'pointer'}
+      btn.innerHTML = "Done";
+      btn.onclick = () => {
+        console.log('x');
+        this.moveTo(this.liveCollectionBody, true)
+      }
+      let uploadsBody = this.makeCollectionBody(uploads, 'Upload Assets Collection');
+      this.moveTo(uploadsBody)
       uploads.showAll();
       // console.log(this.databaseCollection);
     }
   }
 
-  async syncFire(){
-
-    try{
-      firebase.database().ref('contents').on('value', (sc) => {
-        this.databaseCollection.json = sc.val();
-        this.databaseCollection.showAll();
-        
-      });
-    }catch(e){
-      console.log(e);
-    }
+  makeCollectionBody(collection, name){
+    let body = new SvgPlus('DIV');
+    collection.class = "collection head";
+    let head = body.createChild('H1');
+    head.innerHTML = name;
+    body.appendChild(collection)
+    return body;
   }
+
+
 
 
 
