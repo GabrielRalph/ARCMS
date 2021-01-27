@@ -20,11 +20,13 @@ class Content extends Windows{
     })
 
 
-    this.additions = new Collection();
-    this.additions.name = "contents"
-    this.moveTo(this.additions);
+    this.databaseCollection = new Collection();
+    this.databaseCollection.name = "contents"
+    this.moveTo(this.databaseCollection);
 
-    this.loader = this.additions.appendChildToHead(this.input);
+    let header = this.databaseCollection.createChildOfHead('H3');
+    header.innerHTML = 'upload assets'
+    this.loader = this.databaseCollection.appendChildToHead(this.input);
     this.loader.props = {fill: '#0c89ff'}
 
 
@@ -35,7 +37,7 @@ class Content extends Windows{
       uploads.name = 'contents'
       this.moveTo(uploads)
       uploads.showAll();
-      // console.log(this.additions);
+      // console.log(this.databaseCollection);
     }
   }
 
@@ -43,8 +45,8 @@ class Content extends Windows{
 
     try{
       firebase.database().ref('contents').on('value', (sc) => {
-        this.additions.json = sc.val();
-        this.additions.showAll()
+        this.databaseCollection.json = sc.val();
+        this.databaseCollection.showAll()
       });
     }catch(e){
       console.log(e);
