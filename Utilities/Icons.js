@@ -30,6 +30,43 @@ class Icon extends SvgPlus{
   }
 }
 
+class ContentAdminIcon extends Icon{
+  constructor(){
+    super(`
+      <svg viewBox="0 0 100 100">
+    <g>
+    	<polygon style = "opacity: 0.5" points="50,37.08 22.86,28.03 11.28,24.17 11.28,30.32 11.28,65.24 50,85.41 	"/>
+    	<polygon style = "opacity: 0.75" points="50,37.08 88.72,24.17 88.72,65.24 50,85.41 	"/>
+    	<polygon points="50,14.59 11.28,24.17 50,37.08 88.72,24.17 	"/>
+    </g>
+    <polygon style = "opacity: 0.9; fill: white" points="60.65,72.82 60.65,49.56 69.03,49.56 50,27.18 30.97,49.56 39.35,49.56 39.35,72.82 "/>
+    </svg>
+`)
+    this.class = 'content-admin-icon'
+  }
+}
+class AdminIcon extends Icon{
+  constructor(){
+    super(`<svg viewBox="0 0 100 100">
+    <g>
+    	<g>
+    		<circle cx="49.82" cy="36.79" r="9.62"/>
+    		<path d="M67.31,77.86c5.13-5.13-4.41-26.47-17.49-26.47S27.2,72.73,32.34,77.86S62.17,82.99,67.31,77.86z"/>
+    	</g>
+    	<g style = "opacity: 0.75">
+    		<circle cx="70.52" cy="30.7" r="9.62"/>
+    		<path d="M88.01,71.76c5.13-5.13-4.41-26.47-17.49-26.47S47.9,66.63,53.04,71.76S82.87,76.9,88.01,71.76z"/>
+    	</g>
+    	<g style = "opacity: 0.5">
+    		<circle cx="29.48" cy="30.7" r="9.62"/>
+    		<path d="M46.96,71.76c5.13-5.13-4.41-26.47-17.49-26.47S6.86,66.63,11.99,71.76S41.83,76.9,46.96,71.76z"/>
+    	</g>
+    </g>
+    </svg>
+`)
+    this.class = 'admin-icon'
+  }
+}
 
 
 class UploadFilesIcon extends Icon{
@@ -194,7 +231,7 @@ class UploadToCloudIcon extends Icon{
   	  <path style = "fill: white; opacity: 0.9" d="M30.12,62.99h10.81v20.72c3.23,0.56,7.49,0.7,13.12,0.03c2.09-0.25,3.96-0.61,5.66-1.06V62.99h10.81l-20.2-21.6L30.12,62.99z"/>
     </svg>`)
     this.class = 'icon upload'
-    
+
   }
 }
 
@@ -281,4 +318,4 @@ class LoaderIcon extends SvgPlus{
   }
 }
 
-export {TrashIcon, UploadToCloudIcon, LoaderIcon, UploadFilesIcon, LockIcon}
+export {TrashIcon, UploadToCloudIcon, LoaderIcon, UploadFilesIcon, LockIcon, AdminIcon, ContentAdminIcon}

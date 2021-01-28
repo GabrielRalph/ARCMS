@@ -1,5 +1,5 @@
 
-import {LockIcon, TrashIcon} from '../Utilities/Icons.js'
+import {LockIcon, TrashIcon, AdminIcon, ContentAdminIcon} from '../Utilities/Icons.js'
 class Admin extends SvgPlus{
   constructor(){
     super('div');
@@ -17,6 +17,13 @@ class AdminUsers extends SvgPlus{
     super('TABLE');
     this.class = "admin-users"
     this.body = this.createChild('TBODY');
+    let head = this.body.createChild('TR');
+    head.class = "admin-user"
+    head.createChild('TD');
+    head.createChild('TD').innerHTML = "Name";
+    head.createChild('TD').innerHTML = "Email";
+    head.createChild('TD').appendChild(new AdminIcon());
+    head.createChild('TD').appendChild(new ContentAdminIcon());
     this.usersRef = firebase.database().ref('users');
     this.syncStart();
   }
