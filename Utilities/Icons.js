@@ -84,6 +84,29 @@ class UploadFilesIcon extends Icon{
   }
 }
 
+class Arrow extends Icon{
+  constructor(){
+    super(`
+    <svg viewBox="-50 -50 200 188.3">
+      <defs>
+        <filter id="dropshadow" x = "-100%" y = "-100%" height="300%" width = "300%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="15"/> <!-- stdDeviation is how much to blur -->
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.8"/> <!-- slope is the opacity of the shadow -->
+          </feComponentTransfer>
+          <feMerge>
+            <feMergeNode/> <!-- this contains the offset blurred image -->
+            <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+          </feMerge>
+        </filter>
+      </defs>
+      <polygon filter = "url(#dropshadow)" points="50,26.43 31.59,46.12 41.44,46.12 41.44,73.57 58.56,73.57 58.56,46.12 68.41,46.12 "/>
+    </svg>
+    `);
+    this.class = "arrow";
+  }
+}
+
 // LockIcon takes a firebase path, i.e. users/uid/admin
 // And provides an icon to change the state of the firebase
 // data boolean
@@ -318,4 +341,4 @@ class LoaderIcon extends SvgPlus{
   }
 }
 
-export {TrashIcon, UploadToCloudIcon, LoaderIcon, UploadFilesIcon, LockIcon, AdminIcon, ContentAdminIcon}
+export {TrashIcon, UploadToCloudIcon, LoaderIcon, UploadFilesIcon, LockIcon, AdminIcon, ContentAdminIcon, Arrow}

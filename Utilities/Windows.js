@@ -7,7 +7,9 @@ class Windows extends SvgPlus{
 
     this.windowPannel = this.createChild('div');
     this.windowPannel.styles = {
-      position: 'relative'
+      position: 'relative',
+      width: "100%",
+      height: "100%"
     }
 
     this._center = new Frame();
@@ -16,9 +18,7 @@ class Windows extends SvgPlus{
 
     this.clear();
 
-    this.windowPannel.appendChild(this.left);
     this.windowPannel.appendChild(this.center);
-    this.windowPannel.appendChild(this.right);
   }
 
   get center(){
@@ -88,6 +88,8 @@ class Windows extends SvgPlus{
         }else{
           this.center = element;
           this.xPos = 0;
+          // if (this.windowPannel.contains(this.left)) this.windowPannel.remove(this.left);
+          // if (this.windowPannel.contains(this.right)) this.windowPannel.remove(this.right);
           resolve(true)
         }
       }
@@ -95,9 +97,13 @@ class Windows extends SvgPlus{
       window.requestAnimationFrame((time) => {
         startTime = time;
         if (direction) {
+          this.windowPannel.appendChild(this.left);
           this.left = element;
+
         }else{
+          this.windowPannel.appendChild(this.right);
           this.right = element;
+
         }
         window.requestAnimationFrame(nextFrame)
       })
@@ -111,8 +117,14 @@ class Frame extends SvgPlus{
     this.class = "window"
     this.styles = {
       inset: 0,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
       position: 'absolute',
     }
+
+
   }
 
   set xPos(val){

@@ -34,7 +34,6 @@ class Controls extends SvgPlus{
   updateButtons(){
     this.buttonBox.innerHTML = "";
     for (var buttonName in this.buttons){
-      console.log(buttonName);
       let button = this.buttonBox.createChild("H1");
       button.innerHTML = buttonName;
       button.onclick = this.buttons[buttonName];

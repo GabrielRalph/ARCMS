@@ -21,7 +21,7 @@
     --theme: 17;
     --margin: 0.5em;
     margin: 0;
-    font-size: min(5vw, 50px);
+    font-size: min(4.5vw, 50px);
 
     background: url('./Assets/background.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
@@ -32,6 +32,16 @@
     overflow: hidden;
   }
 
+  div .icon:first-of-type{
+    margin-left: 0.5em;
+  }
+
+  svg.icon{
+    line-height: var(--line-height);
+    margin-right: 0.5em;
+    cursor: pointer;
+    vertical-align: middle;
+  }
 
   .app{
     backdrop-filter: blur(0.25vw);
@@ -44,117 +54,86 @@
     bottom: 0;
     z-index: -1;
     padding-top: var(--margin);
-    overflow-y: scroll;
+    padding: 0.5em 0.5em;
   }
 
-    .windows{
-      position: fixed;
-      top: 2em;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
-    .window{
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      /* overflow: scroll; */
-    }
-    .list{
-      overflow: scroll;
-    }
+  .windows{
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .window{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
 
-    /* Content */
-
-    .dark{opacity:0.5;fill:#4FAE32;}
-    .light{opacity:0.3;fill:#4FAE32;}
-    .arrow{opacity:0.97;fill:#FDFFFD;}
-
-    div.content{
-      --collection: #027a29de;
-      --model: #2266a7d4;
-      --variant: #ff7100e8;
-      --line-height: 1.3em;
-      user-select: none;
-      letter-spacing: 0.01em;
-      line-height: var(--line-height);
+    h1{
+      /* display: inline; */
+      margin-top: 0px;
     }
 
-    .content h1{
-      font-size: 1em;
-      padding-left: 1em;
-      cursor: pointer;
-      margin-top: 0;
-    }
-
-    div.co{
-      padding-bottom: var(--margin);
-    }
-
-    div.app > div > div.window > div{
-      margin: 0 var(--margin);
-    }
-
-    h6 {
-      display: inline;
-      font-size: 0.7em;
-      margin: 0 2em;
-    }
-
-    /* div.window > div.collection{
-      padding-bottom: 2em;
-    }
-
-    div.content > div.collection{
-      padding-bottom: 2em;
-    } */
-
-    div.collection{
-      font-size: 1em;
-    }
-
-    div.collection div.header h1{
-      font-size: 1em;
+    h3{
+      font-size: 0.5em;
       display: inline;
       margin: 0px;
     }
 
-    div.collection.head{
+/* --------------------------- content ------------------------------------ */
+
+  svg.upload{
+    fill: #1e72e4;
+  }
+  div.content{
+    --collection: #027a29de;
+    --model: #2266a7d4;
+    --variant: #ff7100e8;
+    --line-height: 1.3em;
+    user-select: none;
+    letter-spacing: 0.01em;
+    line-height: var(--line-height);
+  }
+
+  .dark{opacity:0.5;fill:#4FAE32;}
+     .light{opacity:0.3;fill:#4FAE32;}
+     .arrow{opacity:0.97;fill:#FDFFFD;}
+
+
+
+     .collection h1{
+       display: inline;
+       padding-right: 1em;
+       margin: 0;
+     }
+
+    .collection.head{
       font-size: 0.9em;
-      padding-bottom: 2em;
+      padding-left: 0.5em;
+      height: 100%;
+      overflow-y: scroll;
     }
 
-    div.collection.head > .header{
+    .collection.head > .list {
+      padding-bottom: 4em;
+    }
+    .collection.head > .header{
       color: black;
     }
-    div.content h3{
-      display: inline;
-      font-size: 0.6em;
-      padding-left: 2em;
-    }
 
-    h3 svg.icon{
-      height: 2em;
-      vertical-align: top;
-      padding-left: 0.5em;
-    }
-
-    .icon.upload{
-      fill: #a4c534;
-      fill: #0993ff;
+    .upload-collection{
+      /* position: absolute; */
+      /* width: 100%;
+      height: 100%; */
+      height: calc(100vh - 1em);
+      overflow-y: scroll;
     }
 
     div.collection div.header{
-      font-size: 1em;
       color: var(--collection);
-      /* cursor: pointer; */
       line-height: var(--line-height);
-    }
-
-    table.admin-users tr td:nth-of-type(2){
-      width: 30%;
     }
 
     div.collection div.list{
@@ -167,32 +146,14 @@
       font-size: 0.75em;
     }
 
-    .admin-icon{
-      fill: #3b4898;
-    }
-
-    .content-admin-icon{
-      fill: #287528;
-    }
-
     .icon.trash{
       fill: #b10909;
     }
 
     .variant{
-      font-size: 1em;
       color: var(--variant);
       font-weight: bold;
       line-height: var(--line-height);
-    }
-    .variant td:last-of-type{
-      padding-left: 1em;
-
-    }
-
-    .variant b{
-      font-size: 0.5em;
-      vertical-align: middle;
     }
 
 
@@ -201,110 +162,133 @@
       color: var(--model);
     }
 
-
-    .add-collection{
-      display: inline;
-      cursor: pointer;
-      margin-left: 0.5em;
-      vertical-align: text-top;
+    .list {
+      direction: ltr;
+    }
+    .header{
+      direction: ltr;
     }
 
-    .add-collection svg{
-      padding-top: 0.3em;
-    }
+/* --------------------------- controls ------------------------------------ */
+.controls {
+  --height: 1em;
 
-    svg.icon{
-      height: 1em;
-      padding-right: 0.5em;
-      cursor: pointer;
-    }
+  position: relative;
+  float: right;
+  display: inline-flex;
 
-    .loader-icon{
-      font-size: 0.8em;
-      height: 1em;
-    }
-    .add-collection svg{
-      height: 0.8em;
-    }
+  margin: var(--margin);
+  margin-right: calc( var(--margin) + var(--height) / 2);
+  padding-right: calc( var(--height) / 2 + var(--margin));
+  height: var(--height);
+  line-height: var(--height);
+}
 
 
-    /* User Controls */
-    .controls {
-      --height: 1em;
+.controls img{
+  height: var(--height);
+  border-radius: var(--height);
+  background: white;
+  position: absolute;
+  top: 0;
+  right: calc(0px - var(--height)/2);
+}
 
-      position: relative;
-      float: right;
-      display: inline-flex;
+.controls > div {
+  line-height: 1em;
+}
 
-      margin: var(--margin);
-      margin-right: calc( var(--margin) + var(--height) / 2);
-      padding-right: calc( var(--height) / 2 + var(--margin));
-      height: var(--height);
-      line-height: var(--height);
-    }
+.controls h1{
+  float: left;
+  font-size: 0.6em;
+  cursor: pointer;
+  margin: 0;
+  padding-left: var(--margin);
+}
+/* -------------------------------------------------------------------------- */
 
-    /* .controls > div{
-      overflow: hidden;
-    } */
+/* ---------------------------------- Admin --------------------------------- */
+.admin-icon{
+  fill: #3b4898;
+}
 
-    /* .controls > div > div{
-      background: #FFF8;
-      border-radius: var(--height) 0 0 var(--height);
-      display: flex;
-      padding-right: calc(var(--height) / 2);
-      padding-left: calc(var(--height) / 6);
-    } */
+.content-admin-icon{
+  fill: #287528;
+}
 
-    .controls img{
-      height: var(--height);
-      border-radius: var(--height);
-      background: white;
-      position: absolute;
-      top: 0;
-      right: calc(0px - var(--height)/2);
-    }
+table.admin-users tr td:nth-of-type(2){
+  width: 30%;
+}
 
-    .controls > div {
-      line-height: 1em;
-    }
+div.admin h1{
+  margin: 0;
+  font-size: 1em;
+  line-height: 1.5em;
+  margin-bottom: var(--margin);
+}
 
-    .controls h1{
-      float: left;
-      font-size: 0.6em;
-      cursor: pointer;
-      margin: 0;
-      padding-left: var(--margin);
-    }
+table.admin-users:hover > td{
+  background: grey;
+}
 
-    /* .controls{
-      display: inline;
-      float: right;
-      padding: 0 calc(var(--height) / 4);
-      cursor: pointer;
-      border-radius: var(--height);
-    } */
+table.admin-users{
+  width: 100%;
+  font-size: 0.6em;
+  border-spacing: 0.1em 0.4em;
+}
 
-    .lock .st0{fill:#EAB52F;}
-    .lock .st1{fill:#D8A003;}
-    .lock .st2{fill:#F9D069;}
-    .lock .st3{
-      fill:#7C7C93;
-      transition: 0.4s ease-in fill;
-    }
-    .lock {
-      padding: 0 0.075em;
-      padding-bottom: 0.15em;
-      transition: 0.4s ease-in background;
-      background: transparent;
-      border-radius: 2em;
-    }
-    .lock.closed{
-      background: #7C7C93;
-    }
-    .lock.closed .st3{
-      fill: white;
-    }
+.admin-user td:first-of-type{
+  width: 1.5em;
+}
 
+.admin-user td:nth-of-type(n + 2){
+  height: 1.5em;
+  padding-left: 0.5em;
+}
+
+.admin-user td:nth-last-of-type(-n + 3){
+  width: 1.5em;
+}
+
+.admin-user td:last-of-type{
+  fill: #7C7C93;
+}
+
+.admin-user img{
+  height: 1.5em;
+  float: left;
+  border-radius: 1em;
+}
+
+.admin-user svg{
+  height: 1.2em;
+  float: left;
+}
+
+.lock .st0{fill:#EAB52F;}
+.lock .st1{fill:#D8A003;}
+.lock .st2{fill:#F9D069;}
+.lock .st3{
+  fill:#7C7C93;
+  transition: 0.4s ease-in fill;
+}
+.lock {
+  padding: 0 0.075em;
+  padding-bottom: 0.15em;
+  transition: 0.4s ease-in background;
+  background: transparent;
+  border-radius: 2em;
+}
+.lock.closed{
+  background: #7C7C93;
+}
+.lock.closed .st3{
+  fill: white;
+}
+/* -------------------------------------------------------------------------- */
+
+
+/* ------------------------------ firebase ui ------------------------------- */
     #loader,   #firebaseui-auth-container{
       position: fixed;
       top: 0;
@@ -346,60 +330,88 @@
     .firebaseui-container{
       background: transparent;
     }
+/* -------------------------------------------------------------------------- */
+span.texture{
+  font-size: 0.8em;
+  line-height: var(--line-height);
+}
 
-    /* Admin */
+/* ------------------------------- info-form -------------------------------- */
+.info-form h1{
+  font-size: 0.7em;
+  margin-top: 0;
+}
 
-        div.admin{
-          /* font-size: 1em; */
-        }
+.info-form h2{
+  font-size: 0.5em;
+  margin: 0;
+  padding-left: 0.2em;
+}
 
-        div.admin h1{
+.info-form input{
+  float: left;
+}
+
+.info-form input:focus, .info-form textarea:focus{
+  background: #FFFb;
+}
+
+.info-form input, .info-form textarea{
+  padding: 0.4em 0.5em;
+  background: #FFF8;
+  border-radius: 1em;
+  font-size: 0.35em;
+  font-family: 'futura-pt', Arial ,sans-serif;
+  border: none;
+  width: calc(100% - 1em);
+  outline: none;
+  margin-bottom: 1em;
+}
+
+.info-form textarea{
+  height: 10em;
+  resize: none;
+}
+/* -------------------------------------------------------------------------- */
+/* -------------------------- thumbnail--loader ----------------------------- */
+
+        .thumbnail-loader h1{
+          font-size: 0.7em;
           margin: 0;
-          font-size: 1em;
-          line-height: 1.5em;
-          margin-bottom: var(--margin);
         }
 
-        table.admin-users:hover > td{
-          background: grey;
-        }
-
-        table.admin-users{
+        .thumbnail-loader img {
           width: 100%;
-          font-size: 0.6em;
-          border-spacing: 0.1em 0.4em;
+          min-height: 100px;
+          background: white;
         }
 
-        .admin-user td:first-of-type{
-          width: 1.5em;
+        .thumbnail-loader svg.arrow:hover{
+          transform: scale(2);
         }
 
-        .admin-user td:nth-of-type(n + 2){
-          height: 1.5em;
-          padding-left: 0.5em;
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+
+        .live-collection td{
+          vertical-align: top;
+        }
+        .live-collection > tbody > tr > td:first-of-type{
+          width: 70%;
+        }
+        .live-collection > tbody > tr > td:last-of-type{
+          padding-top: 1em;
+        }
+        table.live-collection{
+          width: calc(100vw - 1em);
+          height: calc(100vh - 1em);
         }
 
-        .admin-user td:nth-last-of-type(-n + 3){
-          width: 1.5em;
+
+        h1{
+          font-size: 1em;
         }
-
-        .admin-user td:last-of-type{
-          fill: #7C7C93;
-        }
-
-        .admin-user img{
-          height: 1.5em;
-          float: left;
-          border-radius: 1em;
-        }
-
-        .admin-user svg{
-          height: 1.2em;
-          float: left;
-          /* vertical-align: revert; */
-
-        }
-
 
   </style>
 </html>

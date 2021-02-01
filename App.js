@@ -30,7 +30,6 @@ class App extends Windows{
       this.loader.stop();
       this.onuser(this.user);
     })
-
   }
 
   updateControlButtons(mode = ''){
@@ -61,8 +60,4 @@ class App extends Windows{
     this.updateControlButtons();
   }
 }
-
-window.onload = () => {
-  let app = new App(document.body);
-  // console.log(document.body);
-}
+let app = new App(document.body);
