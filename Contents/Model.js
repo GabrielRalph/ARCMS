@@ -225,6 +225,7 @@ class InfoForm extends SvgPlus{
   }
 
   set json(json){
+
     if (json === null || typeof json !== 'object' ) return;
 
     if ('description' in json) this.description.value = json.description;

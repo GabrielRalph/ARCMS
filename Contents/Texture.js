@@ -61,11 +61,11 @@ async function uploadFileToCloud(file, path, statusCallback){
 Texture is an object that represents a folder containing
 3 image files.
 
-Images must inclue "albedo", "metalic" and "normal",
+Images must inclue "albedo", "metallic" and "normal",
 individualy in each of their filenames. Case sensitive
 e.g.
 
-some file and info metalic.png
+some file and info metallic.png
 some_file_with_underscores_albedo.png
 as long as it has normal in the name.jpg
 */
@@ -124,10 +124,11 @@ class Texture extends SvgPlus{
     }
   }
 
-  get textureFormats(){ return ['metalic', 'albedo', 'normal'] }
+  get textureFormats(){ return ['metallic', 'albedo', 'normal'] }
 
   //Set the texture as a json object
   set json(json){
+    console.log(json);
     if (json === null || typeof json !== 'object') return;
     if (json instanceof File) return;
 
@@ -140,7 +141,7 @@ class Texture extends SvgPlus{
 
       let found = false;
 
-      // Check a file contains a valid format in its name i.e. (file_name_metalic.png)
+      // Check a file contains a valid format in its name i.e. (file_name_metallic.png)
       // then remove that format from the list of formats and continue to check
       // the other files
       for (var name in json){
@@ -167,7 +168,7 @@ class Texture extends SvgPlus{
     if (!this.isValid) return null;
 
     return {
-      metalic: this.metalic,
+      metallic: this.metallic,
       albedo: this.albedo,
       normal: this.normal
     }
@@ -245,16 +246,16 @@ class Texture extends SvgPlus{
   }
 
 
-  //Set and get metalic texture format
-  set metalic(metalic){
-    if ( isImage(metalic) || isURL(metalic) ){
-      this._metalic = metalic;
+  //Set and get metallic texture format
+  set metallic(metallic){
+    if ( isImage(metallic) || isURL(metallic) ){
+      this._metallic = metallic;
     }else{
-      this._metalic = null;
+      this._metallic = null;
     }
   }
-  get metalic(){
-    return this._metalic;
+  get metallic(){
+    return this._metallic;
   }
 
 

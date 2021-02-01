@@ -28,7 +28,7 @@ class LiveContent extends DropBox{
 
     this.liveCollection = this.createChild('DIV');
     this.liveCollection.styles = {
-      width: "70%",
+      width: "65%",
       height: "100%",
       top: "0",
       left: "0",
@@ -37,7 +37,7 @@ class LiveContent extends DropBox{
 
     this.tools = this.createChild('DIV');
     this.tools.styles = {
-      width: "30%",
+      width: "35%",
       height: "calc(100% - 2em)",
       top: "2em",
       right: "0",
@@ -45,6 +45,9 @@ class LiveContent extends DropBox{
     }
 
     this.upload = new FileTreeInput();
+    this.upload.styles = {
+      margin: "0 1em"
+    }
     this.upload.ontree = (json) => {
       if (this.ontree instanceof Function){
         this.ontree(json);
@@ -65,7 +68,15 @@ class LiveContent extends DropBox{
     }else if ( SvgPlus.is(node, Collection) ){
       this.tools.appendChild(new ThumbnailLoader(this, node))
     }else if( SvgPlus.is(node, Variant) ){
-
+      let modelViewer = this.tools.createChild('model-viewer');
+      modelViewer.props = {
+        src: node.glb,
+        'auto-rotate': true,
+        poster: node.thumbnail,
+        'data-js-focus-visible': true,
+        'camera-controls': true,
+        width: '100%'
+      }
     }else{
       return;
     }
@@ -89,12 +100,13 @@ class LiveContent extends DropBox{
     this.collection.styles = {
       direction: "rtl"
     }
-    this.collection.appendChildToHead(this.upload);
     await this.collection.syncStart();
 
     this.liveCollection.innerHTML = "";
 
     let header = this.liveCollection.createChild('H1');
+    header.styles = { display: 'inline'}
+    this.liveCollection.appendChild(this.upload)
     header.innerHTML = title;
 
     this.liveCollection.appendChild(this.collection);
@@ -120,6 +132,8 @@ class LiveContent extends DropBox{
   async cleanDatabase(){
     let data = await firebase.database().ref('contents').once('value');
     data = data.val();
+
+    if (data == null) return;
 
     let recursive = async (node, path) => {
       if (typeof node === 'object'){

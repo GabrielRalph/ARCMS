@@ -13,11 +13,16 @@ class ContentUpload extends SvgPlus{
     }
 
     let header = this.createChild('H1');
+    header.styles = {
+      display: 'inline',
+      'margin-right': "1em"
+    }
     header.innerHTML = "Upload Asset Collection";
 
     let collection = new Collection(tree, 'contents', this);
     collection.class = "collection head"
-    let done = collection.createChildOfHead('H3');
+    let done = this.createChild('H3');
+    done.styles = { cursor: "pointer" };
     done.onclick = () => {
       if (this.onreturn instanceof Function){
         this.onreturn();

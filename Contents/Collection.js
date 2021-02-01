@@ -286,8 +286,11 @@ class ImageLoader extends SvgPlus{
         display: "none"
       }
     }
-
+    this.styles = {display: "none"}
     this._thumbnailImg = this.createChild('IMG');
+    this._thumbnailImg.onload = () => {
+      this.styles = {display: "inherit"}
+    }
     this.thumbnail = '../Assets/thumbnail.jpg';
 
     this._upload = new Arrow();
