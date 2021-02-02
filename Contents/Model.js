@@ -66,6 +66,10 @@ class Model extends SvgPlus{
     this._variants = null;
   }
 
+  containsVariant(variant){
+    return this.variantsBody.contains(variant);
+  }
+
 
   trash(){
     if (this.parentCollection !== null){
@@ -78,22 +82,76 @@ class Model extends SvgPlus{
     let variants = this._variants;
     for (var name in variants){
       if (!(await variants[name].uploadToCloud())){
-        console.log('x');
         return false;
       }
     }
     return true;
   }
 
+  async deleteVariantFromCloud(variant){
+    if ( this.containsVariant(variant) ){
+      if ( Object.keys(this._variants).length == 1 ){
+        await this.deleteFromCloud();
+      }else{
+        if (variant.path == null) return;
 
-  async deleteFromCloud(){
-    let variants = this._variants;
-    for (var name in variants){
-      if (!(await variants[name].deleteFromCloud())){
-        return false;
+        let ref = firebase.storage().ref()
+        let childRef = ref.child(variant.path)
+        try{
+          if ( !(await variant.textures.deleteFromCloud()) )return false;
+          let files = await childRef.listAll();
+          files = files.items;
+          for (var file of files){
+            await ref.child(file.fullPath).delete();
+          }
+
+          await firebase.database().ref(variant.path).remove();
+
+        }catch(e){
+          console.log(e);
+        }
       }
     }
-    return true;
+  }
+
+  async deleteFromCloud(){
+    if (this.parentCollection !== null){
+      await this.parentCollection.deleteItemFromCloud(this);
+    }
+  }
+
+  async startSync(){
+    if ( !this.isValid || this.path === null ) return false;
+    try{
+      this.clearVariants();
+      await firebase.database().ref(this.path).on('value', (sc) => {
+        this._onSyncValue(sc);
+      });
+      this._synced = true;
+      return true;
+    }catch(e){
+      console.log(e);
+      return false;
+    }
+  }
+
+  async _onSyncValue(sc){
+    this.json = sc.val();
+
+    if (! this.isValid) {
+      await firebase.database().ref(this.path).remove();
+    }
+  }
+
+  async stopSync(){
+    try{
+      await firebase.database().ref(this.path).off();
+      this._synced = false;
+      return true;
+    }catch(e){
+      console.log(e);
+      return false;
+    }
   }
 
 
@@ -174,6 +232,10 @@ class Model extends SvgPlus{
 
   get isValid(){
     return this._variants !== null
+  }
+
+  get synced(){
+    return !!this._synced
   }
 }
 

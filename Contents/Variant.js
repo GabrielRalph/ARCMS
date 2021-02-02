@@ -96,7 +96,7 @@ class Variant extends SvgPlus{
   async uploadToCloud(){
     if (this.mode === -1) return true;
 
-    if (!this.filesAreValid){
+    if (!this.filesAreValid || this.path === null) {
       return false;
     }
 
@@ -109,11 +109,14 @@ class Variant extends SvgPlus{
     for (var fileType of ['glb', 'fbx', 'thumbnail']){
       let file = this[fileType];
 
+      let ext = file.name.split(/\./)[1];
+
+      let name = (fileType === 'thumbnail') ? `thumbnail.${ext}` : `${this.parentModel.name}.${fileType}`
       this[fileType] = await uploadFileToCloud(file, this.path, (progress) => {
-        progress = Math.round(progress);
+        progress = parseInt(progress);
         progress = Number.isNaN(progress) ? '~' : progress;
-        this.status = `${Math.round(progress)}% ${file.name}`;
-      });
+        this.status = `${progress}% ${file.name}`;
+      }, name);
     }
 
     let res = await this.setDatabase();
@@ -137,25 +140,9 @@ class Variant extends SvgPlus{
   }
 
   async deleteFromCloud(){
-    if (this.path == null) return false;
-
-    let ref = firebase.storage().ref()
-    let childRef = ref.child(this.path)
-    try{
-      if ( !this.textures.deleteFromCloud() )return false;
-      let files = await childRef.listAll();
-      files = files.items;
-      for (var file of files){
-        await ref.child(file.fullPath).delete();
-      }
-      await firebase.database().ref(this.path).remove();
-
-      this.parentModel.removeVariant(this)
-    }catch(e){
-      this.errors = 'Error deleting from cloud, please refresh and try again'
-      return false;
+    if (this.parentModel !== null){
+      await this.parentModel.deleteVariantFromCloud(this);
     }
-    return true;
   }
 
 

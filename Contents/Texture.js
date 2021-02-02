@@ -24,8 +24,7 @@ function contains(string, value){
 }
 
 // Upload file to firebase storage bucket
-async function uploadFileToCloud(file, path, statusCallback){
-  path = `${path}`
+async function uploadFileToCloud(file, path, statusCallback, name = file.name){
   if ( !(file instanceof File) || typeof path !== 'string' ){
     console.log('invalid file');
     return null;
@@ -33,7 +32,7 @@ async function uploadFileToCloud(file, path, statusCallback){
   return new Promise((resolve, reject) => {
 
     try{
-      var uploadTask = firebase.storage().ref().child(path + '/' + file.name).put(file);
+      var uploadTask = firebase.storage().ref().child(path + '/' + name).put(file);
     }catch(e){
       console.log(e);
       resolve(null)
@@ -107,6 +106,9 @@ class Texture extends SvgPlus{
 
     for (var textureFormat of this.textureFormats){
       let file = this[textureFormat];
+
+      let ext = file.name.split(/\./)[1];
+
       this[textureFormat] = await uploadFileToCloud(file, this.path, (progress) => {
 
         if (this.parentVariant === null) return;
@@ -114,7 +116,7 @@ class Texture extends SvgPlus{
         progress = Math.round(progress);
         progress = Number.isNaN(progress) ? '~' : progress;
         this.parentVariant.status = `${Math.round(progress)}% ${file.name}`;
-      })
+      }, `${textureFormat}.${ext}`)
     }
 
     if (this.mode === -1){

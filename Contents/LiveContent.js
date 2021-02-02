@@ -2,6 +2,7 @@ import {FileTreeInput} from "./FileTreeInput.js"
 import {Collection, ThumbnailLoader} from "./Collection.js"
 import {Model, InfoForm} from "./Model.js"
 import {Variant} from "./Variant.js"
+import {TrashIcon} from "../Utilities/Icons.js"
 
 class DropBox extends SvgPlus{
   constructor(el){
@@ -22,6 +23,7 @@ class LiveContent extends DropBox{
   constructor(content){
     super('DIV');
 
+    this.trash = new TrashIcon();
     this.content = content;
 
     this.class = "live-content";
@@ -42,6 +44,7 @@ class LiveContent extends DropBox{
       top: "2em",
       right: "0",
       position: "absolute",
+      'overflow-y': "scroll"
     }
 
     this.upload = new FileTreeInput();
@@ -53,7 +56,6 @@ class LiveContent extends DropBox{
         this.ontree(json);
       }
     }
-    this.cleanDatabase();
   }
 
   ondrop(e){
@@ -64,12 +66,17 @@ class LiveContent extends DropBox{
     this.removeTools();
 
     if ( SvgPlus.is(node, Model) ){
-      this.test(node);
+      this.trash.onclick = () => {node.deleteFromCloud()}
+      node.appendChildToHead(this.trash);
       this.tools.appendChild(new InfoForm(this, node))
     }else if ( SvgPlus.is(node, Collection) ){
       if (node === this.collection) return;
+      this.trash.onclick = () => {node.deleteFromCloud()}
+      node.appendChildToHead(this.trash);
       this.tools.appendChild(new ThumbnailLoader(this, node))
     }else if( SvgPlus.is(node, Variant) ){
+      node.selected = true;
+      this._oldNode = node;
       let box = this.tools.createChild('DIV');
       box.styles = {
         position: "relative",
@@ -91,10 +98,6 @@ class LiveContent extends DropBox{
     }else{
       return;
     }
-
-    node.selected = true;
-
-    this._oldNode = node;
   }
 
   removeTools(){
@@ -104,35 +107,6 @@ class LiveContent extends DropBox{
     this.tools.innerHTML = "";
   }
 
-  async test(node){
-    console.log(await this.listAll(node.path));
-  }
-
-  async listAll(path){
-    if (path == null) return null;
-    let array = [];
-    try{
-      let ref = firebase.storage().ref().child(path);
-      let list = await ref.listAll();
-
-      if (list == null) return null
-
-      for ( var prefix of list.prefixes ){
-        let sublist = await this.listAll(prefix.fullPath);
-        if (sublist != null) array = array.concat(sublist);
-      }
-
-      for (var item of list.items ){
-        array.push(item.fullPath);
-      }
-
-      return array;
-    }catch(e){
-      console.log(e);
-      return null
-    }
-
-  }
 
   async createCollection(title){
 
@@ -141,7 +115,7 @@ class LiveContent extends DropBox{
     this.collection.styles = {
       direction: "rtl"
     }
-    await this.collection.syncStart();
+    await this.collection.startSync();
 
     this.liveCollection.innerHTML = "";
 
@@ -168,37 +142,6 @@ class LiveContent extends DropBox{
     }catch(e){
       return false;
     }
-  }
-
-  async cleanDatabase(){
-    let data = await firebase.database().ref('contents').once('value');
-    data = data.val();
-
-    if (data == null) return;
-
-    let recursive = async (node, path) => {
-      if (typeof node === 'object'){
-        if ( Object.keys(node).length === 1 && ('info' in node || 'thumbnail' in node ) ){
-          console.log('removing at ' + path);
-          if ('thumbnail' in node){
-            if ( await this.removeThumbnail(path) ){
-              await firebase.database().ref(path).remove();
-              console.log('thumbnail removed');
-            }else{
-              console.log('failed to remove thumbnail');
-            }
-          }else{
-            await firebase.database().ref(path).remove();
-          }
-        }else{
-          for (var key in node){
-            recursive(node[key], path + '/' + key)
-          }
-        }
-      }
-    }
-
-    recursive(data, 'contents');
   }
 }
 
