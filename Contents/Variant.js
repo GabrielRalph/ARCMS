@@ -43,6 +43,7 @@ class Variant extends SvgPlus{
   }
 
   buildElement(){
+    this.thumbnailImg = this.createChild('TD').createChild('IMG')
     this.nameCell = this.createChild('TD');
     this.textureCell = this.createChild('TD');
 
@@ -299,6 +300,7 @@ class Variant extends SvgPlus{
       this._thumbnail = thumbnail;
     }else if(isURL(thumbnail)){
       this._thumbnail = thumbnail;
+      this.thumbnailImg.props = {src: thumbnail}
     }else{
       this._thumbnail = null;
     }

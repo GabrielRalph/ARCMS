@@ -81,7 +81,6 @@ class LiveContent extends DropBox{
       modelViewer.props = {
         src: node.glb,
         'auto-rotate': true,
-        poster: node.thumbnail,
         'data-js-focus-visible': true,
         'camera-controls': true,
         style: {

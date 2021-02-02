@@ -22,7 +22,7 @@
   body{
     font-family: 'futura-pt', Arial ,sans-serif;
     --theme: 17;
-    --margin: 0.5em;
+    --margin: 1em;
     margin: 0;
     font-size: min(4.3vw, 50px);
 
@@ -57,7 +57,7 @@
     bottom: 0;
     z-index: -1;
     padding-top: var(--margin);
-    padding: 0.5em 0.5em;
+    padding:var(--margin);
   }
 
   .windows{
@@ -85,6 +85,7 @@
       margin: 0px;
     }
 
+
 /* --------------------------- content ------------------------------------ */
 
   svg.upload{
@@ -94,7 +95,7 @@
     --collection: #027a29de;
     --model: #2266a7d4;
     --variant: #ff7100e8;
-    --line-height: 1.3em;
+    --line-height: 2em;
     user-select: none;
     letter-spacing: 0.01em;
     line-height: var(--line-height);
@@ -110,6 +111,20 @@
        display: inline;
        padding-right: 1em;
        margin: 0;
+       cursor: pointer;
+     }
+     .lock{
+       cursor: pointer;
+     }
+
+     tr.variant td:first-of-type{
+       cursor: pointer;
+     }
+
+     .variant img{
+       height: var(--line-height);
+       vertical-align: bottom;
+       margin-right: 0.5em;
      }
 
     .collection.head{
