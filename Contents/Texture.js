@@ -128,7 +128,6 @@ class Texture extends SvgPlus{
 
   //Set the texture as a json object
   set json(json){
-    console.log(json);
     if (json === null || typeof json !== 'object') return;
     if (json instanceof File) return;
 

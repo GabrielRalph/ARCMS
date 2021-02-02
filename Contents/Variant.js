@@ -222,13 +222,17 @@ class Variant extends SvgPlus{
   get mode(){
 
     let modeSum = 0;
+    let error = ''
     for (var name of ['glb', 'fbx', 'thumbnail']){
       if (this[name] instanceof File){
         modeSum++;
       }else if (isURL(this[name])){
         modeSum--;
+      }else{
+        error += `${name} not included in variant at ${this.path}\n`
       }
     }
+
 
     modeSum += this.textures.mode;
 
@@ -338,7 +342,7 @@ class Variant extends SvgPlus{
 
 
   get path(){
-    if (this.parentModel == null);
+    if (this.parentModel == null) return null;
     return this.parentModel.path + '/' + this.name
   }
 }

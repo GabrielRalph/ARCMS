@@ -64,18 +64,30 @@ class LiveContent extends DropBox{
     this.removeTools();
 
     if ( SvgPlus.is(node, Model) ){
+      this.test(node);
       this.tools.appendChild(new InfoForm(this, node))
     }else if ( SvgPlus.is(node, Collection) ){
+      if (node === this.collection) return;
       this.tools.appendChild(new ThumbnailLoader(this, node))
     }else if( SvgPlus.is(node, Variant) ){
-      let modelViewer = this.tools.createChild('model-viewer');
+      let box = this.tools.createChild('DIV');
+      box.styles = {
+        position: "relative",
+        width: "100%",
+        height: "100%"
+
+      }
+      let modelViewer = box.createChild('model-viewer');
       modelViewer.props = {
         src: node.glb,
         'auto-rotate': true,
         poster: node.thumbnail,
         'data-js-focus-visible': true,
         'camera-controls': true,
-        width: '100%'
+        style: {
+          width: "100%",
+          height: "100%"
+        }
       }
     }else{
       return;
@@ -91,6 +103,36 @@ class LiveContent extends DropBox{
       this._oldNode.selected = false;
     }
     this.tools.innerHTML = "";
+  }
+
+  async test(node){
+    console.log(await this.listAll(node.path));
+  }
+
+  async listAll(path){
+    if (path == null) return null;
+    let array = [];
+    try{
+      let ref = firebase.storage().ref().child(path);
+      let list = await ref.listAll();
+
+      if (list == null) return null
+
+      for ( var prefix of list.prefixes ){
+        let sublist = await this.listAll(prefix.fullPath);
+        if (sublist != null) array = array.concat(sublist);
+      }
+
+      for (var item of list.items ){
+        array.push(item.fullPath);
+      }
+
+      return array;
+    }catch(e){
+      console.log(e);
+      return null
+    }
+
   }
 
   async createCollection(title){
