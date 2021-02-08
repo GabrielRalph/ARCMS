@@ -1,0 +1,102 @@
+/*
+ *
+ * INSTRUCTIONS
+ *
+ * Copy the Legal Disclaimer and the @font-faces statements to your regular CSS file.
+ * The font file(s) should be placed relative to the regular CSS file.
+ *
+ */
+
+/* trial */
+
+@font-face {
+  font-family: "SupremeLLWebTrial-ThinTrial";
+  src: url("SupremeLLWebTrial-ThinTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-ThinItalicTrial";
+  src: url("SupremeLLWebTrial-ThinItalicTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-LightTrial";
+  src: url("SupremeLLWebTrial-LightTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-LightItalicTrial";
+  src: url("SupremeLLWebTrial-LightItalicTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-RegularTrial";
+  src: url("SupremeLLWebTrial-RegularTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-ItalicTrial";
+  src: url("SupremeLLWebTrial-ItalicTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BookTrial";
+  src: url("SupremeLLWebTrial-BookTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BookItalicTrial";
+  src: url("SupremeLLWebTrial-BookItalicTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-MediumTrial";
+  src: url("SupremeLLWebTrial-MediumTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-MediumItalicTrial";
+  src: url("SupremeLLWebTrial-MediumItalicTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BoldTrial";
+  src: url("SupremeLLWebTrial-BoldTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BoldItalicTrial";
+  src: url("SupremeLLWebTrial-BoldItalicTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BoldFlatTrial";
+  src: url("SupremeLLWebTrial-BoldFlatTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BoldFlatItalicTrial";
+  src: url("SupremeLLWebTrial-BoldFlatItalicTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BlackTrial";
+  src: url("SupremeLLWebTrial-BlackTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BlackItalicTrial";
+  src: url("SupremeLLWebTrial-BlackItalicTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BoldFlatTrial";
+  src: url("SupremeLLWebTrial-BoldFlatTrial.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SupremeLLWebTrial-BoldFlatItalicTrial";
+  src: url("SupremeLLWebTrial-BoldFlatItalicTrial.woff") format("woff");
+}
+
+

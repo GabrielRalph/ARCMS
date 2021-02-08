@@ -41,7 +41,7 @@ class LiveContent extends DropBox{
     this.tools.styles = {
       width: "35%",
       height: "calc(100% - 2em)",
-      top: "2em",
+      top: "1.5em",
       right: "0",
       position: "absolute",
       'overflow-y': "scroll"
