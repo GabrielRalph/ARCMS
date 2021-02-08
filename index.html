@@ -47,7 +47,7 @@
   let update = () =>{
     let matches = matcher.matches;
     let icon32 = document.getElementById('icon32');
-    alert(matches ? 'dark' : 'light')
+
     console.log(`./Assets/Favicon/${matches ? '' : 'light/'}favicon-32x32.png`);
     icon32.setAttribute('href', `./Assets/Favicon/${matches ? 'light/' : ''}favicon-32x32.png`);
 
