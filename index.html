@@ -3,6 +3,15 @@
   <head>
     <meta charset="UTF-8">
     <title>AR CMS</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="./Assets/Favicon/apple-touch-icon.png">
+    <link id = "icon32" rel="icon" type="image/png" sizes="32x32" href="./Assets/Favicon/favicon-32x32.png">
+    <link id = "icon16" rel="icon" type="image/png" sizes="16x16" href="./Assets/Favicon/favicon-16x16.png">
+    <link rel="manifest" href="./Assets/Favicon/site.webmanifest">
+    <link rel="mask-icon" href="./Assets/Favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://www.svg.plus/vector.js"></script>
     <script src="https://www.svg.plus/2.js"></script>
@@ -15,19 +24,7 @@
   </head>
   <body>
     <svg id = "logo" viewBox="-130 -130 1450.55 404.48">
-      <defs>
-        <filter id="dropshadow" x = "-200%" y = "-200%" height="400%" width = "400%">
-          <feGaussianBlur in="SourceAlpha" stdDeviation="40"/> <!-- stdDeviation is how much to blur -->
-          <feComponentTransfer>
-            <feFuncA type="linear" slope="0.2"/> <!-- slope is the opacity of the shadow -->
-          </feComponentTransfer>
-          <feMerge>
-            <feMergeNode/> <!-- this contains the offset blurred image -->
-            <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
-          </feMerge>
-        </filter>
-      </defs>
-    	<path filter = "url(#dropshadow)" d="M1105.21,10.47V134h79.13v-33.09h-36.86V87.96h34.41V56.51h-34.41V43.57h36.86v-33.1H1105.21z M1028.38,136.63
+    	<path d="M1105.21,10.47V134h79.13v-33.09h-36.86V87.96h34.41V56.51h-34.41V43.57h36.86v-33.1H1105.21z M1028.38,136.63
     		c28.67,0,50.95-19.17,50.95-44.56c0-22.94-14.42-32.61-34.08-36.7l-5.57-1.15c-7.05-1.47-13.27-2.29-13.27-6.88
     		c0-4.59,5.4-6.06,11.63-6.06c7.53,0,17.69,3.6,23.92,8.03l14.26-31.29l-4.1-1.97c-10.65-5.08-23.43-8.19-37.19-8.19
     		c-28.18,0-50.13,19.17-50.13,44.4c0,19.5,12.12,30.64,29.98,34.24l6.55,1.31c7.87,1.64,15.73,2.79,15.73,8.36
@@ -44,6 +41,20 @@
     		L76.65,134h27.85l18.35-57.18L133.18,134z"/>
     </svg>
   </body>
+
+  <script>
+  let matcher = window.matchMedia('(prefers-color-scheme: dark)');
+  let update = () =>{
+    let matches = matcher.matches;
+    let icon32 = document.getElementById('icon32');
+    icon32.setAttribute('href', `./Assets/Favicon/${matches ? 'light/' : ''}favicon-32x32.png`);
+
+    let icon16 = document.getElementById('icon16');
+    icon16.setAttribute('href', `./Assets/Favicon/${matches ? 'light/' : ''}favicon-16x16.png`);
+  }
+  matcher.addListener(update);
+  update();
+  </script>
 
   <style>
   #logo{
@@ -63,7 +74,6 @@ font-family: "SupremeLLWebTrial-LightTrial";
     --margin: 1em;
     margin: 0;
     font-size: min(3vw, 50px);
-
     background: url('./Assets/MCM_AR_Background.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
