@@ -27,7 +27,7 @@ class App extends Windows{
     }
     this.moveTo(new SvgPlus('div'), true);
     this.user.addEventListener('user', () => {
-      // this.loader.stop();
+      this.loader.stop();
       this.onuser(this.user);
     })
   }
