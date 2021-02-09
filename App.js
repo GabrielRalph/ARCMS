@@ -1,6 +1,6 @@
 import {Windows} from './Utilities/Windows.js'
 import {Controls} from './Utilities/Controls.js'
-// import {MCMLoader} from './Utilities/MCMLoader.js'
+import {MCMLoader} from './Utilities/MCMLoader.js'
 import {Content} from './Contents/Content.js'
 import {Admin} from './Admin/Admin.js'
 import {User} from './Utilities/User.js';
@@ -9,7 +9,7 @@ class App extends Windows{
   constructor(parent){
     super('div');
     this.class = "app"
-    // this.loader = new MCMLoader();
+    this.loader = new MCMLoader();
     this.loader.start();
 
     this.user = new User();
