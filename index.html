@@ -43,23 +43,23 @@
   </body>
 
   <script>
-  let matcher = window.matchMedia('(prefers-color-scheme: dark)');
-  let update = () =>{
-    let matches = matcher.matches;
-    
-    let icon32 = document.getElementById('icon32');
-    icon32.setAttribute('href', `./Assets/Favicon/${matches ? 'light/' : ''}favicon-32x32.png`);
-
-
-    let icon16 = document.getElementById('icon16');
-    icon16.setAttribute('href', `./Assets/Favicon/${matches ? 'light/' : ''}favicon-16x16.png`);
-
-    // let iconSVG = document.getElementById('iconSVG');
-    // iconSVG.setAttribute('href', `./Assets/Favicon/${matches ? 'light/' : ''}safari-pinned-tab.svg`);
-
-  }
-  matcher.addListener(update);
-  update();
+  // let matcher = window.matchMedia('(prefers-color-scheme: dark)');
+  // let update = () =>{
+  //   let matches = matcher.matches;
+  //
+  //   let icon32 = document.getElementById('icon32');
+  //   icon32.setAttribute('href', `./Assets/Favicon/${matches ? 'light/' : ''}favicon-32x32.png`);
+  //
+  //
+  //   let icon16 = document.getElementById('icon16');
+  //   icon16.setAttribute('href', `./Assets/Favicon/${matches ? 'light/' : ''}favicon-16x16.png`);
+  //
+  //   // let iconSVG = document.getElementById('iconSVG');
+  //   // iconSVG.setAttribute('href', `./Assets/Favicon/${matches ? 'light/' : ''}safari-pinned-tab.svg`);
+  //
+  // }
+  // matcher.addListener(update);
+  // update();
   </script>
 
   <style>
