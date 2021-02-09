@@ -60,7 +60,5 @@ class App extends Windows{
     this.updateControlButtons();
   }
 }
-window.onerror = (err) => {
-  alert(err)
-}
+
 let app = new App(document.body);
