@@ -1,6 +1,6 @@
 import {Windows} from './Utilities/Windows.js'
 import {Controls} from './Utilities/Controls.js'
-import {MCMLoader} from './Utilities/Loader.js'
+import {MCMLoader} from './Utilities/MCMLoader.js'
 import {Content} from './Contents/Content.js'
 import {Admin} from './Admin/Admin.js'
 import {User} from './Utilities/User.js';
