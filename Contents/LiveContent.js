@@ -23,6 +23,13 @@ class LiveContent extends DropBox{
   constructor(content){
     super('DIV');
 
+    this.copy = false;
+    navigator.permissions.query({name: "clipboard-write"}).then(result => {
+      if (result.state == "granted" || result.state == "prompt") {
+        this.copy = true;
+      }
+    });
+
     this.trash = new TrashIcon();
     this.content = content;
 
@@ -95,6 +102,15 @@ class LiveContent extends DropBox{
           height: "100%"
         }
       }
+
+      modelViewer.ondblclick = () => {
+        navigator.clipboard.writeText(node.glb).then(function() {
+          alert('coppied link')
+        }, function() {
+          /* clipboard write failed */
+        });
+      }
+
     }else{
       return;
     }
