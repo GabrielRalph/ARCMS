@@ -336,4 +336,4 @@ class Variant extends SvgPlus{
   }
 }
 
-export {Variant}
+export {Variant, isGLB}
