@@ -28,6 +28,7 @@ class App extends Windows{
     this.moveTo(new SvgPlus('div'), true);
     this.user.addEventListener('user', () => {
       this.loader.stop();
+      this.greeting();
       this.onuser(this.user);
     })
   }
@@ -58,6 +59,30 @@ class App extends Windows{
     this.controls.shown = false;
     this.controls.imgSrc = user.photoURL;
     this.updateControlButtons();
+  }
+
+  greeting(){
+    let div = new SvgPlus('div');
+    div.styles = {
+      position: "relative",
+      width: '100%',
+      height: '100%'
+    }
+    let name = this.user.name.split(' ');
+    if (name.length > 0) name = name[0];
+    let head = div.createChild('h1');
+    head.innerHTML += `
+    Hey ${name}, welcome to the</br>MCM House AR app</br>content managment system.
+    `
+    head.styles = {
+      width: '50%',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      'text-align': 'center'
+    }
+    this.moveTo(div, true);
   }
 }
 
