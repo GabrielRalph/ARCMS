@@ -70,10 +70,18 @@ class App extends Windows{
     }
     let name = this.user.name.split(' ');
     if (name.length > 0) name = name[0];
+
     let head = div.createChild('h1');
-    head.innerHTML += `
+    head.innerHTML = `
     Hey ${name}, welcome to the</br>MCM House AR app</br>content managment system.
     `
+
+    if (this.user.name == 'Gabriel Ralph') {
+      head.innerHTML = `
+      ♥♥ Hey cutie ♥♥</br>
+      `
+    }
+
     head.styles = {
       width: '50%',
       position: 'absolute',
