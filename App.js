@@ -73,9 +73,9 @@ class App extends Windows{
 
     let head = div.createChild('h1');
     head.innerHTML = `
-    Hey ${name}, welcome to the</br>MCM House AR app</br>content managment system.
+    Hey ${name}, welcome to the</br>MCM House</br>3D assets managment system.
     `
-
+    
     if (this.user.name == 'Gabriel Ralph') {
       head.innerHTML = `
       ♥♥ Hey cutie ♥♥</br>
