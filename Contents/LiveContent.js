@@ -59,8 +59,9 @@ class LiveContent extends DropBox{
       margin: "0 1em"
     }
     this.upload.ontree = (json) => {
+      console.log(json);
       if (this.ontree instanceof Function){
-        this.ontree(json);
+        // this.ontree(json);
       }
     }
   }

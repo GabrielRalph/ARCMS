@@ -1,8 +1,7 @@
 import {VList} from '../Utilities/VList.js'
 import {Model} from './Model.js'
-import {contains, isImage, isURL} from './Texture.js'
+import {uploadFileToCloud, contains, isImage, isURL} from '../Utilities/Functions.js'
 import {TrashIcon, UploadToCloudIcon, Arrow} from '../Utilities/Icons.js'
-import {uploadFileToCloud} from './Texture.js'
 
 class Collection extends VList{
   constructor(json = null, name = '', master){

@@ -1,4 +1,4 @@
-import {isGLB} from "./Contents/Variant.js"
+import {isGLB} from "./Utilities/Functions.js"
 
 class Test extends SvgPlus{
   constructor(){

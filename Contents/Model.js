@@ -3,56 +3,39 @@ import {Collection} from './Collection.js'
 import {UploadToCloudIcon} from '../Utilities/Icons.js'
 
 
-class Model extends SvgPlus{
+class Model extends VList{
   constructor(variants, name, master){
     super('div');
     this.master = master;
     this.class = 'model'
-    this._variants = null;
-    this.buildElement();
-    this.json = variants;
+
+    this.nameElement = this.createChildOfHead('H1');
+
     this.name = name;
-  }
-
-  buildElement(){
-    this.headerElement = this.createChild('DIV');
-    this.headerElement.class = 'header'
-
-    this.headerName = this.headerElement.createChild('h1');
-    this.headerName.onclick = () => {
-      if (typeof this.master === 'object' && this.master.select instanceof Function){
-        this.master.select(this);
-      }
-    }
-
-    this.variantsTable = this.createChild('TABLE');
-    this.variantsBody = this.variantsTable.createChild('TBODY');
-  }
-
-  appendChildToHead(child){
-    this.headerElement.appendChild(child)
+    this.json = variants;
   }
 
 
   addVariant(variant){
     if (SvgPlus.is(variant, Variant)){
       if (variant.isValid){
-        if (this._variants === null){
-          this._variants =  {};
-        }
+
         variant.parentModel = this;
         this._variants[variant.name] = variant;
-        this.variantsBody.appendChild(variant);
+        this.pushElement(variant);
+
       }
     }
   }
 
-
   removeVariant(variant){
     if (SvgPlus.is(variant, Variant)){
       if (typeof this._variants === 'object'){
-        this.variantsBody.removeChild(variant)
+
+        this.removeElement(variant)
         delete this._variants[variant.name];
+        variant.parentModel = null;
+
         if (Object.keys(this._variants).length == 0){
           this.parentCollection.remove(this);
         }
@@ -60,21 +43,8 @@ class Model extends SvgPlus{
     }
   }
 
-
-  clearVariants(){
-    this.variantsBody.innerHTML = '';
-    this._variants = null;
-  }
-
   containsVariant(variant){
     return this.variantsBody.contains(variant);
-  }
-
-
-  trash(){
-    if (this.parentCollection !== null){
-      this.parentCollection.remove(this)
-    }
   }
 
 
@@ -174,11 +144,8 @@ class Model extends SvgPlus{
 
 
   set json(variants){
-    if (typeof variants === 'object' && variants !== null){
-      this.clearVariants();
-
-      if (variants instanceof File) return;
-
+    this.clear();
+    if ( isJSON(variants) ){
       for (var name in variants){
         if (name === 'info'){
           this.info = variants[name];
@@ -189,8 +156,6 @@ class Model extends SvgPlus{
       }
     }
   }
-
-
 
   set parentCollection(collection){
     if (SvgPlus.is(collection, Collection)){

@@ -1,7 +1,39 @@
+function isJSON(json){
+  if (json === null) return false;
+
+  if (json instanceof File) {
+    return false;
+  }
+
+  if (typeof json === 'object') {
+    return true;
+  }
+
+  return false;
+}
+
+function getExt(file){
+  if (file instanceof File){
+    let filename = file.name.split(".");
+    if (filename && filename.length > 1){
+      return "." + filename[filename.length - 1]
+    }
+  }
+  return "";
+}
+
 //isFBX returns true if the given param is an FBX file
 function isFBX(file){
   if (file instanceof File){
     return (/\.fbx$/).test(file.name)
+  }
+  return false;
+}
+
+//isUSDZ returns true if the given param is an USDZ file
+function isUSDZ(file){
+  if (file instanceof File){
+    return (/\.usdz$/).test(file.name)
   }
   return false;
 }
@@ -30,6 +62,13 @@ function isImage(image) {
   }
 }
 
+function isThumbanil(thumbnail){
+  if ( isImage(image) ) {
+    return contains('thumbnail', thumbnail.name);
+  }
+  return false;
+}
+
 //Check string contains substring
 function contains(string, value){
   let regex = new RegExp(value);
@@ -37,7 +76,7 @@ function contains(string, value){
 }
 
 // Upload file to firebase storage bucket
-async function uploadFileToCloud(file, path, statusCallback){
+async function uploadFileToCloud(file, path, statusCallback, filename = file.name){
   path = `${path}`
   if ( !(file instanceof File) || typeof path !== 'string' ){
     console.log('invalid file');
@@ -46,7 +85,7 @@ async function uploadFileToCloud(file, path, statusCallback){
   return new Promise((resolve, reject) => {
 
     try{
-      var uploadTask = firebase.storage().ref().child(path + '/' + file.name).put(file);
+      var uploadTask = firebase.storage().ref().child(path + '/' + filename).put(file);
     }catch(e){
       console.log(e);
       resolve(null)
@@ -70,4 +109,4 @@ async function uploadFileToCloud(file, path, statusCallback){
   })
 }
 
-export {isURL, isImage, uploadFileToCloud, contains}
+export {isJSON, getExt, isThumbanil, isGLB, isUSDZ, isFBX, isURL, isImage, uploadFileToCloud, contains}
