@@ -1,7 +1,7 @@
 // import {DropBox} from './AddCollection.js'
-import {InfoForm} from './Content.js'
+import {Collection} from './Collection.js'
 
-let content = new InfoForm();
+let content = new Collection();
 document.body.appendChild(content);
 //
 // let collection = new Collection(null, 'contents');

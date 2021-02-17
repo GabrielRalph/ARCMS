@@ -1,28 +1,52 @@
-import {isJSON, isImage, isGLB, isURL, uploadFileToCloud} from "../Utilities/Functions.js"
+import {isJSON, isImage, isGLB, isURL, uploadFileToCloud, listAllStorageFiles} from "../Utilities/Functions.js"
 import {Variant} from "./Variant.js"
 
+/**
+  A Texture is an object that represents a folder containing
+  one glb, usdz and thumbnail file. Files can be either a
+  a url file location or an actual File object.
+
+  @see Texture
+*/
 class Texture extends SvgPlus{
 
   constructor(name, json, master = null){
     super('DIV');
 
-    this.thumbnailElement = this.createChild('IMG');
-    this.textureElement = this.createChild('DIV');
-    this.statusElement = this.createChild("DIV");
+    buildTemplate();
 
+    //Master can be used as a bus to run events
     this._master = master;
 
+    //Instantiat private variables
     this._usdz = null;
     this._glb = null;
     this._thumbnail = null;
     this._name = null;
     this._color = null;
 
+    //Set the name and json of the texture
     this.name = name;
     this.json = json;
   }
 
+  //Builds the html template for this texture
+  buildTemplate(){
+    this.class = "texture"
+    this.styles = { position: "relative" };
 
+    this.thumbnailElement = this.createChild('IMG');
+
+    this.textureElement = this.createChild('DIV');
+    this.textureElement.styles = {
+      position: "absolute",
+      top: '0',
+      left: '0',
+    }
+    this.statusElement = this.createChild("DIV");
+  }
+
+  //Runs a method using the event bus
   runEvent(eventName, params){
     if ( typeof this.master === 'object' ) {
       if ( eventName in this.master ) {
@@ -35,10 +59,14 @@ class Texture extends SvgPlus{
     }
   }
 
+  //Delete this texture from the cloud
   async deleteFromCloud(){
-    
+    return await deleteFilesFromCloud(this.path);
   }
 
+  /** Upload this texture to the cloud
+        @return true if successful upload
+  */
   async uploadToCloud(){
     if (!this.filesAreValid) return;
 
@@ -60,19 +88,27 @@ class Texture extends SvgPlus{
     if ( this.mode === -1 ) {
       try{
         await this.fireRef.set(this.json);
+        this.statusElement.innerHTML = "Upload Complete"
+        return true;
       }catch(e){
         this.statusElement.innerHTML = "An error occured, please try again."
       }
-      this.statusElement.innerHTML = "Upload Complete"
-    }else{
-      this.statusElement.innerHTML = "An error occured, please try again."
     }
+    this.statusElement.innerHTML = "An error occured, please try again."
+    return false;
   }
 
+  //Get master for use as an event bus
   get master(){
     return this._master;
   }
 
+  /* mode returns:
+        0: invalid
+        1: files
+       -1: urls
+        2: incomplete
+  */
   get mode(){
     if (this.name === null) return 0;
 
@@ -88,14 +124,15 @@ class Texture extends SvgPlus{
     return 2;                     //Most likely an invalid texture
   }
 
+  //returns true if files are all either urls or File blobs
   get isValid(){
     return Math.abs(this.mode) === 1;
   }
 
+  //returns true if all files are blobs
   get filesAreValid(){
     return this.mode === 1;
   }
-
 
   //Set and get parent variant
   set parentVariant(parent){
@@ -143,11 +180,15 @@ class Texture extends SvgPlus{
     }
   }
 
+
   //Set texture name
   set name(name){
     this._name = null;
     this._color = null;
 
+    if (typeof name !== 'string') return;
+
+    //Check for hex code
     let hexInParentheses = /\((([a-g]|[A-G]|\d){6})\)/
     let color = name.match(hexInParentheses);
     if ( color == null ) return;
@@ -160,7 +201,6 @@ class Texture extends SvgPlus{
       this.textureElement.styles = {background: `#${this.color}`};
     }
   }
-
   //Get name
   get name(){
     return this._name;
@@ -170,6 +210,7 @@ class Texture extends SvgPlus{
   get color(){
     return this._color;
   }
+
 
   //Set and get GLB variant-texture model file
   set glb(glb){
@@ -188,6 +229,7 @@ class Texture extends SvgPlus{
     return 1;
   }
 
+
   //Set and get USDZ variant-texture model file
   set usdz(usdz){
     if ( isUSDZ(usdz) || isURL(usdz) ){
@@ -204,6 +246,7 @@ class Texture extends SvgPlus{
     if ( isURL(this.usdz) ) return -1;
     return 1;
   }
+
 
   //Set and get USDZ variant-texture thumbnail image
   set thumbnail(thumbnail){
@@ -226,13 +269,14 @@ class Texture extends SvgPlus{
     return 1;
   }
 
+
   //Get path name
   get path(){
+    if ( this.name === null ) return "";
     if ( this.parentVariant == null ) return this.name;
 
     return `${this.parentVariant.path}/${this.name}`
   }
-
   get fireRef(){
     return firebase.database().ref(this.path);
   }

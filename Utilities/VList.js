@@ -10,37 +10,54 @@ class Header extends SvgPlus{
   }
 }
 
+/**
+  VList is an extendable class used to make collapsable
+  lists.
+*/
 class VList extends SvgPlus{
-  constructor(list){
+  constructor(name, master, list){
     super('DIV');
     this.props = {class: 'v-list'}
     this._headerElement = this.createChild('DIV');
+    this._headerTitle = this.createChildOfHead('H1');
     this._headerElement.props = {class: 'header'}
     this._listElement = this.createChild('DIV')
     this._listElement.props = {class: 'list'}
+
+    //Instantiate private variables
+    this._name = null;
     this._open = false;
+
+    this._master = master;
+
+    this.name = name;
     this.list = list;
     this.transistionName = 'linearMove'
   }
 
+  //Creates a child in the header
   createChildOfHead(name){
     return this._headerElement.createChild(name);
   }
+
+  //Appends a child to the header
   appendChildToHead(element){
     return this._headerElement.appendChild(element);
   }
+
+  //Removes a child from the header
   removeChildFromHead(element){
     this._headerElement.remove(element);
   }
+
+  //Clears head
   clearHead(){
     this._headerElement.innerHTML = "";
+    this.appendChildToHead(this._headerTitle);
   }
 
-  get list(){
-    return this._list;
-  }
-
-  pushElement(element){
+  //Adds an element to the list
+  addElement(element){
     if (Array.isArray(this._list)){
       this._list.push(element);
       this.list = this._list;
@@ -49,6 +66,7 @@ class VList extends SvgPlus{
     }
   }
 
+  //Removes an element from the list
   removeElement(element){
     if (this._listElement.contains(element)){
       this._listElement.removeChild(element);
@@ -60,46 +78,6 @@ class VList extends SvgPlus{
       }
     }
     this._list = newList;
-  }
-
-  set list(list){
-    this._listElement.innerHTML='';
-    this._list = [];
-    if (Array.isArray(list)){
-      for (var element of list){
-        if (element instanceof Element){
-          this._list.push(element);
-        }
-      }
-    }
-  }
-
-  get isVList(){
-    return true;
-  }
-
-  get transistion(){
-    let transistion = this[`${this.transistionName}`];
-
-    if (transistion instanceof Function){
-      return transistion;
-    }else{
-      return this._default_transistion
-    }
-  }
-
-  set open(state){
-    if (Array.isArray(this._list)){
-      if (this.open == false && state == true){
-        this.show();
-      }else if(this.open == true && state == false){
-        this.hide();
-      }
-    }
-  }
-
-  get open(){
-    return this._open;
   }
 
   _changeState(state){
@@ -160,6 +138,79 @@ class VList extends SvgPlus{
       }
       window.requestAnimationFrame(next);
     })
+  }
+
+  //Runs a method using the event bus
+  runEvent(eventName, params){
+    if ( typeof this.master === 'object' ) {
+      if ( eventName in this.master ) {
+        let eventFunction = this.master[eventName];
+
+        if ( eventFunction instanceof Function ){
+          eventFunction(params);
+        }
+      }
+    }
+  }
+
+  get master(){
+    return this._master;
+  }
+
+  //Set and get the list name
+  set name(name){
+    this._name = null;
+    this._headerElement.innerHTML = "";
+
+    if (typeof name !== 'string') return;
+
+    this._headerElement.innerHTML = name;
+    this._name = name;
+  }
+  get name(){
+    return this._name;
+  }
+
+  //Set the list of elements
+  set list(list){
+    this._listElement.innerHTML='';
+    this._list = [];
+    if (Array.isArray(list)){
+      for (var element of list){
+        if (element instanceof Element){
+          this._list.push(element);
+        }
+      }
+    }
+  }
+  //Returns a list of all elements in the list
+  get list(){
+    return this._list;
+  }
+
+
+  get transistion(){
+    let transistion = this[`${this.transistionName}`];
+
+    if (transistion instanceof Function){
+      return transistion;
+    }else{
+      return this._default_transistion
+    }
+  }
+
+  set open(state){
+    if (Array.isArray(this._list)){
+      if (this.open == false && state == true){
+        this.show();
+      }else if(this.open == true && state == false){
+        this.hide();
+      }
+    }
+  }
+
+  get open(){
+    return this._open;
   }
 }
 

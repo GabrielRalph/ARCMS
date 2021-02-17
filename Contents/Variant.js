@@ -1,38 +1,62 @@
-import {TrashIcon, UploadToCloudIcon, LoaderIcon} from '../Utilities/Icons.js'
-import {isJSON} from '../Utilities/Functions.js'
+import {isJSON, deleteFilesFromCloud} from '../Utilities/Functions.js'
+import {VList} from '../Utilities/VList.js'
 import {Model} from './Model.js'
 
 
-
-
 /**
-  Variant is an object the represents a folder containing
-  at least one valid texture, a thumbnail, a fbx and glb file.
+  A Variant is an object that represents a folder containing
+  at least one valid texture.
+
+  A variant can also contain an info object that provides
+  information on the variant such as price
 
   @see Texture
 */
 class Variant extends VList{
   constructor(variantData, name, master = null){
-    super('TR');
+    super(name, master);
 
-    this._master = master;
+    this.class = "variant"
 
+    //Create title
     this.nameElement = this.createChildOfHead('H1');
 
-    this.name = name;
+    //Instantiate private variables
+    this._textures = {};
+    this._parentModel = null;
+
+    //Set json
     this.json = variantData;
   }
 
+  //Deletes this variant from the cloud
+  async deleteFromCloud(){
+    return await deleteFilesFromCloud(this.path);
+  }
+
+  //Uploads this variant to the cloud
+  async uploadToCloud(){
+    if ( !this.isValid ) return;
+    for ( var name in this._textures ){
+      if (!(await this._textures[name].uploadToCloud())){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  //Adds a Texture object
   addTexture(texture){
     if ( SvgPlus.is(texture, Texture) ){
       if ( texture.isValid ){
         texture.parentVariant = this;
-        this.pushElement(texture);
+        this.addElement(texture);
         this._textures[texture.name] = texture;
       }
     }
   }
 
+  //Removes a Texture object
   removeTexture(texture){
     if ( SvgPlus.is(texture, Texture) ){
       if (`${texture.name}` in this._textures){
@@ -48,14 +72,12 @@ class Variant extends VList{
     }
   }
 
+  //returns true if there are more than one valid texture
   get isValid(){
     return Object.keys(this._textures).lenght > 0;
   }
 
-  get master(){
-    return this._master;
-  }
-
+  //Set variant using json object
   set json(json){
     this.clear();
     this._textures = {};
@@ -73,6 +95,7 @@ class Variant extends VList{
     }
   }
 
+  //Set and get parent Model
   set parentModel(parent){
     if (SvgPlus.is(parent, Model)){
       this._parentModel = parent;
@@ -84,18 +107,11 @@ class Variant extends VList{
     return this._parentModel;
   }
 
-
-  set name(name){
-    this.nameElement.innerHTML = name;
-    this._name = name;
-  }
-  get name(){
-    return this._name;
-  }
-
+  //get path of this variant
   get path(){
+    if (this.name === null) return "";
     if (this.parentModel == null) return this.name;
-    return this.parentModel.path + '/' + this.name
+    return this.parentModel.path + '/' + this.name;
   }
 }
 

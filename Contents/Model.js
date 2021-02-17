@@ -1,21 +1,30 @@
 import {Variant} from './Variant.js'
 import {Collection} from './Collection.js'
-import {UploadToCloudIcon} from '../Utilities/Icons.js'
+import {VList} from '../Utilities/VList.js'
+import {deleteFilesFromCloud, isImage, isJSON} from '../Utilities/Functions.js'
 
+/**
+  A Model (Product) is an object that represents a folder containing
+  at least one valid variant.
 
+  @see Varaint
+*/
 class Model extends VList{
   constructor(variants, name, master){
-    super('div');
-    this.master = master;
+    super(name, master);
+
     this.class = 'model'
 
-    this.nameElement = this.createChildOfHead('H1');
+    //Instantiate private variables
+    this._variants = {};
+    this._thumbnail = null;
+    this._parentCollection = null;
 
-    this.name = name;
+    //Set json
     this.json = variants;
   }
 
-
+  //Adds a variant object
   addVariant(variant){
     if (SvgPlus.is(variant, Variant)){
       if (variant.isValid){
@@ -28,67 +37,100 @@ class Model extends VList{
     }
   }
 
+  //Removes a variant object
   removeVariant(variant){
     if (SvgPlus.is(variant, Variant)){
-      if (typeof this._variants === 'object'){
 
-        this.removeElement(variant)
-        delete this._variants[variant.name];
-        variant.parentModel = null;
+      //Remove variant
+      this.removeElement(variant)
+      delete this._variants[variant.name];
+      variant.parentModel = null;
 
-        if (Object.keys(this._variants).length == 0){
-          this.parentCollection.remove(this);
-        }
+      //If there are no more variants remove this model
+      if ( !this.isValid && this.parentCollection !== null){
+        this.parentCollection.remove(this);
       }
     }
   }
 
-  containsVariant(variant){
-    return this.variantsBody.contains(variant);
-  }
-
-
+  //Uploads all variants and their textures to the cloud
   async uploadToCloud(){
     let variants = this._variants;
     for (var name in variants){
-      if (!(await variants[name].uploadToCloud())){
+      if ( !(await variants[name].uploadToCloud()) ){
         return false;
       }
     }
-    return true;
   }
 
-  async deleteVariantFromCloud(variant){
-    if ( this.containsVariant(variant) ){
-      if ( Object.keys(this._variants).length == 1 ){
-        await this.deleteFromCloud();
-      }else{
-        if (variant.path == null) return;
+  //Deletes this model from the cloud
+  async deleteFromCloud(){
+    deleteFilesFromCloud(this.path);
+  }
 
-        let ref = firebase.storage().ref()
-        let childRef = ref.child(variant.path)
-        try{
-          if ( !(await variant.textures.deleteFromCloud()) )return false;
-          let files = await childRef.listAll();
-          files = files.items;
-          for (var file of files){
-            await ref.child(file.fullPath).delete();
-          }
+  set thumbnail(thumbnail){
+    if ( isImage(thumbnail) || isURL(thumbnail) ){
+      this._thumbnail = thumbnail;
+    }else{
+      this._thumbnail = null;
+    }
+  }
+  get thumbnail(){
+    return this._thumbnail;
+  }
 
-          await firebase.database().ref(variant.path).remove();
+  //Set model using json object
+  set json(variants){
+    this.clear();
+    this._variants = {};
+    if ( isJSON(variants) ){
+      for (var name in variants){
 
-        }catch(e){
-          console.log(e);
+        if (name === 'info'){
+          this.info = variants[name];
+
+        }else if(name === 'thumbnail'){
+          this.thumbnail = variants[name];
+
+        }else{
+          let variant = new Variant(variants[name], name, this.master);
+          this.addVariant(variant);
         }
       }
     }
   }
 
-  async deleteFromCloud(){
-    if (this.parentCollection !== null){
-      await this.parentCollection.deleteItemFromCloud(this);
+  //set and get parent collection
+  set parentCollection(collection){
+    if (SvgPlus.is(collection, Collection)){
+      this._parentCollection = collection;
+    }else{
+      this._parentCollection = null;
     }
   }
+  get parentCollection(){
+    return this._parentCollection;
+  }
+
+  //return true if there are more than one valid textures
+  get isValid(){
+    return Object.keys(this._variants).length > 0;
+  }
+
+  //get path
+  get path(){
+    if (this.name === null) return "";
+    if (this.parentCollection == null) return this.name;
+    return this.parentCollection.path + '/' + this.name;
+  }
+}
+
+class LiveModel extends Model{
+
+  get synced(){
+    return !!this._synced
+  }
+
 
   async startSync(){
     if ( !this.isValid || this.path === null ) return false;
@@ -122,85 +164,6 @@ class Model extends VList{
       console.log(e);
       return false;
     }
-  }
-
-
-  set selected(bool){
-    if (bool) {
-      this.headerName.styles = {
-        'text-decoration': 'underline',
-      }
-      this._selected = true;
-    }else{
-      this.headerName.styles = {
-        'text-decoration': 'none',
-      }
-      this._selected = false;
-    }
-  }
-  get selected(){
-    return this._selected;
-  }
-
-
-  set json(variants){
-    this.clear();
-    if ( isJSON(variants) ){
-      for (var name in variants){
-        if (name === 'info'){
-          this.info = variants[name];
-        }else{
-          let variant = new Variant(variants[name], name, this.master);
-          this.addVariant(variant);
-        }
-      }
-    }
-  }
-
-  set parentCollection(collection){
-    if (SvgPlus.is(collection, Collection)){
-      this._parentCollection = collection;
-    }else{
-      this._parentCollection = null;
-    }
-  }
-
-
-  get parentCollection(){
-    return this._parentCollection;
-  }
-
-
-  get path(){
-    if (this.parentCollection == null) {
-      return this.name;
-    }else{
-      return this.parentCollection.path + '/' + this.name;
-    }
-  }
-
-
-  set name(name){
-    this.headerName.innerHTML = name;
-    this._name = name;
-  }
-
-  get name(){
-    return this._name;
-  }
-
-
-  get filesAreValid(){
-    return ! (this.variantFiles == null)
-  }
-
-
-  get isValid(){
-    return this._variants !== null
-  }
-
-  get synced(){
-    return !!this._synced
   }
 }
 
