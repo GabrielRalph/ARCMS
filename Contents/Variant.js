@@ -1,22 +1,7 @@
 import {TrashIcon, UploadToCloudIcon, LoaderIcon} from '../Utilities/Icons.js'
 import {Model} from './Model.js'
-import {Textures, Texture, uploadFileToCloud, contains, isURL, isImage} from './Texture.js'
 
-//isFBX returns true if the given param is an FBX file
-function isFBX(file){
-  if (file instanceof File){
-    return (/\.fbx$/).test(file.name)
-  }
-  return false;
-}
 
-//isGLB returns true if the given param is a GLB file
-function isGLB(file){
-  if (file instanceof File){
-    return (/\.glb$/).test(file.name)
-  }
-  return false;
-}
 
 
 /**
@@ -231,24 +216,6 @@ class Variant extends SvgPlus{
   }
 
 
-  /*
-    texturesMode returns
-      1: only files
-      0: invalid mix
-     -1: urls
-  */
-  get texturesMode(){
-    let url = 0;
-    let file = 0;
-    for (var name in this.textures){
-      if (this.textures[name] instanceof File) file++;
-      if (isURL(this.textures[name])) url++;
-    }
-    if (file > 0 && url === 0) return 1;
-    if (file === 0 && url > 0) return -1;
-    return 0;
-  }
-
   get isValid(){
     return this.mode !== 0;
   }
@@ -257,17 +224,6 @@ class Variant extends SvgPlus{
     return this.mode === 1;
   }
 
-
-  set fbx(fbx){
-    if ( isFBX(fbx) || isURL(fbx)){
-      this._fbx = fbx;
-    }else{
-      this._fbx = null;
-    }
-  }
-  get fbx(){
-    return this._fbx;
-  }
 
 
   set glb(glb){

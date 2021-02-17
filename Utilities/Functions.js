@@ -1,3 +1,18 @@
+//isFBX returns true if the given param is an FBX file
+function isFBX(file){
+  if (file instanceof File){
+    return (/\.fbx$/).test(file.name)
+  }
+  return false;
+}
+
+//isGLB returns true if the given param is a GLB file
+function isGLB(file){
+  if (file instanceof File){
+    return (/\.glb$/).test(file.name)
+  }
+  return false;
+}
 
 //Returns true is a string is a url
 function isURL(str) {
@@ -55,4 +70,4 @@ async function uploadFileToCloud(file, path, statusCallback){
   })
 }
 
-export {Texture, Textures, isURL, isImage, uploadFileToCloud, contains}
+export {isURL, isImage, uploadFileToCloud, contains}
