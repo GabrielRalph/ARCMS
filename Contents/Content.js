@@ -29,6 +29,7 @@ class Content extends Windows{
     }
     this.moveTo(uploadAssets);
     uploadAssets.onreturn = () => {
+      this.liveAssets.workPanel.rightElement = null;
       this.moveTo(this.liveAssets, true);
     }
   }

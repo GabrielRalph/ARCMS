@@ -40,6 +40,7 @@ class App extends Windows{
     if (this.user.admin && mode !== 'admin') {
       buttons['admin'] = () => {
         this.controls.shown = false;
+        this.content.liveAssets.workPanel.rightElement = null;
         this.moveTo(this.admin, true);
         this.updateControlButtons('admin');
       }
