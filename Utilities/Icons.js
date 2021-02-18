@@ -92,6 +92,7 @@ class AdminIcon extends Icon{
     </svg>
 `)
     this.class = 'admin-icon'
+    this.color = "#de7701"
   }
 }
 
