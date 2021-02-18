@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://www.svg.plus/vector.js"></script>
     <script src="https://www.svg.plus/2.js"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="../Firebase/stylesheet.css">
     <link rel="stylesheet" href="https://use.typekit.net/ifw8gqm.css">
     <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
@@ -15,39 +19,36 @@
 
   <style>
 
+  #logo{
+    position: fixed;
+    bottom: calc(var(--margin) - 0.5em);
+    right: calc(var(--margin) - 0.5em);
+    height: 1.5em;
+    fill: black;
+  }
+  model-viewer {
+      --poster-color: transparent;
+    }
   body{
-    font-family: 'futura-pt', Arial ,sans-serif;
     --theme: 17;
-    --margin: 0.5em;
-    margin: 0;
-    font-size: min(5vw, 50px);
-    /* background: url('../Assets/background.jpg') no-repeat center center fixed; */
+    --margin: 3vw;
+
+    font-family: 'Supreme LL TT';
+    font-weight: 300;
+    font-style: normal;
+
+    margin: var(--margin);
+    font-size: min(2vw, 50px);
+
+    /* Background image */
+    background: url('../Assets/MCM_AR_Background.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
 
+    user-select: none;
     overflow: hidden;
-  }
-
-  .info-form{
-    /* background: grey; */
-  }
-
-  .info-form h2{
-    font-size: 0.7em;
-    margin: 0;
-    margin-bottom: 0.5em;
-  }
-
-
-
-  .info-form input, .info-form textarea{
-    padding: 0.2em 0.5em;
-    background: #FFF8;
-    border-radius: 20px;
-    border: none;
-    outline: none;
   }
 
   </style>

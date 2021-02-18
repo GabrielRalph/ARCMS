@@ -17,6 +17,9 @@
     <script src="https://www.svg.plus/2.js"></script>
     <!-- <link rel="stylesheet" href="https://use.typekit.net/ifw8gqm.css"> -->
     <link rel="stylesheet" href="./Assets/Supreme/stylesheet.css">
+    <link rel="stylesheet" href="./Firebase/stylesheet.css">
+    <link rel="stylesheet" href="./Admin/stylesheet.css">
+    <link rel="stylesheet" href="./Contents/stylesheet.css">
     <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
     <script type = "module" src="App.js"></script>
@@ -70,6 +73,9 @@
     height: 1.5em;
     fill: black;
   }
+  h1{
+    font-size: 1.5em;
+  }
   model-viewer {
       --poster-color: transparent;
     }
@@ -91,21 +97,8 @@
     overflow: hidden;
   }
 
-  div .icon:first-of-type{
-    margin-left: 0.5em;
-  }
-
-  svg.icon{
-    line-height: var(--line-height);
-    margin-right: 0.5em;
-    cursor: pointer;
-    vertical-align: middle;
-  }
 
   .app{
-    /* backdrop-filter: blur(0.25vw);
-    -webkit-backdrop-filter: blur(0.25vw); */
-    /* background: #FFF7; */
     position: fixed;
     top: 0;
     left: 0;
@@ -130,118 +123,7 @@
     bottom: 0;
   }
 
-    h1{
-      /* display: inline; */
-      margin-top: 0px;
-    }
-
-    h3{
-      font-size: 0.5em;
-      display: inline;
-      margin: 0px;
-    }
-
-
 /* --------------------------- content ------------------------------------ */
-
-  svg.upload{
-    fill: #1e72e4;
-  }
-  div.content{
-    --collection: #027a29de;
-    --model: #2266a7d4;
-    --variant: #ff7100e8;
-    --line-height: 2em;
-    user-select: none;
-    letter-spacing: 0.01em;
-    line-height: var(--line-height);
-  }
-
-  .dark{opacity:0.5;fill:#4FAE32;}
-     .light{opacity:0.3;fill:#4FAE32;}
-     .arrow{opacity:0.97;fill:#FDFFFD;}
-
-
-
-     .collection h1{
-       display: inline;
-       padding-right: 1em;
-       margin: 0;
-       cursor: pointer;
-     }
-     .lock{
-       cursor: pointer;
-     }
-
-     tr.variant td:first-of-type{
-       cursor: pointer;
-     }
-
-     .variant img{
-       height: var(--line-height);
-       vertical-align: bottom;
-       margin-right: 0.5em;
-     }
-
-    .collection.head{
-      font-size: 0.9em;
-      padding-left: 0.5em;
-      height: 100%;
-      overflow-y: scroll;
-    }
-
-    .collection.head > .list {
-      padding-bottom: 4em;
-    }
-    .collection.head > .header{
-      color: black;
-    }
-
-    .upload-collection{
-      /* position: absolute; */
-      /* width: 100%;
-      height: 100%; */
-      height: calc(100vh - 1em);
-      overflow-y: scroll;
-    }
-
-    div.collection div.header{
-      color: var(--collection);
-      line-height: var(--line-height);
-    }
-
-    div.collection div.list{
-      padding-left: 2em;
-      font-size: 0.88em;
-    }
-
-    .model > table{
-      padding-left: 2em;
-      font-size: 0.75em;
-    }
-
-    .icon.trash{
-      fill: #b10909;
-    }
-
-    .variant{
-      color: var(--variant);
-      font-weight: bold;
-      line-height: var(--line-height);
-    }
-
-
-
-    .model h1{
-      color: var(--model);
-    }
-
-    .list {
-      direction: ltr;
-    }
-    .header{
-      direction: ltr;
-    }
 
 /* --------------------------- controls ------------------------------------ */
 .controls {
@@ -279,174 +161,8 @@
   margin: 0;
   padding-left: var(--margin);
 }
-/* -------------------------------------------------------------------------- */
-
-/* ---------------------------------- Admin --------------------------------- */
-.admin-icon{
-  fill: #3b4898;
-}
-
-.content-admin-icon{
-  fill: #287528;
-}
-
-table.admin-users tr td:nth-of-type(2){
-  width: 30%;
-}
-
-div.admin h1{
-  margin: 0;
-  font-size: 1em;
-  line-height: 1.5em;
-  margin-bottom: var(--margin);
-}
-
-table.admin-users:hover > td{
-  background: grey;
-}
-
-table.admin-users{
-  width: 100%;
-  font-size: 0.6em;
-  border-spacing: 0.1em 0.4em;
-}
-
-.admin-user td:first-of-type{
-  width: 1.5em;
-}
-
-.admin-user td:nth-of-type(n + 2){
-  height: 1.5em;
-  padding-left: 0.5em;
-}
-
-.admin-user td:nth-last-of-type(-n + 3){
-  width: 1.5em;
-}
-
-.admin-user td:last-of-type{
-  fill: #7C7C93;
-}
-
-.admin-user img{
-  height: 1.5em;
-  float: left;
-  border-radius: 1em;
-}
-
-.admin-user svg{
-  height: 1.2em;
-  float: left;
-}
-
-.lock .st0{fill:#EAB52F;}
-.lock .st1{fill:#D8A003;}
-.lock .st2{fill:#F9D069;}
-.lock .st3{
-  fill:#7C7C93;
-  transition: 0.4s ease-in fill;
-}
-.lock {
-  padding: 0 0.075em;
-  padding-bottom: 0.15em;
-  transition: 0.4s ease-in background;
-  background: transparent;
-  border-radius: 2em;
-}
-.lock.closed{
-  background: #7C7C93;
-}
-.lock.closed .st3{
-  fill: white;
-}
-/* -------------------------------------------------------------------------- */
 
 
-/* ------------------------------ firebase ui ------------------------------- */
-    #loader,   #firebaseui-auth-container{
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      left: 0;
-      z-index: 100000;
-      background: rgba(255, 240, 255, 0.5);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    ul.firebaseui-idp-list{
-      padding: 0;
-    }
-    li.firebaseui-list-item{
-      display: block;
-    }
-    button.firebaseui-idp-button{
-      padding: 0;
-      border: none;
-      margin: auto;
-      display: block;
-      outline: none;
-      border-radius: 2em;
-
-    }
-    img.firebaseui-idp-icon{
-      height: 4em;
-      float: left;
-    }
-    span.firebaseui-idp-text-long{
-      line-height: 4em;
-      padding: 0 1em;
-    }
-    span.firebaseui-idp-text-short{
-      display:none
-    }
-
-    .firebaseui-container{
-      background: transparent;
-    }
-/* -------------------------------------------------------------------------- */
-span.texture{
-  font-size: 0.8em;
-  line-height: var(--line-height);
-}
-
-/* ------------------------------- info-form -------------------------------- */
-.info-form h1{
-  font-size: 0.7em;
-  margin-top: 0;
-  line-height: 2em;
-}
-
-.info-form h2{
-  font-size: 0.5em;
-  margin: 0;
-  padding-left: 0.2em;
-}
-
-.info-form input{
-  float: left;
-}
-
-.info-form input:focus, .info-form textarea:focus{
-  background: #FFFb;
-}
-
-.info-form input, .info-form textarea{
-  padding: 0.4em 0.5em;
-  background: #FFF8;
-  border-radius: 1em;
-  font-size: 0.35em;
-  font-family: 'futura-pt', Arial ,sans-serif;
-  border: none;
-  width: calc(100% - 1em);
-  outline: none;
-  margin-bottom: 1em;
-}
-
-.info-form textarea{
-  height: 10em;
-  resize: none;
-}
 /* -------------------------------------------------------------------------- */
 /* -------------------------- thumbnail--loader ----------------------------- */
 
@@ -462,28 +178,6 @@ span.texture{
         }
 
 
-/* -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- */
-
-
-        .live-collection td{
-          vertical-align: top;
-        }
-        .live-collection > tbody > tr > td:first-of-type{
-          width: 70%;
-        }
-        .live-collection > tbody > tr > td:last-of-type{
-          padding-top: 1em;
-        }
-        table.live-collection{
-          width: calc(100vw - 1em);
-          height: calc(100vh - 1em);
-        }
-
-
-        h1{
-          font-size: 1em;
-        }
 
   </style>
 </html>

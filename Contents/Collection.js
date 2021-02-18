@@ -1,6 +1,7 @@
-import {uploadFileToCloud, deleteFilesFromCloud, contains, isImage, isURL} from '../Utilities/Functions.js'
+import {uploadFileToCloud, deleteFilesFromCloud, contains, isImage, isURL, getExt} from '../Utilities/Functions.js'
 import {VList} from '../Utilities/VList.js'
-import {Model} from './Model.js'
+import {Arrow} from '../Utilities/Icons.js'
+import {Model, LiveModel} from './Model.js'
 
 class Collection extends VList{
   constructor(json = null, name = '', master){
@@ -12,8 +13,34 @@ class Collection extends VList{
     this._mode = null;
     this._thumbnail = null;
 
-    this.name = name;
     this.json = json;
+  }
+
+  ontitleclick(){
+    this.runEvent('oncollectionclick', this)
+  }
+
+  trash(){
+    if (this.parentCollection !== null){
+      this.parentCollection.remove(this);
+    }
+  }
+
+  async uploadToCloud(){
+    if ( !this.isValid )return;
+
+    for (var key in this._collection){
+      let item = this._collection[key];
+      if ( !(await item.uploadToCloud()) ){
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  async deleteFromCloud(){
+    return await deleteFilesFromCloud(this.path);
   }
 
   //Removes either a collection or model
@@ -43,11 +70,18 @@ class Collection extends VList{
       if (this._mode == null || this._mode === 'category'){
         this._mode = 'category';
 
-        this.pushElement(item)
+        this.addElement(item)
         item.parentCollection = this;
         this._collection[item.name] = item;
       }
     }
+  }
+
+  get uploading(){
+    for (var key in this._collection){
+      if (this._collection[key].uploading) return true;
+    }
+    return false;
   }
 
   set json(json){
@@ -75,6 +109,9 @@ class Collection extends VList{
         }
       }
     }
+
+
+    this.show();
   }
 
   //Set and get thumbnail
@@ -91,7 +128,7 @@ class Collection extends VList{
 
   //returns true if there are more than one valid models or collections
   get isValid(){
-    return Object.keys(this._collection).length > 0;
+    return  this.count > 0;
   }
 
   //set and get parent collection
@@ -109,23 +146,37 @@ class Collection extends VList{
 
   //get path of this collection
   get path(){
-    if (this.name === null) return "";
+    if (this.name === null) return null;
     if (this.parentCollection == null) return this.name;
     return this.parentCollection.path + '/' + this.name;
   }
+
+  get fireRef(){
+    if (this.name === null) return null;
+    return firebase.database().ref(this.path);
+  }
+
+  get count(){
+    return Object.keys(this._collection).length;
+  }
+
+  get filesAreValid(){
+    for (var key in this._collection){
+      if (this._collection[key].filesAreValid) return true;
+    }
+    return false;
+  }
 }
 
-class ThumbnailLoader extends SvgPlus{
-  constructor(master, collection){
+class CollectionInfoForm extends SvgPlus{
+  constructor(collection){
     super('DIV');
-    this.class = "thumbnail-loader"
-
+    this.class = 'info-form'
     this._name = this.createChild('H1');
 
-    this._imageLoader = new ImageLoader(master, collection);
+    this._imageLoader = new ImageLoader(collection);
     this.appendChild(this._imageLoader);
 
-    this.master = master;
     this.collection = collection;
   }
 
@@ -143,17 +194,16 @@ class ThumbnailLoader extends SvgPlus{
   get collection(){
     return this._collection;
   }
-
 }
 
 class ImageLoader extends SvgPlus{
-  constructor(master, collection){
+  constructor(item){
     super('DIV');
+    this._path = null;
+
     this.styles = {
       position: "relative"
     }
-
-    this.master = master;
 
     this._input = this.createChild("INPUT");
     this._input.props ={
@@ -164,7 +214,11 @@ class ImageLoader extends SvgPlus{
       }
     }
     this.styles = {display: "none"}
+
     this._thumbnailImg = this.createChild('IMG');
+    this._thumbnailImg.styles = {
+      width: '100%'
+    }
     this._thumbnailImg.onload = () => {
       this.styles = {display: "inherit"}
     }
@@ -193,10 +247,34 @@ class ImageLoader extends SvgPlus{
       color: 'white',
       'border-radius': '1.5em'
     }
-    this.collection = collection;
+
+    this.item = item;
 
     this.appendChild(this._upload)
   }
+
+  set item(item){
+    if (item === null || typeof item !== 'object') return;
+
+    if ('thumbnail' in item){
+      this.thumbnail = item.thumbnail;
+    }
+
+    if ('path' in item){
+      this._path = item.path;
+    }
+
+    this._item = item;
+  }
+
+  get item(){
+    return this._item;
+  }
+
+  get path(){
+    return this._path;
+  }
+
 
   set status(num){
     if (num === false) {
@@ -225,7 +303,7 @@ class ImageLoader extends SvgPlus{
       if (thumbnailFile.size < 300000){
         if (await this.uploadToCloud(thumbnailFile) ){
           this.status = true;
-          console.log('uploaded thumbnail to ' + this.collection.name);
+          console.log('uploaded thumbnail to ' + this.item.name);
         }else{
           alert("An error occured whilst uploading");
           this.status = false;
@@ -252,8 +330,7 @@ class ImageLoader extends SvgPlus{
       return false;
     }
 
-    let name = file.name.split(/\./);
-    if (name.length === 2) name = "thumbnail." + name[1];
+    let name = "thumbnail" + getExt(file);
 
     let link = await uploadFileToCloud(file, path, (status) => {
       this.status = status;
@@ -284,28 +361,6 @@ class ImageLoader extends SvgPlus{
   }
 
 
-  get path(){
-    if (this.collection !== null){
-      return this.collection.path;
-    }else{
-      return null;
-    }
-  }
-
-  set collection(collection){
-    if ( SvgPlus.is(collection, Collection) ){
-      this._collection = collection;
-      this.thumbnail = collection.thumbnail;
-    }else{
-      this._collection = null;
-    }
-  }
-
-  get collection(){
-    return this._collection;
-  }
-
-
   set thumbnail(url){
     this._thumbnailImg.props = {
       src: url
@@ -318,69 +373,84 @@ class ImageLoader extends SvgPlus{
 }
 
 class LiveCollection extends Collection{
-  get synced(){
-    return !!this._synced;
-  }
 
-  //Start syncing with firebase
   async startSync(){
-    if (this.path == null) return false;
-    try{
-      this.clear();
-      await firebase.database().ref(this.path).on('child_added', (sc) => {
-        this._onSyncChildAdded(sc);
-      });
+    if ( this.synced ) return false;
+    if ( this.fireRef === null ) return false;
+    return new Promise(async (resolve, reject) => {
+      try{
+        await this.fireRef.on('child_added', async (sc) => {
+          if (sc.key == 'thumbnail'){
+            this.thumbnail = sc.val();
+          }else{
+            await this._onSyncChildAdded(sc);
+            resolve(this.isValid);
+          }
+        })
+        await this.fireRef.on('child_removed', (sc) => {
+          this._onSyncChildRemoved(sc);
+        })
+        this._synced = true;
+      }catch(e){
+        resolve(false);
+        this._synced = false;
+      }
 
-      await firebase.database().ref(this.path).on('child_removed', (sc) => {
-        this._onSyncChildRemoved(sc);
-      });
-      console.log('synced ' + this.name);
-      this._synced = true;
-      return true;
-    }catch(e){
-      console.log(e);
-      return resolve(false);
-    }
-  }
-
-  async _onSyncChildRemoved(sc){
-    this.remove(this._collection[sc.key]);
+      setTimeout(() => {
+        resolve(false)
+        this._synced = false;
+       }, 5000);
+    })
   }
 
   async _onSyncChildAdded(sc){
-    if (sc.key === 'thumbnail'){
-      this.thumbnail = sc.val();
-    }else{
-      let model = new Model(sc.val(), sc.key, this.master);
-      model.parentCollection = this;
-      if ( await model.startSync() ){
-        this.add(model);
-        await this.showAll();
+    let model = new LiveModel(null, sc.key, this.master);
+    model.parentCollection = this;
+    if (await model.startSync()){
+      this.add(model);
+      return true;
+    }
 
-      } else {
-        let collection = new Collection(sc.val(), sc.key, this.master);
-        collection.parentCollection = this;
-        if ( collection.isValid && await collection.startSync() ){
-          this.add(collection);
-          await this.showAll();
+    let collection = new LiveCollection(null, sc.key, this.master);
+    collection.parentCollection = this;
+    if (await collection.startSync()){
+      this.add(collection);
+      return true;
+    }
+    return false;
+  }
+
+  async _onSyncChildRemoved(sc){
+    let key = sc.key;
+    if (key in this._collection){
+      let item = this._collection[key];
+      item.stopSync();
+
+      if (this.count == 1){
+        if (this.parentCollection !== null){
+          await this.deleteFromCloud();
         }
+      }else{
+        this.remove(this._collection[key])
       }
     }
   }
 
-
-    //Stop syncing with firebase
-    async stopSync(){
-      try{
-        await firebase.database().ref(this.path).off();
-        this._synced = false;
-        return true;
-      }catch(e){
-        console.log(e);
-        return false;
-      }
+  async stopSync(){
+    if ( !this.synced ) return false;
+    try{
+      await this.fireRef.off();
+      this._synced = false;
+      return true;
+    }catch(e){
+      console.log(e);
+      return false;
     }
+  }
 
+  get synced(){
+    return !!this._synced;
+  }
 }
 
-export {Collection, ThumbnailLoader}
+export {Collection, ImageLoader, LiveCollection, CollectionInfoForm}

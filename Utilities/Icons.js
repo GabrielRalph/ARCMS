@@ -4,11 +4,18 @@ class Icon extends SvgPlus{
     this.props = {
       viewBox: '0 0 100 100',
       height: '1em',
+      cursor: 'pointer'
     }
     let el = SvgPlus.parseSVGString(html)
     this.props = {viewBox: el.getAttribute('viewBox')}
     this.innerHTML = el.innerHTML;
     this.class = "icon"
+  }
+
+  set color(color){
+    this.props = {
+      fill: color
+    }
   }
 
   set float(val){
@@ -30,6 +37,25 @@ class Icon extends SvgPlus{
   }
 }
 
+class RadioIcon extends Icon{
+  constructor(){
+    super(`
+      <svg viewBox = "-50 -50 100 100">
+        <ellipse rx = "40" ry = "40" cx = "0" cy = "0"></ellipse>
+      </svg>`);
+
+      this.styles = {
+        'stroke-width': '10'
+      }
+  }
+
+  set stroke(stroke){
+    this.styles = {
+      stroke: stroke
+    }
+  }
+}
+
 class ContentAdminIcon extends Icon{
   constructor(){
     super(`
@@ -43,6 +69,7 @@ class ContentAdminIcon extends Icon{
     </svg>
 `)
     this.class = 'content-admin-icon'
+    this.color = "#287528"
   }
 }
 class AdminIcon extends Icon{
@@ -72,7 +99,13 @@ class AdminIcon extends Icon{
 class UploadFilesIcon extends Icon{
   constructor(){
     super(`
+
     <svg viewBox="0 0 100 88.3">
+      <style>
+        .dark{opacity:0.5;fill:#4FAE32;}
+         .light{opacity:0.3;fill:#4FAE32;}
+         .arrow{opacity:0.97;fill:#FDFFFD;}
+      </style>
       <g>
       	<path class="dark" d="M94.53,15.99H58.45l0.1-0.04l-9.95-4.1L5.48,11.78C2.46,11.77,0,13.54,0,15.72v0.27v4.13v61.1c0,3.02,2.45,5.47,5.47,5.47h9v1.52h11.62V86.7h48.15v1.52h11.29V86.7h9c3.02,0,5.47-2.45,5.47-5.47V21.46C100,18.44,97.55,15.99,94.53,15.99z"/>
       	<path class="light" d="M48.6,20.2L0,20.12v-4.4c0-2.18,2.46-3.95,5.48-3.94l43.12,0.07l9.95,4.1L48.6,20.2z"/>
@@ -114,6 +147,15 @@ class LockIcon extends Icon{
   constructor(ref){
     super(`
     <svg viewBox = "-10 -20 120 120">
+      <style>
+        .lock .st0{fill:#EAB52F;}
+        .lock .st1{fill:#D8A003;}
+        .lock .st2{fill:#F9D069;}
+        .lock .st3{
+          fill:#7C7C93;
+          transition: 0.4s ease-in fill;
+        }
+      </style>
       <polygon class="st0" points="24.38,50.62 33.02,54.94 33.95,98.05 25.26,93.21"/>
       <path class="st1" d="M75.62,37.82c0,0-22.22,14.99-42.61,17.12l-8.64-4.32c0,0,7.8-9.35,41.18-17.35L75.62,37.82z"/>
       <path class="st2" d="M75.62,81.27V37.82c-0.07-0.14-19.4,13.54-42.61,17.12l0.94,43.11C33.95,98.05,57.65,94.1,75.62,81.27z"/>
@@ -241,7 +283,7 @@ class TrashIcon extends Icon{
       <path style = "opacity: 0.8" d="M64.4,86.19L64.4,86.19c0.86-0.01,1.61-1,1.66-2.22l2.24-47.37c0.06-1.22-0.59-2.2-1.46-2.19l0,0c-0.86,0.01-1.61,1-1.66,2.22L62.94,84C62.89,85.22,63.54,86.2,64.4,86.19z"/>
     </svg>`);
     this.class = 'icon trash'
-
+    this.color = '#b10909';
   }
 
 }
@@ -252,9 +294,9 @@ class UploadToCloudIcon extends Icon{
     <svg viewBox = "0 0 100 100">
       <path style = "opacity: 0.8" d="M30.92,77.26c0,0-30.92,11.97-30.92-10.57c0-19.65,18.5-19.37,18.5-19.37s0-18.21,17.92-13.3c0,0,2.89-18.2,19.94-18.21c15.03-0.01,15.9,14.74,15.9,14.74c1.55-2.25,20.34-0.8,13.94,17.37c0,0,17.14-2.48,13.22,18.18c-2.82,14.86-25.64,10.03-25.64,10.03s-2.1,5.51-19.73,7.6C32.66,86.27,30.92,77.26,30.92,77.26z"/>
   	  <path style = "fill: white; opacity: 0.9" d="M30.12,62.99h10.81v20.72c3.23,0.56,7.49,0.7,13.12,0.03c2.09-0.25,3.96-0.61,5.66-1.06V62.99h10.81l-20.2-21.6L30.12,62.99z"/>
-    </svg>`)
-    this.class = 'icon upload'
-
+    </svg>`);
+    this.class = 'icon upload';
+    this.color = '#3b4898';
   }
 }
 
@@ -341,4 +383,4 @@ class LoaderIcon extends SvgPlus{
   }
 }
 
-export {TrashIcon, UploadToCloudIcon, LoaderIcon, UploadFilesIcon, LockIcon, AdminIcon, ContentAdminIcon, Arrow}
+export {RadioIcon, TrashIcon, UploadToCloudIcon, LoaderIcon, UploadFilesIcon, LockIcon, AdminIcon, ContentAdminIcon, Arrow}

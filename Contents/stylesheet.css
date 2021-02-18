@@ -1,0 +1,95 @@
+.list {
+  font-size: 0.9em;
+  margin-left: 2vw;
+  padding-left: 2vw;
+
+  border-left: 2px solid #0001;
+
+  overflow: hidden;
+  --h: max-content;
+  height: calc(var(--h)*0.5);
+}
+
+
+.collection {
+  --collection: #027a29de;
+  --model: #2266a7d4;
+  --variant: #ff7100e8;
+}
+.collection .header h1{
+  display: inline;
+  margin-right: 2vw;
+  cursor: pointer;
+}
+.collection.head{
+  margin-bottom: 3em;
+}
+.collection.head > .header{
+  color: black;
+}
+
+.collection .header {
+  font-weight: 500;
+  margin: 1em 0;
+  color: var(--collection);
+}
+
+.model .header{
+  color: var(--model);
+}
+
+.variant .header{
+  color: var(--variant);
+}
+
+.texture div{
+  display: inline-block;
+  vertical-align: top;
+}
+
+.texture .status{
+  font-size: 0.5em;
+  font-weight: 600;
+  line-height: 5em;
+}
+
+.info-form{
+  padding-left: 1em;
+}
+
+.info-form h1{
+  font-size: 0.7em;
+  margin-top: 0;
+  line-height: 2em;
+}
+
+.info-form h2{
+  font-size: 0.5em;
+  margin: 0;
+  padding: 0 0 0.5em 0.2em;
+}
+
+.info-form input{
+  float: left;
+}
+
+.info-form input:focus, .info-form textarea:focus{
+  background: #FFFb;
+}
+
+.info-form input, .info-form textarea{
+  padding: 0.4em 0.5em;
+  background: #FFF8;
+  border-radius: 1em;
+  font-size: 0.45em;
+  font-family: 'futura-pt', Arial ,sans-serif;
+  border: none;
+  width: calc(100% - 1em);
+  outline: none;
+  margin-bottom: 1em;
+}
+
+.info-form textarea{
+  height: 10em;
+  resize: none;
+}

@@ -20,7 +20,17 @@ class User extends FireAuth{
     this.addEventListener('user-auth', (userAuth) => {
       this.data = userAuth;
       this.syncDatabase();
+      this.syncAuthToken(userAuth);
     });
+  }
+
+
+  syncAuthToken(userAuth){
+    let ref = firebase.database().ref(`/users/${userAuth.uid}/update`);
+    ref.on('value', () => {
+      console.log('update user auth');
+      userAuth.getIdToken(true);
+    })
   }
 
   get hasUser(){
@@ -57,7 +67,6 @@ class User extends FireAuth{
     let user = await this.__getDatabaseUser();
     if (user === null){
       try{
-        console.log(this.data);
         await this.userRef.set(this.data);
       }catch(e){
         return false;

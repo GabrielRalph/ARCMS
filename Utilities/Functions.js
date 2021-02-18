@@ -12,6 +12,25 @@ function isJSON(json){
   return false;
 }
 
+async function loadURL(file){
+  if (!(file instanceof File)) return null;
+  return new Promise((resolve, reject) => {
+    var reader  = new FileReader();
+
+    // listen for 'load' events on the FileReader
+    reader.addEventListener("load",  () => {
+      resolve(reader.result)
+    }, false);
+
+    // if there's a file, tell the reader to read the data
+    // which triggers the load event above
+    reader.readAsDataURL(file);
+
+    setTimeout(() => {resolve(null)}, 1000);
+
+  })
+}
+
 async function listAllStorageFiles(path){
   if (path == null) return null;
   let array = [];
@@ -50,7 +69,7 @@ async function deleteFilesFromCloud(path){
   }
 
   try{
-    firebase.database().ref(path).remove();
+    await firebase.database().ref(path).remove();
     return true;
   }catch(e){
     console.log(e);
@@ -110,8 +129,8 @@ function isImage(image) {
 }
 
 function isThumbanil(thumbnail){
-  if ( isImage(image) ) {
-    return contains('thumbnail', thumbnail.name);
+  if ( isImage(thumbnail) ) {
+    return contains(thumbnail.name, 'thumbnail');
   }
   return false;
 }
@@ -156,4 +175,4 @@ async function uploadFileToCloud(file, path, statusCallback, filename = file.nam
   })
 }
 
-export {deleteFilesFromCloud, listAllStorageFiles, isJSON, getExt, isThumbanil, isGLB, isUSDZ, isFBX, isURL, isImage, uploadFileToCloud, contains}
+export {loadURL, deleteFilesFromCloud, listAllStorageFiles, isJSON, getExt, isThumbanil, isGLB, isUSDZ, isFBX, isURL, isImage, uploadFileToCloud, contains}

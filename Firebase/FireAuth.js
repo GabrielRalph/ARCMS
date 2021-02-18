@@ -1,16 +1,18 @@
 var CLIENT_ID = null;//'469438762797-b0d7le9gnc9tctol5hfq2co0r2ak7o77.apps.googleusercontent.com';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAcSRFx4iINl-ycYo8gkvVkzxqjB5t3kGg",
-    authDomain: "mcmhousear.firebaseapp.com",
-    databaseURL: "https://mcmhousear-default-rtdb.firebaseio.com",
-    projectId: "mcmhousear",
-    storageBucket: "mcmhousear.appspot.com",
-    messagingSenderId: "234748191529",
-    appId: "1:234748191529:web:ca908ef06b11a14389cd38"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+var firebaseConfig = {
+   apiKey: "AIzaSyBKpHxX0GdVnbdyW_Y3F94t9deXHg5prLQ",
+   authDomain: "mcm-ar.firebaseapp.com",
+   databaseURL: "https://mcm-ar-default-rtdb.firebaseio.com",
+   projectId: "mcm-ar",
+   storageBucket: "mcm-ar.appspot.com",
+   messagingSenderId: "259610992491",
+   appId: "1:259610992491:web:07701029235d3075e7362e",
+   measurementId: "G-LRYD6737VE"
+ };
+ // Initialize Firebase
+ firebase.initializeApp(firebaseConfig);
+ firebase.analytics();
 
 class FireAuth{
   constructor(){

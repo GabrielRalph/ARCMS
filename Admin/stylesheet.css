@@ -1,0 +1,63 @@
+table.admin-users tr td:nth-of-type(2){
+  width: 30%;
+}
+
+div.admin h1{
+  margin: 0;
+  font-size: 1em;
+  line-height: 1.5em;
+  margin-bottom: var(--margin);
+}
+
+table.admin-users:hover > td{
+  background: grey;
+}
+
+table.admin-users{
+  width: 100%;
+  font-size: 0.6em;
+  border-spacing: 0.1em 0.4em;
+}
+
+.admin-user td:first-of-type{
+  width: 1.5em;
+}
+
+.admin-user td:nth-of-type(n + 2){
+  height: 1.5em;
+  padding-left: 0.5em;
+}
+
+.admin-user td:nth-last-of-type(-n + 3){
+  width: 1.5em;
+}
+
+.admin-user td:last-of-type{
+  fill: #7C7C93;
+}
+
+.admin-user img{
+  height: 1.5em;
+  float: left;
+  border-radius: 1em;
+}
+
+.admin-user svg{
+  height: 1.2em;
+  float: left;
+}
+
+
+.lock {
+  padding: 0 0.075em;
+  padding-bottom: 0.15em;
+  transition: 0.4s ease-in background;
+  background: transparent;
+  border-radius: 2em;
+}
+.lock.closed{
+  background: #7C7C93;
+}
+.lock.closed .st3{
+  fill: white;
+}

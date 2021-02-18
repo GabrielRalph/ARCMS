@@ -1,5 +1,6 @@
-import {isJSON, isImage, isGLB, isURL, uploadFileToCloud, listAllStorageFiles} from "../Utilities/Functions.js"
-import {Variant} from "./Variant.js"
+import {getExt, loadURL, contains, isJSON, isImage, isThumbanil, isGLB, isUSDZ, isURL, uploadFileToCloud, deleteFilesFromCloud} from "../Utilities/Functions.js"
+import {Variant, LiveVariant} from "./Variant.js"
+import {RadioIcon} from "../Utilities/Icons.js"
 
 /**
   A Texture is an object that represents a folder containing
@@ -10,10 +11,10 @@ import {Variant} from "./Variant.js"
 */
 class Texture extends SvgPlus{
 
-  constructor(name, json, master = null){
+  constructor(json, name, master = null){
     super('DIV');
 
-    buildTemplate();
+    this.buildTemplate();
 
     //Master can be used as a bus to run events
     this._master = master;
@@ -24,6 +25,7 @@ class Texture extends SvgPlus{
     this._thumbnail = null;
     this._name = null;
     this._color = null;
+    this._uploading = false;
 
     //Set the name and json of the texture
     this.name = name;
@@ -33,29 +35,60 @@ class Texture extends SvgPlus{
   //Builds the html template for this texture
   buildTemplate(){
     this.class = "texture"
-    this.styles = { position: "relative" };
+    this.styles = {
+      'margin': '0.5em 0',
+      height: '2.5em',
+      cursor: 'pointer'
+    }
 
     this.thumbnailElement = this.createChild('IMG');
+    this.thumbnailElement.styles = {
+      height: '2.5em',
+      display: 'inline-block'
+    }
 
-    this.textureElement = this.createChild('DIV');
+    this.textureElement = new RadioIcon();
+    this.textureElement.stroke = "white";
     this.textureElement.styles = {
-      position: "absolute",
-      top: '0',
-      left: '0',
+      height: '1.3em',
+      margin: '0.6em'
+    }
+    this.appendChild(this.textureElement);
+
+    this.textureName = this.createChild("DIV");
+    this.textureName.styles = {
+      'line-height': '2.5em',
+    }
+    this.buttonsPannel = this.createChild('DIV');
+    this.buttonsPannel.styles = {
+      margin: '0.75em 2vw'
     }
     this.statusElement = this.createChild("DIV");
+    this.statusElement.class = "status"
+  }
+
+  appendChildToHead(element){
+    this.buttonsPannel.appendChild(element);
+  }
+  removeChildFromHead(element){
+    this.buttonsPannel.removeChild(element);
   }
 
   //Runs a method using the event bus
   runEvent(eventName, params){
+    if ( this.master == null ) return;
     if ( typeof this.master === 'object' ) {
       if ( eventName in this.master ) {
-        let eventFunction = this.master;
-
-        if ( eventFunction instanceof Function ){
-          eventFunction(params);
+        if ( this.master[eventName] instanceof Function ){
+          this.master[eventName](params);
         }
       }
+    }
+  }
+
+  trash(){
+    if (this.parentVariant !== null){
+      this.parentVariant.removeTexture(this);
     }
   }
 
@@ -70,8 +103,9 @@ class Texture extends SvgPlus{
   async uploadToCloud(){
     if (!this.filesAreValid) return;
 
-    let filename = this.path.replace('/', '_');
+    let filename = this.filename;
 
+    this._uploading = true;
     for ( var type of ["glb", "usdz", "thumbnail"]) {
       if ( type === "thumbnail" ){
         filename = "thumbnail" + getExt(this[type]);
@@ -81,7 +115,7 @@ class Texture extends SvgPlus{
 
       this[type] = await uploadFileToCloud(this[type], this.path, (progress) => {
         progress = Number.isNaN(progress) ? '~ ' : `${Math.round(progress)}% `;
-        this.statusElement.innerHTML += progress + this[type].name;
+        this.statusElement.innerHTML = progress + this[type].name;
       }, filename)
     }
 
@@ -89,6 +123,7 @@ class Texture extends SvgPlus{
       try{
         await this.fireRef.set(this.json);
         this.statusElement.innerHTML = "Upload Complete"
+        this._uploading = false;
         return true;
       }catch(e){
         this.statusElement.innerHTML = "An error occured, please try again."
@@ -96,6 +131,30 @@ class Texture extends SvgPlus{
     }
     this.statusElement.innerHTML = "An error occured, please try again."
     return false;
+  }
+
+  async loadThumbnail(){
+    this.thumbnailElement.props = {
+      src: await loadURL(this.thumbnail)
+    }
+  }
+
+  async getURL(type){
+    if (type in this) {
+      if (isURL(this[type])){
+        return this[type]
+      }else if(this[type] instanceof File){
+        return await loadURL(this[type]);
+      }
+    }
+  }
+
+  onclick(){
+    this.runEvent('ontextureclick', this);
+  }
+
+  get uploading(){
+    return this._uploading;
   }
 
   //Get master for use as an event bus
@@ -136,7 +195,7 @@ class Texture extends SvgPlus{
 
   //Set and get parent variant
   set parentVariant(parent){
-    if ( SvgPlus.is(parent, Varaint) ){
+    if ( SvgPlus.is(parent, Variant) ){
       this._parentVariant = parent;
     }else{
       this._parentVariant = null;
@@ -144,6 +203,10 @@ class Texture extends SvgPlus{
   }
   get parentVariant(){
     return this._parentVariant;
+  }
+  get parentModel(){
+    if (this.parentVariant != null) return this.parentVariant.parentModel;
+    return null;
   }
 
   //Set texture as json
@@ -153,20 +216,25 @@ class Texture extends SvgPlus{
     if ( isJSON(json) ) {
 
       for ( var key in json ){
+
         //Check for glb file
-        if ( contains("glb", key) ){
+        if ( contains(key, "glb") ){
           this.glb = json[key];
         }
 
         //Check for glb file
-        if ( contains("usdz", key) ){
+        if ( contains(key, "usdz") ){
           this.usdz = json[key];
         }
 
         //Check for glb file
-        if ( contains("thumbnail", key) ){
+        if ( contains(key, "thumbnail") ){
           this.thumbnail = json[key];
         }
+      }
+
+      if ( !this.isValid ){
+        this.logErrors();
       }
     }
   }
@@ -198,7 +266,8 @@ class Texture extends SvgPlus{
       this._name = name;
       this._color = color;
 
-      this.textureElement.styles = {background: `#${this.color}`};
+      this.textureName.innerHTML = name.replace(`(${color})`, '');
+      this.textureElement.color = `#${this.color}`;
     }
   }
   //Get name
@@ -255,6 +324,8 @@ class Texture extends SvgPlus{
 
       if ( isURL(thumbnail) ) {
         this.thumbnailElement.props = {src: thumbnail}
+      }else{
+        this.loadThumbnail();
       }
     }else{
       this._thumbnail = null;
@@ -272,14 +343,87 @@ class Texture extends SvgPlus{
 
   //Get path name
   get path(){
-    if ( this.name === null ) return "";
+    if ( this.name === null ) return null;
     if ( this.parentVariant == null ) return this.name;
 
     return `${this.parentVariant.path}/${this.name}`
   }
   get fireRef(){
+    if ( this.path == null ) return null;
     return firebase.database().ref(this.path);
+  }
+  get filename(){
+    let variant = this.parentVariant;
+    let model = this.parentModel;
+    let name = this.name;
+    if (variant !== null) name = variant.name + '_' + name;
+    if (model !== null) name = model.name + '_' + name;
+    return name;
+  }
+
+  logErrors(){
+    let log = "";
+    let errCount = 0;
+
+    if (this.glbMode === 0){
+      log += `No GLB file provided in texture ${this.path}\n`
+      errCount++;
+    }
+
+    if (this.usdzMode === 0){
+      log += `No USDZ file provided in texture ${this.path}\n`
+      errCount++;
+    }
+
+    if (this.thumbnailMode === 0){
+      log += `No Thumbnail file provided in texture ${this.path}\n`
+      errCount++;
+    }
+
+    if (this.name === null){
+      log += `Invalid texture name in texture ${this.path}\n`
+    }
+
+    if (errCount !== 3){
+      console.log(log);
+    }
   }
 }
 
-export {Texture}
+class LiveTexture extends Texture{
+  async startSync(){
+    if ( this.synced ) return false;
+    if (this.fireRef == null) return false;
+    return new Promise(async (resolve, reject) => {
+      try{
+        await this.fireRef.on('value', (sc) => {
+          this.json = sc.val();
+          resolve(this.isValid);
+        })
+        this._synced = true;
+      }catch(e){
+        resolve(false);
+      }
+
+      setTimeout(() => { resolve(false) }, 5000);
+    })
+  }
+
+  async stopSync(){
+    if ( !this.synced ) return false;
+    try{
+      await this.fireRef.off();
+      this._synced = false;
+      return true;
+    }catch(e){
+      console.log(e);
+      return false;
+    }
+  }
+
+  get synced(){
+    return !!this._synced;
+  }
+}
+
+export {Texture, LiveTexture}
