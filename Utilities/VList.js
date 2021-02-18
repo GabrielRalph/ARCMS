@@ -1,164 +1,203 @@
-
-class Header extends SvgPlus{
-  constructor(title, heading = 1){
-    super('H' + heading);
-    this.header = title;
-  }
-
-  set header(value){
-    this.innerHTML = value;
-  }
-}
-
 class VList extends SvgPlus{
-  constructor(list){
+  constructor(name, master, list){
     super('DIV');
     this.props = {class: 'v-list'}
     this._headerElement = this.createChild('DIV');
+
     this._headerElement.props = {class: 'header'}
     this._listElement = this.createChild('DIV')
-    this._listElement.props = {class: 'list'}
-    this._open = false;
+    this._listElement.props = {
+      class: 'list',
+    }
+
+    this._headerTitle = this.createChildOfHead('H1');
+    this._headerTitle.styles = { 'font-size': '1em'}
+
+    this._headerTitle.ondblclick = (e) => {
+      this.ontitledblclick(e)
+    }
+
+    this._headerTitle.onclick = (e) => {
+      this.ontitleclick(e)
+    }
+
+    //Instantiate private variables
+    this._name = null;
+    this._open = true;
+    this._moving = false;
+
+    this._master = master;
+
+    this.name = name;
     this.list = list;
     this.transistionName = 'linearMove'
   }
 
-  createChildOfHead(name){
-    return this._headerElement.createChild(name);
-  }
-  appendChildToHead(element){
-    return this._headerElement.appendChild(element);
-  }
-  removeChildFromHead(element){
-    this._headerElement.remove(element);
-  }
-  clearHead(){
-    this._headerElement.innerHTML = "";
-  }
-
-  get list(){
-    return this._list;
+  //Runs a method using the event bus
+  runEvent(eventName, params){
+    if ( this.master == null ) return;
+    if ( typeof this.master === 'object' ) {
+      if ( eventName in this.master ) {
+        if ( this.master[eventName] instanceof Function ){
+          this.master[eventName](params);
+        }
+      }
+    }
   }
 
-  pushElement(element){
-    if (Array.isArray(this._list)){
-      this._list.push(element);
-      this.list = this._list;
-    }else{
-      this.list = [element]
+  clear(){
+    this._listElement.innerHTML = "";
+  }
+
+  async addElement(element){
+    if (element instanceof Element){
+      let height = this.height;
+      this._listElement.styles = {
+        height: `${height}px`
+      }
+      this._listElement.appendChild(element);
+      let dh = this.height - height;
+      await this.waveTransistion((t) => {
+        this._listElement.styles = {
+          height: `${height + dh*t}`
+        }
+      }, 500, true)
+      this._listElement.styles = {
+        height: 'auto'
+      }
     }
   }
 
   removeElement(element){
-    if (this._listElement.contains(element)){
+    if (element instanceof Element && this._listElement.contains(element)){
       this._listElement.removeChild(element);
     }
-    let newList = []
-    for (var el of this._list){
-      if (el !== element){
-        newList.push(el);
-      }
+  }
+
+  ontitleclick(){
+  }
+
+  ontitledblclick(){
+    this.open = !this.open
+  }
+
+  //Creates a child in the header
+  createChildOfHead(name){
+    return this._headerElement.createChild(name);
+  }
+
+  //Appends a child to the header
+  appendChildToHead(element){
+    return this._headerElement.appendChild(element);
+  }
+
+  //Removes a child from the header
+  removeChildFromHead(element){
+    if (this._headerElement.contains(element)){
+      this._headerElement.remove(element);
     }
-    this._list = newList;
   }
 
-  set list(list){
-    this._listElement.innerHTML='';
-    this._list = [];
-    if (Array.isArray(list)){
-      for (var element of list){
-        if (element instanceof Element){
-          this._list.push(element);
-        }
+  //Clears head
+  clearHead(){
+    this._headerElement.innerHTML = "";
+    this.appendChildToHead(this._headerTitle);
+  }
+
+  async show(){
+    let height = this.height;
+    await this.waveTransistion((t) => {
+      this._listElement.styles = {
+        height: `${t*height}px`
       }
+    }, 500, true)
+    this._listElement.styles = {
+      height: 'auto'
     }
   }
 
-  get isVList(){
-    return true;
+  async hide(){
+    let height = this.height;
+    await this.waveTransistion((t) => {
+      this._listElement.styles = {
+        height: `${t*height}px`
+      }
+    }, 500, false)
   }
 
-  get transistion(){
-    let transistion = this[`${this.transistionName}`];
+  showAll(){
 
-    if (transistion instanceof Function){
-      return transistion;
+  }
+
+  set open(val){
+    if (val){
+      this.show();
+      this._open = true;
     }else{
-      return this._default_transistion
+      this.hide();
+      this._open = false;
     }
   }
-
-  set open(state){
-    if (Array.isArray(this._list)){
-      if (this.open == false && state == true){
-        this.show();
-      }else if(this.open == true && state == false){
-        this.hide();
-      }
-    }
-  }
-
   get open(){
     return this._open;
   }
 
-  _changeState(state){
-    this._open = state;
-    if (this.onstatechange instanceof Function){
-      this.onstatechange(state);
-    }
+  get height(){
+    let bbox = this._listElement.scrollHeight;
+    return bbox;
   }
 
-  async show(duration = 100){
-    this._changeState(null);
-    for (var element of this.list){
-      await this.transistion(element, true, duration);
-    }
-    this._changeState(true);
+  get master(){
+    return this._master;
   }
 
-  async hide(duration = 100){
-    this._changeState(null);
-    for (var i = this.list.length - 1; i >= 0; i--){
-      let element = this.list[i];
-      await this.transistion(element, false, duration);
-    }
-    this._changeState(false);
+  //Set and get the list name
+  set name(name){
+    this._name = null;
+    this._headerTitle.innerHTML = "";
+
+    if (typeof name !== 'string') return;
+
+    this._headerTitle.innerHTML = name;
+    this._name = name;
+  }
+  get name(){
+    return this._name;
   }
 
-  async _default_transistion(element, direction, duration){
-    return await this.linearMove(element, direction, duration);
-  }
+  async waveTransistion(update, duration = 500, dir = false){
+    if (!(update instanceof Function)) return 0;
 
-  async linearMove(element, direction, duration){
-    if (element.isVList && element.open){
-      await element.hide(duration/2)
-    }
-    let initTime = null;
-    let move = direction ? -1 : 0;
+    duration = parseInt(duration);
+    if (Number.isNaN(duration)) return 0;
+
     return new Promise((resolve, reject) => {
-      let next = (dt)=>{
-        if (initTime == null) initTime = dt;
-        let t = dt - initTime;
-        element.style.setProperty('transform', `translate(0%, ${move*100}%)`)
-        element.style.setProperty('opacity', `${1 + move}`)
-        if (!this._listElement.contains(element)){
-          this._listElement.appendChild(element)
+      let t0;
+      let end = false;
+
+      let next = (t) => {
+        let dt = t - t0;
+
+        if (dt > duration) {
+          end = true;
+          dt = duration;
         }
-        move = direction ? t/duration - 1 : - t/duration;
-        if (move > 0 || move < -1){
-          if (move < -1){
-            this._listElement.removeChild(element);
-          }else{
-            element.style.setProperty('transform', `translate(0%, 0%)`)
-            element.style.setProperty('opacity', `1`)
-          }
-          resolve()
-        }else{
+
+        let theta = Math.PI * ( dt / duration  +  (dir ? 1 : 0) );
+        let progress =  ( Math.cos(theta) + 1 ) / 2;
+
+        update(progress);
+
+        if (!end){
           window.requestAnimationFrame(next);
+        }else{
+          resolve(progress);
         }
-      }
-      window.requestAnimationFrame(next);
+      };
+      window.requestAnimationFrame((t) => {
+        t0 = t;
+        window.requestAnimationFrame(next);
+      })
     })
   }
 }

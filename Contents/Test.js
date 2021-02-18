@@ -1,14 +1,13 @@
 // import {DropBox} from './AddCollection.js'
-import {InfoForm} from './Content.js'
 
-let content = new InfoForm();
-document.body.appendChild(content);
-//
-// let collection = new Collection(null, 'contents');
-// dropbox.appendChild(collection);
-//
-// dropbox.ontree = (fileTree) => {
-//   console.log(fileTree);
-//   collection.json = fileTree;
-//   collection.showAll();
-// }
+import {Content} from './Content.js'
+import {User} from '../Firebase/User.js'
+// let uploader = new FileTreeInput();
+
+let user = new User();
+let content = new Content();
+
+// user.attachSignOutButton(signOut)
+user.addEventListener('user', () => {
+  document.body.appendChild(content);
+})

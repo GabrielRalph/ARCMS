@@ -1,0 +1,41 @@
+#loader,   #firebaseui-auth-container{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 100000;
+  background: rgba(255, 240, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+ul.firebaseui-idp-list{
+  padding: 0;
+}
+li.firebaseui-list-item{
+  display: block;
+}
+button.firebaseui-idp-button{
+  padding: 0;
+  border: none;
+  margin: auto;
+  display: block;
+  outline: none;
+  border-radius: 2em;
+
+}
+img.firebaseui-idp-icon{
+  height: 4em;
+  float: left;
+}
+span.firebaseui-idp-text-long{
+  line-height: 4em;
+  padding: 0 1em;
+}
+span.firebaseui-idp-text-short{
+  display:none
+}
+
+.firebaseui-container{
+  background: transparent;
+}

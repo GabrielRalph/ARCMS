@@ -3,7 +3,7 @@ import {Controls} from './Utilities/Controls.js'
 import {MCMLoader} from './Utilities/MCMLoader.js'
 import {Content} from './Contents/Content.js'
 import {Admin} from './Admin/Admin.js'
-import {User} from './Utilities/User.js';
+import {User} from './Firebase/User.js';
 
 class App extends Windows{
   constructor(parent){
@@ -75,7 +75,7 @@ class App extends Windows{
     head.innerHTML = `
     Hey ${name}, welcome to the</br>MCM House</br>3D assets managment system.
     `
-    
+
     if (this.user.name == 'Gabriel Ralph') {
       head.innerHTML = `
       ♥♥ Hey cutie ♥♥</br>

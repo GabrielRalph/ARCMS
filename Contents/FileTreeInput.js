@@ -33,7 +33,7 @@ class Hints extends SvgPlus{
 
   set hintSize(size){
     this.hints.styles = {
-      transform: `translate(-50%, -37%) scale(${size})`,
+      transform: `translate(-50%, -50%) scale(${size})`,
     }
     this._hintSize = size;
   }
@@ -42,6 +42,8 @@ class Hints extends SvgPlus{
 class FileTreeInput extends Hints{
   constructor(){
     super('div', 'Upload Assets');
+
+    this.styles = {cursor: 'pointer'}
 
     this._hover = false;
 

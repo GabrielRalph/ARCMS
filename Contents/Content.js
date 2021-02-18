@@ -1,7 +1,7 @@
 import {Windows} from '../Utilities/Windows.js'
 
-import {LiveContent} from './LiveContent.js'
-import {ContentUpload} from './ContentUpload.js'
+import {UploadAssets} from './UploadAssets.js'
+import {LiveAssets} from './LiveAssets.js'
 
 class Content extends Windows{
   constructor(){
@@ -11,21 +11,25 @@ class Content extends Windows{
       width: "100%",
       height: "100%"
     }
-    this.createLiveCollection();
+    this.createLiveAssets();
   }
 
-  async createLiveCollection(){
-    this.liveContent = new LiveContent();
-    this.liveContent.ontree = (tree) => { this.ontree(tree) };
-    await this.liveContent.createCollection("Live Asset Collection");
-    this.center = this.liveContent;
+  async createLiveAssets(){
+    this.liveAssets = new LiveAssets();
+    this.liveAssets.ontree = (tree) => { this.ontree(tree) };
+    this.center = this.liveAssets;
+    // await this.liveAssets.startSync();
   }
 
   ontree(tree){
-    let contentUpload = new ContentUpload(tree);
-    this.moveTo(contentUpload);
-    contentUpload.onreturn = () => {
-      this.moveTo(this.liveContent, true);
+    let uploadAssets = new UploadAssets(tree);
+    if (!uploadAssets.collection.isValid){
+      alert('The collection is invalid');
+      return;
+    }
+    this.moveTo(uploadAssets);
+    uploadAssets.onreturn = () => {
+      this.moveTo(this.liveAssets, true);
     }
   }
 }

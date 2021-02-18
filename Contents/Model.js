@@ -1,151 +1,238 @@
-import {Variant} from './Variant.js'
-import {Collection} from './Collection.js'
-import {UploadToCloudIcon} from '../Utilities/Icons.js'
+import {Variant, LiveVariant} from './Variant.js'
+import {Collection, LiveCollection, ImageLoader} from './Collection.js'
+import {VList} from '../Utilities/VList.js'
+import {RadioIcon} from '../Utilities/Icons.js'
+import {deleteFilesFromCloud, isImage, isJSON, isURL} from '../Utilities/Functions.js'
 
+/**
+  A Model (Product) is an object that represents a folder containing
+  at least one valid variant.
 
-class Model extends SvgPlus{
+  @see Varaint
+*/
+class Model extends VList{
   constructor(variants, name, master){
-    super('div');
-    this.master = master;
+    super(name, master);
+
     this.class = 'model'
-    this._variants = null;
-    this.buildElement();
+
+    //Instantiate private variables
+    this._variants = {};
+    this._thumbnail = null;
+    this._parentCollection = null;
+
+    //Set json
     this.json = variants;
-    this.name = name;
   }
 
-  buildElement(){
-    this.headerElement = this.createChild('DIV');
-    this.headerElement.class = 'header'
-
-    this.headerName = this.headerElement.createChild('h1');
-    this.headerName.onclick = () => {
-      if (typeof this.master === 'object' && this.master.select instanceof Function){
-        this.master.select(this);
-      }
-    }
-
-    this.variantsTable = this.createChild('TABLE');
-    this.variantsBody = this.variantsTable.createChild('TBODY');
+  ontitleclick(){
+    this.runEvent('onmodelclick', this);
   }
-
-  appendChildToHead(child){
-    this.headerElement.appendChild(child)
-  }
-
-
-  addVariant(variant){
-    if (SvgPlus.is(variant, Variant)){
-      if (variant.isValid){
-        if (this._variants === null){
-          this._variants =  {};
-        }
-        variant.parentModel = this;
-        this._variants[variant.name] = variant;
-        this.variantsBody.appendChild(variant);
-      }
-    }
-  }
-
-
-  removeVariant(variant){
-    if (SvgPlus.is(variant, Variant)){
-      if (typeof this._variants === 'object'){
-        this.variantsBody.removeChild(variant)
-        delete this._variants[variant.name];
-        if (Object.keys(this._variants).length == 0){
-          this.parentCollection.remove(this);
-        }
-      }
-    }
-  }
-
-
-  clearVariants(){
-    this.variantsBody.innerHTML = '';
-    this._variants = null;
-  }
-
-  containsVariant(variant){
-    return this.variantsBody.contains(variant);
-  }
-
 
   trash(){
     if (this.parentCollection !== null){
-      this.parentCollection.remove(this)
+      this.parentCollection.remove(this);
     }
   }
 
+  //Adds a variant object
+  addVariant(variant){
+    if (SvgPlus.is(variant, Variant)){
+      if (variant.isValid){
 
+        variant.parentModel = this;
+        this._variants[variant.name] = variant;
+        this.addElement(variant);
+
+      }
+    }
+  }
+
+  //Removes a variant object
+  removeVariant(variant){
+    if (SvgPlus.is(variant, Variant)){
+
+      //Remove variant
+      this.removeElement(variant)
+      delete this._variants[variant.name];
+      variant.parentModel = null;
+
+      //If there are no more variants remove this model
+      if ( !this.isValid && this.parentCollection !== null){
+        this.parentCollection.remove(this);
+      }
+    }
+  }
+
+  //Uploads all variants and their textures to the cloud
   async uploadToCloud(){
+    if ( !this.isValid ) return;
+
     let variants = this._variants;
     for (var name in variants){
-      if (!(await variants[name].uploadToCloud())){
+      if ( !(await variants[name].uploadToCloud()) ){
         return false;
       }
     }
-    return true;
   }
 
-  async deleteVariantFromCloud(variant){
-    if ( this.containsVariant(variant) ){
-      if ( Object.keys(this._variants).length == 1 ){
-        await this.deleteFromCloud();
-      }else{
-        if (variant.path == null) return;
+  //Deletes this model from the cloud
+  async deleteFromCloud(){
+    return await deleteFilesFromCloud(this.path);
+  }
 
-        let ref = firebase.storage().ref()
-        let childRef = ref.child(variant.path)
-        try{
-          if ( !(await variant.textures.deleteFromCloud()) )return false;
-          let files = await childRef.listAll();
-          files = files.items;
-          for (var file of files){
-            await ref.child(file.fullPath).delete();
-          }
+  get uploading(){
+    for (var key in this._variants){
+      if (this._variants[key].uploading) return true;
+    }
+    return false;
+  }
 
-          await firebase.database().ref(variant.path).remove();
+  set thumbnail(thumbnail){
+    if ( isImage(thumbnail) || isURL(thumbnail) ){
+      this._thumbnail = thumbnail;
+    }else{
+      this._thumbnail = null;
+    }
+  }
+  get thumbnail(){
+    return this._thumbnail;
+  }
 
-        }catch(e){
-          console.log(e);
+  //Set model using json object
+  set json(variants){
+    this.clear();
+    this._variants = {};
+    if ( isJSON(variants) ){
+      for (var name in variants){
+
+        if (name === 'info'){
+          this.info = variants[name];
+
+        }else if(name === 'thumbnail'){
+          this.thumbnail = variants[name];
+
+        }else{
+          let variant = new Variant(variants[name], name, this.master);
+          this.addVariant(variant);
         }
       }
     }
+
+    this.show();
   }
 
-  async deleteFromCloud(){
-    if (this.parentCollection !== null){
-      await this.parentCollection.deleteItemFromCloud(this);
+  //set and get parent collection
+  set parentCollection(collection){
+    if (SvgPlus.is(collection, Collection)){
+      this._parentCollection = collection;
+    }else{
+      this._parentCollection = null;
     }
   }
+  get parentCollection(){
+    return this._parentCollection;
+  }
+
+  //return true if there are more than one valid textures
+  get isValid(){
+    return this.variantCount > 0;
+  }
+
+  //get path
+  get path(){
+    if (this.name === null) return null;
+    if (this.parentCollection == null) return this.name;
+    return this.parentCollection.path + '/' + this.name;
+  }
+
+  get fireRef(){
+    if ( this.path === null ) return null;
+    return firebase.database().ref(this.path);
+  }
+
+  get variantCount(){
+    return Object.keys(this._variants).length;
+  }
+
+  get filesAreValid(){
+    for (var key in this._variants){
+      if (this._variants[key].filesAreValid) return true;
+    }
+    return false;
+  }
+}
+
+class LiveModel extends Model{
 
   async startSync(){
-    if ( !this.isValid || this.path === null ) return false;
-    try{
-      this.clearVariants();
-      await firebase.database().ref(this.path).on('value', (sc) => {
-        this._onSyncValue(sc);
-      });
-      this._synced = true;
-      return true;
-    }catch(e){
-      console.log(e);
-      return false;
-    }
+    if ( this.synced ) return false;
+    if ( this.fireRef === null ) return false;
+    return new Promise(async (resolve, reject) => {
+      try{
+        await this.fireRef.on('child_added', async (sc) => {
+          if (sc.key == 'thumbnail'){
+            this.thumbnail = sc.val();
+          }else if(sc.key == 'info'){
+            this.info = sc.val();
+          }else{
+            await this._onSyncChildAdded(sc);
+            resolve(this.isValid);
+          }
+        })
+        await this.fireRef.on('child_removed', (sc) => {
+          this._onSyncChildRemoved(sc);
+        })
+
+        await this.fireRef.child('info').on('value', (sc) => {
+          this.info = sc.val();
+        })
+
+        await this.fireRef.child('thumbnail').on('value', (sc) => {
+          this.thumbnail = sc.val();
+        })
+
+        this._synced = true;
+      }catch(e){
+        resolve(false);
+        this._synced = false;
+      }
+
+      setTimeout(() => {
+        resolve(false)
+        this._synced = false;
+       }, 5000);
+    })
   }
 
-  async _onSyncValue(sc){
-    this.json = sc.val();
+  async _onSyncChildAdded(sc){
+    let variant = new LiveVariant(null, sc.key, this.master);
+    variant.parentModel = this;
+    if (await variant.startSync()){
+      this.addVariant(variant);
+      return true;
+    }
+    return false;
+  }
 
-    if (! this.isValid) {
-      await firebase.database().ref(this.path).remove();
+  async _onSyncChildRemoved(sc){
+    let key = sc.key;
+    if (key in this._variants){
+      let variant = this._variants[key];
+      variant.stopSync();
+
+      if (this.variantCount == 1){
+        await this.deleteFromCloud();
+      }else{
+        this.removeVariant(this._variants[key])
+      }
     }
   }
 
   async stopSync(){
+    if ( !this.synced ) return false;
     try{
-      await firebase.database().ref(this.path).off();
+      await this.fireRef.off();
       this._synced = false;
       return true;
     }catch(e){
@@ -154,125 +241,70 @@ class Model extends SvgPlus{
     }
   }
 
-
-  set selected(bool){
-    if (bool) {
-      this.headerName.styles = {
-        'text-decoration': 'underline',
-      }
-      this._selected = true;
-    }else{
-      this.headerName.styles = {
-        'text-decoration': 'none',
-      }
-      this._selected = false;
-    }
-  }
-  get selected(){
-    return this._selected;
-  }
-
-
-  set json(variants){
-    if (typeof variants === 'object' && variants !== null){
-      this.clearVariants();
-
-      if (variants instanceof File) return;
-
-      for (var name in variants){
-        if (name === 'info'){
-          this.info = variants[name];
-        }else{
-          let variant = new Variant(variants[name], name, this.master);
-          this.addVariant(variant);
-        }
-      }
-    }
-  }
-
-
-
-  set parentCollection(collection){
-    if (SvgPlus.is(collection, Collection)){
-      this._parentCollection = collection;
-    }else{
-      this._parentCollection = null;
-    }
-  }
-
-
-  get parentCollection(){
-    return this._parentCollection;
-  }
-
-
-  get path(){
-    if (this.parentCollection == null) {
-      return this.name;
-    }else{
-      return this.parentCollection.path + '/' + this.name;
-    }
-  }
-
-
-  set name(name){
-    this.headerName.innerHTML = name;
-    this._name = name;
-  }
-
-  get name(){
-    return this._name;
-  }
-
-
-  get filesAreValid(){
-    return ! (this.variantFiles == null)
-  }
-
-
-  get isValid(){
-    return this._variants !== null
-  }
-
   get synced(){
     return !!this._synced
   }
 }
 
-class InfoForm extends SvgPlus{
-  constructor(master, model){
+class ModelInfoForm extends SvgPlus{
+  constructor(model){
 
     super('DIV');
-    this.master = master;
     this.class = "info-form"
-
-    this.styles = {position: 'relative'};
-
-    this.upload = new UploadToCloudIcon();
-    this.upload.styles = {
-      position: 'absolute',
-      top: '0.3em',
-      right: 0,
-      'font-size': '0.7em'
-    }
-    this.upload.onclick = () => {
-      this.uploadToCloud();
-    }
-    this.appendChild(this.upload)
 
     this._name = this.createChild('H1');
 
+    this.appendChild(new ImageLoader(model));
+
     this.createChild('H2').innerHTML = "Description";
     this.description = this.createChild('textarea');
-
-    this.createChild('H2').innerHTML = "Price";
-    this.price = this.createChild('input');
+    this.description.addEventListener('focusout', () => {
+      this.uploadToCloud()
+    })
 
     this.createChild('H2').innerHTML = "Link";
     this.link = this.createChild('input');
+    this.link.addEventListener('focusout', () => {
+      this.uploadToCloud()
+    })
+
+    let fbox = this.createChild('DIV');
+    fbox.styles = {
+      float: 'left'
+    }
+    let featured = fbox.createChild('H2');
+    featured.styles = {display: 'inline'}
+    featured.innerHTML = "Featured";
+    this.radio = new RadioIcon();
+    this.radio.color = "transparent";
+    this.radio.stroke = "black";
+    this.radio.styles = {
+      height: '0.5em',
+      'padding-left': '0.5em'
+    }
+    fbox.appendChild(this.radio);
+    fbox.onclick = () => {
+      this.featured = !this.featured;
+      this.uploadToCloud();
+    }
+
 
     this.model = model;
   }
+
+  set featured(val){
+    this._featured = val;
+    if (val){
+      this.radio.color = "#0008";
+    }else{
+      this.radio.color = "transparent";
+    }
+  }
+
+  get featured(){
+    return !!this._featured;
+  }
+
 
   set name(name){
     this._name.innerHTML = name;
@@ -281,8 +313,8 @@ class InfoForm extends SvgPlus{
   get json(){
     return {
       description: this.description.value,
-      price: this.price.value,
-      link: this.link.value
+      link: this.link.value,
+      featured: this.featured,
     }
   }
 
@@ -291,7 +323,7 @@ class InfoForm extends SvgPlus{
     if (json === null || typeof json !== 'object' ) return;
 
     if ('description' in json) this.description.value = json.description;
-    if ('price' in json) this.price.value = json.price;
+    if ('featured' in json) this.featured = json.featured;
     if ('link' in json) this.link.value = json.link;
   }
 
@@ -307,21 +339,12 @@ class InfoForm extends SvgPlus{
     return this._model;
   }
 
-  async uploadToCloud(){
-    let path = this.model.path;
-    if (path == null) return;
-    path += '/info';
-    try{
-      await firebase.database().ref(path).set(this.json);
-      if (typeof this.master === 'object' && this.master.removeTools instanceof Function)
-      this.master.removeTools();
-      return true;
-    }catch(e){
-      console.log(e);
-      return false;
+  uploadToCloud(){
+    if (this.model.fireRef !== null){
+      this.model.fireRef.child('info').set(this.json);
     }
   }
 }
 
 
-export {Model, InfoForm}
+export {Model, LiveModel, ModelInfoForm}
