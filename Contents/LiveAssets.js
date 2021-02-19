@@ -100,10 +100,13 @@ class LiveAssets extends SvgPlus{
 
   async makeModelViewer(texture){
     let glbURL = await texture.getURL('glb');
+    let usdzURL = await texture.getURL('usdz');
 
     let modelViewer = new SvgPlus('model-viewer');
     modelViewer.props = {
       src: glbURL,
+      'ios-src': usdzURL,
+      'ar': true,
       'auto-rotate': true,
       'data-js-focus-visible': true,
       'camera-controls': true,
