@@ -107,16 +107,17 @@ class Texture extends SvgPlus{
 
     this._uploading = true;
     for ( var type of ["glb", "usdz", "thumbnail"]) {
+      let name;
       if ( type === "thumbnail" ){
-        filename = "thumbnail" + getExt(this[type]);
+        name = "thumbnail" + getExt(this[type]);
       }else{
-        filename = filename + getExt(this[type]);
+        name = filename + getExt(this[type]);
       }
-
       this[type] = await uploadFileToCloud(this[type], this.path, (progress) => {
         progress = Number.isNaN(progress) ? '~ ' : `${Math.round(progress)}% `;
         this.statusElement.innerHTML = progress + this[type].name;
-      }, filename)
+      }, name)
+
     }
 
     if ( this.mode === -1 ) {

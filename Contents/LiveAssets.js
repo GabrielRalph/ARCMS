@@ -84,7 +84,6 @@ class LiveAssets extends SvgPlus{
       this.buttons.remove();
       return;
     }
-    console.log(vlist);
     this.buttons.ontrash = () => {
       this.buttons.remove();
       vlist.styles = {
