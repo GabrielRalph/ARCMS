@@ -38,7 +38,7 @@ class Viewer extends SvgPlus{
         return;
       }
     }
-    await this.getImage();
+    // await this.getImage();
   }
 
   async getModel(){
@@ -81,6 +81,7 @@ class Viewer extends SvgPlus{
       'data-js-focus-visible': true,
       'orientation': '0deg 0deg 25deg',
       'field-of-view': '30deg',
+      'camera-target': '-7m 30m 0m',
       style: {
         width: "100%",
         height: "100%"
