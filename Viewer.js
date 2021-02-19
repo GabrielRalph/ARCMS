@@ -6,6 +6,11 @@ class Viewer extends SvgPlus{
 
     this.class = 'viewer'
 
+    this.metersPerPixel = 0;
+    this.panX = 0;
+    this.panY = 0;
+
+
     this.styles = {
       width: '100%',
       height: '100%',
@@ -25,8 +30,28 @@ class Viewer extends SvgPlus{
       background: '#f8f5f0'
     }
 
+    this.modelFrame.onmousedown = () => {
+      this.mousedown = true;
+    }
+
+    this.modelFrame.onmouseup = () => {
+      this.mousedown = false;
+    }
+
+    this.modelFrame.onmouseleave = () => {
+      this.mousedown = false;
+    }
+
+    this.modelFrame.onmousemove = (e) => {
+      if (this.mousedown){
+        this.movePan(e.movementX, e.movementY);
+      }
+    }
+
     this.x = 0;
   }
+
+
 
   get canvas(){
     return document.getElementById('webgl-canvas');
@@ -37,8 +62,19 @@ class Viewer extends SvgPlus{
       if (! (await this.getModel()) ){
         return;
       }
+      this.addSaveButton();
+      this.startPan();
     }
-    await this.getImage();
+  }
+
+  addSaveButton(){
+    let save = this.header.createChild('div');
+    save.innerHTML = "save";
+    save.class = 'text-button';
+    save.styles = {'margin-left': '1em'}
+    save.onclick = () => {
+      this.downloadImage();
+    }
   }
 
   async getModel(){
@@ -61,7 +97,7 @@ class Viewer extends SvgPlus{
     })
   }
 
-  async getImage(){
+  async downloadImage(){
     if (!this.modelViewer) return;
     let url = URL.createObjectURL(await this.modelViewer.toBlob());
     console.log(url);
@@ -72,6 +108,39 @@ class Viewer extends SvgPlus{
     link.click();
   }
 
+  startPan(){
+    if (!this.modelViewer) return;
+
+    this.panstarted = true;
+
+    const orbit = this.modelViewer.getCameraOrbit();
+    const {theta, phi, radius} = orbit;
+    const psi = theta - this.modelViewer.turntableRotation;
+    this.metersPerPixel = 0.75 * radius / this.modelViewer.getBoundingClientRect().height;
+
+    this.panX = [-Math.cos(psi), 0, Math.sin(psi)];
+    this.panY = [
+      -Math.cos(phi) * Math.sin(psi),
+      Math.sin(phi),
+      -Math.cos(phi) * Math.cos(psi)
+    ];
+  };
+
+  movePan(dx, dy){
+    if (!this.panstarted) return;
+
+    dx *= this.metersPerPixel;
+    dy *= this.metersPerPixel;
+
+    const target = this.modelViewer.getCameraTarget();
+    target.x += dx * this.panX[0] + dy * this.panY[0];
+    target.y += dx * this.panX[1] + dy * this.panY[1];
+    target.z += dx * this.panX[2] + dy * this.panY[2];
+    this.modelViewer.cameraTarget = `${target.x}m ${target.y}m ${target.z}m`;
+
+  };
+
+
   async makeModelViewer(file){
     let glbURL = await loadURL(file);
 
@@ -81,7 +150,6 @@ class Viewer extends SvgPlus{
       'data-js-focus-visible': true,
       'orientation': '0deg 0deg 25deg',
       'field-of-view': '30deg',
-      'camera-target': '-7m 30m 0m',
       style: {
         width: "100%",
         height: "100%"

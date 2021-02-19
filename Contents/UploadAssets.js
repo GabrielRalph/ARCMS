@@ -30,13 +30,7 @@ class UploadAssets extends SvgPlus{
     }
 
     this.done = new SvgPlus('DIV');
-    this.done.styles = {
-      border: '2px solid black',
-      'border-radius': '2em',
-      display: 'inline',
-      padding: '0 0.3em',
-      cursor: 'pointer'
-    }
+    this.done.class = "text-button"
     this.done.innerHTML = 'done'
     this.done.onclick = () => {
       if (this.onreturn instanceof Function){
