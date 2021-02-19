@@ -63,17 +63,37 @@ class RadioIcon extends Icon{
 class TickIcon extends Icon{
   constructor(){
     super(`
-      <svg viewBox = "-50 -70 100 140">
-        <ellipse rx = "40" ry = "40" cx = "0" cy = "0"></ellipse>
+      <svg viewBox = "-50 -70 100 120">
+        <ellipse styles = "opacity: 0.6" rx = "40" ry = "40" cx = "0" cy = "0"></ellipse>
       </svg>`);
 
       this.tick = new SvgPath('path');
       this.tick.M(new Vector(40, -58)).
-      L(new Vector())
+      L(new Vector(0, 17.5)).
+      L(new Vector(-13, -17.5))
+      this.tick.props = {
+        'stroke-endcap': 'round'
+      }
 
       this.styles = {
-        'stroke-width': '10'
+        'stroke-width': '8'
       }
+
+      this.color = "transparent"
+  }
+
+  set ticked(val){
+    if (val){
+      this._ticked = true;
+      this.appendChild(this.tick);
+    }else{
+      this._ticked = false;
+      this.tick.remove();
+    }
+  }
+
+  get ticked(){
+    return this._ticked;
   }
 
   set stroke(stroke){
@@ -412,4 +432,4 @@ class LoaderIcon extends SvgPlus{
   }
 }
 
-export {RadioIcon, TrashIcon, UploadToCloudIcon, LoaderIcon, UploadFilesIcon, LockIcon, AdminIcon, ContentAdminIcon, Arrow}
+export {TickIcon, RadioIcon, TrashIcon, UploadToCloudIcon, LoaderIcon, UploadFilesIcon, LockIcon, AdminIcon, ContentAdminIcon, Arrow}

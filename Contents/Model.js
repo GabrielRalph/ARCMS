@@ -3,7 +3,7 @@ import {SvgPlus} from 'https://www.svg.plus/3.js'
 import {Variant, LiveVariant} from './Variant.js'
 import {Collection, LiveCollection, ImageLoader} from './Collection.js'
 import {VList} from '../Utilities/VList.js'
-import {RadioIcon} from '../Utilities/Icons.js'
+import {TickIcon} from '../Utilities/Icons.js'
 import {deleteFilesFromCloud, isImage, isJSON, isURL} from '../Utilities/Functions.js'
 
 /**
@@ -274,39 +274,27 @@ class ModelInfoForm extends SvgPlus{
     fbox.styles = {
       float: 'left'
     }
-    let featured = fbox.createChild('H2');
+    let featured = fbox.createChild('H2', {
+      styles: {
+        float: 'left'
+      }
+    });
     featured.styles = {display: 'inline'}
     featured.innerHTML = "Featured";
-    this.radio = new RadioIcon();
-    this.radio.color = "transparent";
-    this.radio.stroke = "black";
-    this.radio.styles = {
-      height: '0.5em',
-      'padding-left': '0.5em'
+    this.tick = fbox.createChild(TickIcon);
+    this.tick.stroke = "black";
+    this.tick.styles = {
+      height: '0.6em',
+      'padding-left': '0.5em',
+      float: 'left'
     }
-    fbox.appendChild(this.radio);
     fbox.onclick = () => {
-      this.featured = !this.featured;
+      this.tick.ticked = !this.tick.ticked;
       this.uploadToCloud();
     }
 
-
     this.model = model;
   }
-
-  set featured(val){
-    this._featured = val;
-    if (val){
-      this.radio.color = "#0008";
-    }else{
-      this.radio.color = "transparent";
-    }
-  }
-
-  get featured(){
-    return !!this._featured;
-  }
-
 
   set name(name){
     this._name.innerHTML = name;
@@ -316,7 +304,7 @@ class ModelInfoForm extends SvgPlus{
     return {
       description: this.description.value,
       link: this.link.value,
-      featured: this.featured,
+      featured: this.tick.ticked,
     }
   }
 
@@ -325,7 +313,7 @@ class ModelInfoForm extends SvgPlus{
     if (json === null || typeof json !== 'object' ) return;
 
     if ('description' in json) this.description.value = json.description;
-    if ('featured' in json) this.featured = json.featured;
+    if ('featured' in json) this.tick.ticked = json.featured;
     if ('link' in json) this.link.value = json.link;
   }
 
