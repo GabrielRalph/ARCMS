@@ -41,16 +41,28 @@
 .variant .header{
   color: var(--variant);
 }
-
-.texture div{
+.buttons{
+  margin: 0 0.5em;
   display: inline-block;
-  vertical-align: top;
 }
 
-.texture .status{
-  font-size: 0.5em;
-  font-weight: 600;
-  line-height: 5em;
+.texture{
+  border-radius: 30px;
+}
+.collection, .variant, .model{
+  border-radius: 0 30px 30px 30px;
+}
+.texture {
+  margin: 0.5em 0;
+  height: 2.5em;
+  cursor: pointer;
+}
+
+.status{
+  font-size: 0.6em;
+  word-wrap: break-all;
+  overflow: hidden;
+  margin: 0;
 }
 
 .info-form{

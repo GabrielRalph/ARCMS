@@ -11,10 +11,11 @@ import {RadioIcon} from "../Utilities/Icons.js"
 
   @see Texture
 */
+
 class Texture extends SvgPlus{
 
   constructor(json, name, master = null){
-    super('DIV');
+    super('TABLE');
 
     this.buildTemplate();
 
@@ -36,47 +37,41 @@ class Texture extends SvgPlus{
 
   //Builds the html template for this texture
   buildTemplate(){
+    let body = this.createChild('TBODY');
+    let row = this.createChild('TR');
     this.class = "texture"
-    this.styles = {
-      'margin': '0.5em 0',
-      height: '2.5em',
-      cursor: 'pointer'
-    }
 
-    this.thumbnailElement = this.createChild('IMG');
+    this.thumbnailElement = row.createChild('TD').createChild('IMG');
     this.thumbnailElement.styles = {
       height: '2.5em',
-      display: 'inline-block'
     }
 
-    this.textureElement = new RadioIcon();
+    this.textureElement = row.createChild('TD').createChild(RadioIcon);
     this.textureElement.stroke = "white";
     this.textureElement.styles = {
       height: '1.3em',
       margin: '0.6em'
     }
-    this.appendChild(this.textureElement);
 
-    this.textureName = this.createChild("DIV");
+    this.textureName = row.createChild("TD");
     this.textureName.styles = {
       'line-height': '2.5em',
     }
-    this.buttonsPannel = this.createChild('DIV');
-    this.buttonsPannel.styles = {
-      margin: '0.75em 2vw'
+    this.buttonsPanel = row.createChild('TD');
+    this.buttonsPanel.styles = {
+      margin: '0.75em 0',
+      height: '1em'
     }
-    this.statusElement = this.createChild("DIV");
-    this.statusElement.styles = {
-      'word-wrap': 'break-word'
-    }
+
+    this.statusElement = row.createChild("TD");
     this.statusElement.class = "status"
   }
 
   appendChildToHead(element){
-    this.buttonsPannel.appendChild(element);
+    this.buttonsPanel.appendChild(element);
   }
   removeChildFromHead(element){
-    this.buttonsPannel.removeChild(element);
+    this.buttonsPanel.removeChild(element);
   }
 
   //Runs a method using the event bus

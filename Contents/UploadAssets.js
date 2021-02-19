@@ -104,7 +104,7 @@ class Buttons extends SvgPlus{
   constructor(){
     super('DIV');
 
-    this.styles = {display: 'inline-block'}
+    this.class = "buttons"
 
     this.upload = new UploadToCloudIcon();
     this.upload.onclick = () => {

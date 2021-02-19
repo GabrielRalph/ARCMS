@@ -84,8 +84,12 @@ class LiveAssets extends SvgPlus{
       this.buttons.remove();
       return;
     }
+    console.log(vlist);
     this.buttons.ontrash = () => {
       this.buttons.remove();
+      vlist.styles = {
+        background:'#0001'
+      }
       this.workPanel.rightElement = null;
       vlist.deleteFromCloud();
     }
@@ -122,7 +126,7 @@ class LiveAssets extends SvgPlus{
 class Buttons extends SvgPlus{
   constructor(){
     super('DIV');
-
+    this.class = "buttons"
     this.styles = {display: 'inline-block'}
 
     this.trash = new TrashIcon();
