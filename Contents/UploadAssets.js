@@ -21,7 +21,7 @@ class UploadAssets extends SvgPlus{
     }
 
     this.headerTitle = this.header.createChild('H1');
-    this.headerTitle.innerHTML = "Live Assets"
+    this.headerTitle.innerHTML = "Upload Assets"
     this.headerTitle.styles = {
       display: "inline-block",
       'margin': '0 1em 0 0',

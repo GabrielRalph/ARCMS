@@ -4,6 +4,7 @@ import {MCMLoader} from './Utilities/MCMLoader.js'
 import {Content} from './Contents/Content.js'
 import {Admin} from './Admin/Admin.js'
 import {User} from './Firebase/User.js';
+import {Viewer} from './Viewer.js';
 
 class App extends Windows{
   constructor(parent){
@@ -51,6 +52,9 @@ class App extends Windows{
         this.moveTo(this.content, true);
         this.updateControlButtons('content');
       }
+    }
+    buttons['viewer'] = () => {
+      this.moveTo(new Viewer());
     }
     this.controls.buttons = buttons;
   }
