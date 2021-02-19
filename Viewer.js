@@ -30,7 +30,7 @@ class Viewer extends SvgPlus{
     this.modelFrame.styles = {
       width: 'calc(100vw - 2*var(--margin))',
       height: 'calc((100vw - 2*var(--margin)) * 0.62)',
-      background: '#f8f5f0'
+      background: 'white'
     }
 
     this.modelFrame.onmousedown = () => {
