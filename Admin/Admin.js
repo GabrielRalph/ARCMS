@@ -1,3 +1,4 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
 
 import {LockIcon, TrashIcon, AdminIcon, ContentAdminIcon} from '../Utilities/Icons.js'
 class Admin extends SvgPlus{

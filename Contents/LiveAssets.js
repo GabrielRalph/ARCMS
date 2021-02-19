@@ -1,7 +1,9 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 import {LiveCollection, CollectionInfoForm} from './Collection.js'
 import {ModelInfoForm} from './Model.js'
 import {VariantInfoForm} from './Variant.js'
-import {WorkPanel} from './WorkPanel.js'
+import {WorkPanel} from '../Utilities/WorkPanel.js'
 import {UploadToCloudIcon, TrashIcon} from '../Utilities/Icons.js'
 import {FileTreeInput} from './FileTreeInput.js'
 

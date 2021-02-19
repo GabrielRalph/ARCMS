@@ -1,3 +1,7 @@
+import {SvgPlus, SvgPath} from 'https://www.svg.plus/3.js'
+import {Vector} from 'https://www.svg.plus/vector2d.js'
+
+
 class AnimationSvg extends SvgPlus{
 
   get drawing(){

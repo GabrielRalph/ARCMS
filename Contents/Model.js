@@ -1,3 +1,5 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 import {Variant, LiveVariant} from './Variant.js'
 import {Collection, LiveCollection, ImageLoader} from './Collection.js'
 import {VList} from '../Utilities/VList.js'

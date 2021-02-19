@@ -1,3 +1,5 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 import {getExt, loadURL, contains, isJSON, isImage, isThumbanil, isGLB, isUSDZ, isURL, uploadFileToCloud, deleteFilesFromCloud} from "../Utilities/Functions.js"
 import {Variant, LiveVariant} from "./Variant.js"
 import {RadioIcon} from "../Utilities/Icons.js"

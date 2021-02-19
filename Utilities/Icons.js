@@ -1,3 +1,7 @@
+import {SvgPlus, SvgPath} from 'https://www.svg.plus/3.js'
+import {Vector} from 'https://www.svg.plus/vector2d.js'
+
+
 class Icon extends SvgPlus{
   constructor(html){
     super('svg');
@@ -56,6 +60,29 @@ class RadioIcon extends Icon{
   }
 }
 
+class TickIcon extends Icon{
+  constructor(){
+    super(`
+      <svg viewBox = "-50 -70 100 140">
+        <ellipse rx = "40" ry = "40" cx = "0" cy = "0"></ellipse>
+      </svg>`);
+
+      this.tick = new SvgPath('path');
+      this.tick.M(new Vector(40, -58)).
+      L(new Vector())
+
+      this.styles = {
+        'stroke-width': '10'
+      }
+  }
+
+  set stroke(stroke){
+    this.styles = {
+      stroke: stroke
+    }
+  }
+}
+
 class ContentAdminIcon extends Icon{
   constructor(){
     super(`
@@ -72,6 +99,7 @@ class ContentAdminIcon extends Icon{
     this.color = "#287528"
   }
 }
+
 class AdminIcon extends Icon{
   constructor(){
     super(`<svg viewBox="0 0 100 100">

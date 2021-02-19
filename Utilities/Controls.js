@@ -1,3 +1,5 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 class Controls extends SvgPlus{
   constructor(){
     super('div');

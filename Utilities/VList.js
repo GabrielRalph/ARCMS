@@ -1,3 +1,5 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 class VList extends SvgPlus{
   constructor(name, master, list){
     super('DIV');

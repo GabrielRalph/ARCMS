@@ -1,5 +1,7 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 import {Collection} from './Collection.js'
-import {WorkPanel} from './WorkPanel.js'
+import {WorkPanel} from '../Utilities/WorkPanel.js'
 import {UploadToCloudIcon, TrashIcon} from '../Utilities/Icons.js'
 import {FileTreeInput} from './FileTreeInput.js'
 

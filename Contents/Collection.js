@@ -1,3 +1,5 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 import {uploadFileToCloud, deleteFilesFromCloud, contains, isImage, isURL, getExt} from '../Utilities/Functions.js'
 import {VList} from '../Utilities/VList.js'
 import {Arrow} from '../Utilities/Icons.js'

@@ -1,3 +1,5 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 import {Windows} from './Utilities/Windows.js'
 import {Controls} from './Utilities/Controls.js'
 import {MCMLoader} from './Utilities/MCMLoader.js'

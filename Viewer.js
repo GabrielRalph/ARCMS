@@ -1,3 +1,5 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 import {loadURL, isGLB} from './Utilities/Functions.js'
 
 class Viewer extends SvgPlus{
@@ -9,6 +11,7 @@ class Viewer extends SvgPlus{
     this.metersPerPixel = 0;
     this.panX = 0;
     this.panY = 0;
+    this._zoom = 30;
 
 
     this.styles = {
@@ -48,6 +51,10 @@ class Viewer extends SvgPlus{
       }
     }
 
+    this.modelFrame.onwheel = (e) => {
+      this.zoom += e.deltaY/5;
+    }
+
     this.x = 0;
   }
 
@@ -63,7 +70,6 @@ class Viewer extends SvgPlus{
   get mousedown(){
     return !!this._mousedown;
   }
-
 
 
   get canvas(){
@@ -87,6 +93,19 @@ class Viewer extends SvgPlus{
     save.styles = {'margin-left': '1em'}
     save.onclick = () => {
       this.downloadImage();
+    }
+  }
+
+  get zoom(){
+    return this._zoom;
+  }
+
+  set zoom(zoom){
+    if (this.modelViewer){
+      this._zoom = zoom;
+      this.modelViewer.props = {
+        'field-of-view': `${zoom}deg`
+      }
     }
   }
 

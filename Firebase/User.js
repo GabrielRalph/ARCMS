@@ -1,3 +1,5 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 import {FireAuth} from './FireAuth.js'
 
 class User extends FireAuth{

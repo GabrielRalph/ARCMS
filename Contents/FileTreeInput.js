@@ -1,3 +1,5 @@
+import {SvgPlus} from 'https://www.svg.plus/3.js'
+
 import {UploadFilesIcon} from '../Utilities/Icons.js'
 
 class Hints extends SvgPlus{
