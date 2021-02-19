@@ -66,6 +66,9 @@ class Texture extends SvgPlus{
       margin: '0.75em 2vw'
     }
     this.statusElement = this.createChild("DIV");
+    this.statusElement.styles = {
+      'word-wrap': 'break-word'
+    }
     this.statusElement.class = "status"
   }
 

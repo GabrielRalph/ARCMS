@@ -60,22 +60,10 @@ class Collection extends VList{
 
   //Adds either a collection or model
   add(item){
-    if ( SvgPlus.is(item, Model) && item.isValid ){
-      if (this._mode == null || this._mode === 'models'){
-        this._mode = 'models'
-
-        this.addElement(item);
-        item.parentCollection = this;
-        this._collection[item.name] = item;
-      }
-    }else if (SvgPlus.is(item, Collection) && item.isValid){
-      if (this._mode == null || this._mode === 'category'){
-        this._mode = 'category';
-
-        this.addElement(item)
-        item.parentCollection = this;
-        this._collection[item.name] = item;
-      }
+    if ( ( SvgPlus.is(item, Collection) || SvgPlus.is(item, Model) ) && item.isValid ){
+      this.addElement(item);
+      item.parentCollection = this;
+      this._collection[item.name] = item;
     }
   }
 
