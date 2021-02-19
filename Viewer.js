@@ -38,7 +38,7 @@ class Viewer extends SvgPlus{
         return;
       }
     }
-    // await this.getImage();
+    await this.getImage();
   }
 
   async getModel(){
