@@ -51,6 +51,19 @@ class Viewer extends SvgPlus{
     this.x = 0;
   }
 
+  set mousedown(val){
+    this._mousedown = val;
+    if (this.modelViewer){
+      this.modelViewer.styles = {
+        cursor: val ? 'grabbing' : 'grab'
+      }
+    }
+  }
+
+  get mousedown(){
+    return !!this._mousedown;
+  }
+
 
 
   get canvas(){
