@@ -111,6 +111,7 @@ class Viewer extends SvgPlus{
   startPan(){
     if (!this.modelViewer) return;
 
+    this.modelViewer.styles = {cursor: 'grab'}
     this.panstarted = true;
 
     const orbit = this.modelViewer.getCameraOrbit();
