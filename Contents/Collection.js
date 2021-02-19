@@ -302,7 +302,7 @@ class ImageLoader extends SvgPlus{
     let files = await this.getInputFiles();
     if (files.length === 1){
       let thumbnailFile = files[0];
-      if (thumbnailFile.size < 300000){
+      if (thumbnailFile.size < 2000000){
         if (await this.uploadToCloud(thumbnailFile) ){
           this.status = true;
           console.log('uploaded thumbnail to ' + this.item.name);
@@ -311,7 +311,7 @@ class ImageLoader extends SvgPlus{
           this.status = false;
         }
       }else{
-        alert("Image size must be less than 300Kb");
+        alert("Image size must be less than 2mb");
       }
     }
   }

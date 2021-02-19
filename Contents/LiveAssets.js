@@ -80,7 +80,10 @@ class LiveAssets extends SvgPlus{
   }
 
   addButtons(vlist){
-    if (vlist === this.collection) return;
+    if (vlist === this.collection){
+      this.buttons.remove();
+      return;
+    }
     this.buttons.ontrash = () => {
       this.buttons.remove();
       this.workPanel.rightElement = null;
