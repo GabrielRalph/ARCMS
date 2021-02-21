@@ -380,6 +380,11 @@ class LiveCollection extends Collection{
         await this.fireRef.on('child_removed', (sc) => {
           this._onSyncChildRemoved(sc);
         })
+
+        await this.fireRef.child('thumbnail').on('value', (sc) => {
+          this.thumbnail = sc.val();
+        })
+        
         this._synced = true;
       }catch(e){
         resolve(false);
