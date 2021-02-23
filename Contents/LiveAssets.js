@@ -113,8 +113,8 @@ class LiveAssets extends SvgPlus{
       'auto-rotate': true,
       'data-js-focus-visible': true,
       'camera-controls': true,
-      'exposure': 0.9,
-      'image': '../Assets/scene.hdr',
+      'exposure': 1,
+      'environment-image': '../Assets/scene.hdr',
       style: {
         width: "100%",
         height: "100%"
