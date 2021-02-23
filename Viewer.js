@@ -184,7 +184,7 @@ class Viewer extends SvgPlus{
       'orientation': '0deg 0deg 25deg',
       'exposure': 0.9,
       'field-of-view': '30deg',
-      'image': '../Assets/scene.hdr',
+      'image': '../Assets/scene.exr',
       style: {
         width: "100%",
         height: "100%"

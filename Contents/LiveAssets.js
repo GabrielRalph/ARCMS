@@ -114,7 +114,7 @@ class LiveAssets extends SvgPlus{
       'data-js-focus-visible': true,
       'camera-controls': true,
       'exposure': 0.9,
-      'image': '../Assets/scene.hdr',
+      'image': '../Assets/scene.exr',
       style: {
         width: "100%",
         height: "100%"
