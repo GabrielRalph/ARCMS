@@ -182,6 +182,7 @@ class Viewer extends SvgPlus{
       src: glbURL,
       'data-js-focus-visible': true,
       'orientation': '0deg 0deg 25deg',
+      'exposure': 0.9,
       'field-of-view': '30deg',
       style: {
         width: "100%",
