@@ -1,12 +1,20 @@
 import {SvgPlus} from 'https://www.svg.plus/3.js'
 
-import {loadURL, isGLB} from './Utilities/Functions.js'
+import {loadURL, isGLB, uploadFileToCloud} from './Utilities/Functions.js'
 
 class Viewer extends SvgPlus{
   constructor(){
     super('DIV');
 
     this.class = 'viewer'
+
+    this.modelViewerProps = {
+      'orientation': '0deg 0deg 25deg',
+      'exposure': 0.9,
+      'field-of-view': '30deg',
+      'shadow-intensity' : 0.4,
+      'shadow-softness': 1.2,
+    }
 
     this.metersPerPixel = 0;
     this.panX = 0;
@@ -55,6 +63,11 @@ class Viewer extends SvgPlus{
       this.zoom += e.deltaY/5;
     }
 
+    this.buttonsFrame = this.createChild('DIV');
+    this.buttonsFrame.props = {
+      display: 'inline-block'
+    }
+
     this.x = 0;
   }
 
@@ -86,6 +99,101 @@ class Viewer extends SvgPlus{
     }
   }
 
+  setModelProp(name, value){
+    if (!this.modelViewer) return;
+    if (typeof name !== 'string') return;
+    this.modelViewerProps[name] = value;
+
+    this.modelViewer.props = this.modelViewerProps;
+  }
+
+  makeButtons(){
+
+    let table = new SvgPlus('TABLE');
+    let tbody = table.createChild('TBODY');
+
+
+    for (let name in this.modelViewerProps){
+      let value = this.modelViewerProps[name];
+
+      let row = tbody.createChild('TR');
+      row.createChild('TD').innerHTML = name;
+      let inputCell = row.createChild('TD');
+
+      let inputs = [];
+
+      let getValue = () => {
+        let value = "";
+        for (let child of inputs){
+          value += (value === "" ? "" : " ") + child.value + child.mtype;
+        }
+        return value;
+      }
+
+      if (typeof value === 'number'){
+        let input = inputCell.createChild('INPUT');
+        input.mtype = '';
+        input.props = {
+          type: 'number',
+          value: value,
+        }
+        inputs.push(input);
+        input.onkeyup = () => {this.setModelProp(name, getValue())}
+
+      }else if(typeof value === 'string'){
+        let split = value.split(' ');
+        for (let div of split){
+          let box = inputCell.createChild('SPAN');
+          let input = box.createChild('INPUT');
+
+          let number = parseFloat(div);
+          inputs.push(input);
+
+          if (name == 'field-of-view'){
+            this.zoom_el = input;
+          }
+          input.props = {
+            type: 'number',
+            value: number,
+          }
+
+          let m = div.replace(/(\d|\.)*/, '');
+          input.mtype = m;
+          box.createChild('h6').innerHTML = m;
+
+          input.onkeyup = () => {
+            this.setModelProp(name, getValue());
+          }
+        }
+      }
+
+    }
+
+    let env = tbody.createChild('TR').createChild('TD');
+    env.innerHTML = "environment-image";
+    env.styles = {cursor: 'pointer'};
+    env.onclick = () => {
+      let input = new SvgPlus('INPUT');
+      input.props = {
+        type: 'file',
+        accept: '.hdr',
+      }
+      input.onchange = async () => {
+        let scene = input.files[0];
+        if (scene instanceof File){
+          let url = await uploadFileToCloud(scene, '', (p) => {
+            env.innerHTML = `environment-image ${Math.round(p)}%`;
+          }, 'scene.hdr');
+          this.modelViewer.setAttribute('environment-image', url);
+        }
+      }
+      input.click();
+    }
+
+    this.buttonsFrame.innerHTML = "";
+    this.buttonsFrame.appendChild(table);
+  }
+
   addSaveButton(){
     let save = this.header.createChild('div');
     save.innerHTML = "save";
@@ -103,6 +211,7 @@ class Viewer extends SvgPlus{
   set zoom(zoom){
     if (this.modelViewer){
       this._zoom = zoom;
+      this.zoom_el.value = Math.round(zoom * 100)/100;
       this.modelViewer.props = {
         'field-of-view': `${zoom}deg`
       }
@@ -113,12 +222,14 @@ class Viewer extends SvgPlus{
     return new Promise((resolve, reject) => {
       let input = new SvgPlus('INPUT');
       input.props = {
-        type: 'file'
+        type: 'file',
+        accept: '.glb'
       }
       input.onchange = async () => {
         let file = input.files[0]
         if ( isGLB(file) ){
           await this.makeModelViewer(file);
+          this.makeButtons();
           resolve(true);
         }else{
           resolve(false);
@@ -180,16 +291,15 @@ class Viewer extends SvgPlus{
     this.modelViewer = new SvgPlus('model-viewer');
     this.modelViewer.props = {
       src: glbURL,
-      'data-js-focus-visible': true,
-      'orientation': '0deg 0deg 25deg',
-      'exposure': 0.9,
-      'field-of-view': '30deg',
       'environment-image': './Assets/scene3.hdr',
+      'data-js-focus-visible': true,
       style: {
         width: "100%",
         height: "100%"
       }
     }
+    this.modelViewer.props = this.modelViewerProps;
+
     this.modelFrame.appendChild(this.modelViewer);
     return new Promise((resolve, reject) => {
       this.modelViewer.onload = () => {

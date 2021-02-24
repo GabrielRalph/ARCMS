@@ -80,28 +80,3 @@
   margin: 0;
   padding: 0 0 0.5em 0.2em;
 }
-
-.info-form input{
-  float: left;
-}
-
-.info-form input:focus, .info-form textarea:focus{
-  background: #FFFb;
-}
-
-.info-form input, .info-form textarea{
-  padding: 0.4em 0.5em;
-  background: #FFF8;
-  border-radius: 1em;
-  font-size: 0.45em;
-  font-family: 'futura-pt', Arial ,sans-serif;
-  border: none;
-  width: calc(100% - 1em);
-  outline: none;
-  margin-bottom: 1em;
-}
-
-.info-form textarea{
-  height: 10em;
-  resize: none;
-}
