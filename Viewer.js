@@ -28,8 +28,8 @@ class Viewer extends SvgPlus{
 
     this.modelFrame = this.createChild('DIV');
     this.modelFrame.styles = {
-      width: 'calc(100vw - 2*var(--margin))',
-      height: 'calc((100vw - 2*var(--margin)) * 0.62)',
+      width: '300px',
+      height: '200px',
       background: 'white'
     }
 
