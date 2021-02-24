@@ -92,7 +92,7 @@ class UploadAssets extends SvgPlus{
       'data-js-focus-visible': true,
       'camera-controls': true,
       'exposure': 0.9,
-      'image': '../Assets/scene.hdr',
+      'image': '../Assets/scene3.hdr',
       style: {
         width: "100%",
         height: "100%"
