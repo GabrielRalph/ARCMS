@@ -293,7 +293,11 @@ class ModelInfoForm extends SvgPlus{
       this.uploadToCloud();
     }
 
+
+
     this.model = model;
+
+    this.startSync();
   }
 
   set name(name){
@@ -327,6 +331,14 @@ class ModelInfoForm extends SvgPlus{
 
   get model(){
     return this._model;
+  }
+
+  async startSync(){
+    if (this.model.fireRef !== null){
+      await this.model.fireRef.child('info').on('value', (sc) => {
+        this.json = sc.val();
+      })
+    }
   }
 
   uploadToCloud(){
