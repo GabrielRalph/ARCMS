@@ -34,12 +34,12 @@ class Viewer extends SvgPlus{
       height: '4vw',
     }
 
+
     this.modelFrame = this.createChild('DIV');
     this.modelFrame.styles = {
-      width: '300px',
-      height: '200px',
       background: 'white'
     }
+    this.sizeMode = "small";
 
     this.modelFrame.onmousedown = () => {
       this.mousedown = true;
@@ -69,6 +69,34 @@ class Viewer extends SvgPlus{
     }
 
     this.x = 0;
+  }
+
+  set sizeMode(mode){
+    if (mode == 'small'){
+      this.modelFrame.styles = {
+        width: '300px',
+        height: '200px',
+      }
+      this._sizeMode = "small";
+    }else if(mode == 'large'){
+      this.modelFrame.styles = {
+        width: '600px',
+        height: '400px',
+      }
+      this._sizeMode = "large";
+    }
+  }
+
+  get sizeMode(){
+    return this._sizeMode;
+  }
+
+  toggleSizeMode(){
+    if (this._sizeMode == 'small'){
+      this.sizeMode = 'large';
+    }else{
+      this.sizeMode = 'small';
+    }
   }
 
   set mousedown(val){
@@ -112,6 +140,12 @@ class Viewer extends SvgPlus{
     let table = new SvgPlus('TABLE');
     let tbody = table.createChild('TBODY');
 
+    let sizeMode = tbody.createChild('TR').createChild('TD');
+    sizeMode.innerHTML = this.sizeMode;
+    sizeMode.onclick = () => {
+      this.toggleSizeMode();
+      sizeMode.innerHTML = this.sizeMode;
+    }
 
     for (let name in this.modelViewerProps){
       let value = this.modelViewerProps[name];
