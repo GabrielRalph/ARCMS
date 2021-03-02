@@ -198,7 +198,7 @@ class ImageLoader extends SvgPlus{
     this._input = this.createChild("INPUT");
     this._input.props ={
       type: "file",
-      accept: "image/*",
+      accept: "image/png, image/jpeg",
       style: {
         display: "none"
       }
@@ -384,7 +384,7 @@ class LiveCollection extends Collection{
         await this.fireRef.child('thumbnail').on('value', (sc) => {
           this.thumbnail = sc.val();
         })
-        
+
         this._synced = true;
       }catch(e){
         resolve(false);
