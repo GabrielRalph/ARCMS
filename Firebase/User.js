@@ -20,6 +20,7 @@ class User extends FireAuth{
 
     //When a fireAuth gets a user auth link
     this.addEventListener('user-auth', (userAuth) => {
+      console.log('user authenticated');
       this.data = userAuth;
       this.syncDatabase();
       this.syncAuthToken(userAuth);
@@ -30,7 +31,7 @@ class User extends FireAuth{
   syncAuthToken(userAuth){
     let ref = firebase.database().ref(`/users/${userAuth.uid}/update`);
     ref.on('value', () => {
-      console.log('update user auth');
+      console.log('user authentication update');
       userAuth.getIdToken(true);
     })
   }
@@ -45,6 +46,11 @@ class User extends FireAuth{
       return firebase.database().ref(`users/${this.uid}`);
     }
     return null;
+  }
+
+  isValidUser(user){
+    if (user === null || typeof user !== 'object') return false;
+    return ('name' in user) && ('email' in user) && ('photoURL' in user) && ('admin' in user) && ('contentAdmin' in user) && ('uid' in user);
   }
 
 
@@ -67,10 +73,12 @@ class User extends FireAuth{
   async _checkDatabaseForUser(){
     //If no user reference return
     let user = await this.__getDatabaseUser();
-    if (user === null){
+    if (!this.isValidUser(user)){
       try{
         await this.userRef.set(this.data);
+        console.log("user created");
       }catch(e){
+        console.log(e);
         return false;
       }
     }
@@ -84,7 +92,7 @@ class User extends FireAuth{
         this.userRef.on('value', (sc) => {
           this._hasUser = true;
           this.data = sc.val();
-          console.log('user update');
+          console.log('user updated');
           this.runEventListener('user');
         })
         this._listening = true;
@@ -110,15 +118,20 @@ class User extends FireAuth{
 
 
   set data(user){
+    if (user === null || typeof user !== 'object') return;
+
     for (var key in this.default){
-      if (user !== null && typeof user === 'object' && key in user){
+      if (key in user){
         this[key] = user[key]
       }else{
         this[key] = this.default[key];
       }
     }
-    if (user !== null && typeof user === 'object'){
-      if ('displayName' in user) this.name = user.displayName;
+
+    if ('displayName' in user){
+      this.name = user.displayName;
+    }else{
+      this.name = this.default.name;
     }
   }
 
