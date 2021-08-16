@@ -93,6 +93,7 @@ class TickIcon extends Icon{
   }
 
   get ticked(){
+    if (!this._ticked) this._ticked = false;
     return this._ticked;
   }
 
