@@ -1,4 +1,4 @@
-import {SvgPlus} from 'https://www.svg.plus/3.js'
+import {SvgPlus} from '../3.js'
 
 import {Collection} from './Collection.js'
 import {WorkPanel} from '../Utilities/WorkPanel.js'

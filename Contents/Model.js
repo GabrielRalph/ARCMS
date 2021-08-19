@@ -1,4 +1,4 @@
-import {SvgPlus} from 'https://www.svg.plus/3.js'
+import {SvgPlus} from '../3.js'
 
 import {Variant, LiveVariant} from './Variant.js'
 import {Collection, LiveCollection, ImageLoader} from './Collection.js'
@@ -270,30 +270,60 @@ class ModelInfoForm extends SvgPlus{
       this.uploadToCloud()
     })
 
-    let fbox = this.createChild('DIV');
-    fbox.styles = {
-      float: 'left'
-    }
-    let featured = fbox.createChild('H2', {
+    this.createChild('H2').innerHTML = "Scale";
+    this.scale = this.createChild('input', {type: "number"});
+    this.scale.addEventListener('focusout', () => {
+      this.uploadToCloud()
+    })
+
+    let fbox = this.createChild('DIV', {
       styles: {
         float: 'left'
       }
-    });
-    featured.styles = {display: 'inline'}
-    featured.innerHTML = "Featured";
-    this.tick = fbox.createChild(TickIcon);
-    this.tick.stroke = "black";
-    this.tick.styles = {
+    })
+    let featured = fbox.createChild('H2', {
+      styles: {
+        float: 'left',
+        display: 'inline'
+      }
+    }).innerHTML = "Featured";
+    this.featured = fbox.createChild(TickIcon);
+    this.featured.stroke = "black";
+    this.featured.styles = {
       height: '0.6em',
       'padding-left': '0.5em',
       float: 'left'
     }
     fbox.onclick = () => {
-      this.tick.ticked = !this.tick.ticked;
+      this.featured.ticked = !this.featured.ticked;
       this.uploadToCloud();
     }
 
 
+    let hbox = this.createChild('DIV', {
+      styles: {
+        float: 'left',
+        "padding-left": "0.5em"
+      }
+    });
+    let htitle = hbox.createChild('H2', {
+      styles: {
+        float: 'left',
+        display: 'inline'
+      }
+    }).innerHTML = "Hidden";
+
+    this.hiddenState = hbox.createChild(TickIcon);
+    this.hiddenState.stroke = "black";
+    this.hiddenState.styles = {
+      height: '0.6em',
+      'padding-left': '0.5em',
+      float: 'left'
+    }
+    hbox.onclick = () => {
+      this.hiddenState.ticked = !this.hiddenState.ticked;
+      this.uploadToCloud();
+    }
 
     this.model = model;
 
@@ -308,7 +338,9 @@ class ModelInfoForm extends SvgPlus{
     return {
       description: this.description.value,
       link: this.link.value,
-      featured: this.tick.ticked,
+      featured: this.featured.ticked,
+      scale: this.scale.value,
+      hidden: this.hiddenState.ticked,
     }
   }
 
@@ -317,8 +349,10 @@ class ModelInfoForm extends SvgPlus{
     if (json === null || typeof json !== 'object' ) return;
 
     if ('description' in json) this.description.value = json.description;
-    if ('featured' in json) this.tick.ticked = json.featured;
+    if ('featured' in json) this.featured.ticked = json.featured;
     if ('link' in json) this.link.value = json.link;
+    if ('scale' in json) this.scale.value = json.scale;
+    if ('hidden' in json) this.hiddenState.ticked = json.hidden;
   }
 
   set model(model){

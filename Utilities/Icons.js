@@ -1,5 +1,4 @@
-import {SvgPlus, SvgPath} from 'https://www.svg.plus/3.js'
-import {Vector} from 'https://www.svg.plus/vector2d.js'
+import {SvgPlus, SvgPath, Vector} from '../3.js'
 
 
 class Icon extends SvgPlus{

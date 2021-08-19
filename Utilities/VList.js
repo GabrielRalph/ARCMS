@@ -1,4 +1,4 @@
-import {SvgPlus} from 'https://www.svg.plus/3.js'
+import {SvgPlus} from '../3.js'
 
 class VList extends SvgPlus{
   constructor(name, master, list){
@@ -165,42 +165,6 @@ class VList extends SvgPlus{
   }
   get name(){
     return this._name;
-  }
-
-  async waveTransistion(update, duration = 500, dir = false){
-    if (!(update instanceof Function)) return 0;
-
-    duration = parseInt(duration);
-    if (Number.isNaN(duration)) return 0;
-
-    return new Promise((resolve, reject) => {
-      let t0;
-      let end = false;
-
-      let next = (t) => {
-        let dt = t - t0;
-
-        if (dt > duration) {
-          end = true;
-          dt = duration;
-        }
-
-        let theta = Math.PI * ( dt / duration  +  (dir ? 1 : 0) );
-        let progress =  ( Math.cos(theta) + 1 ) / 2;
-
-        update(progress);
-
-        if (!end){
-          window.requestAnimationFrame(next);
-        }else{
-          resolve(progress);
-        }
-      };
-      window.requestAnimationFrame((t) => {
-        t0 = t;
-        window.requestAnimationFrame(next);
-      })
-    })
   }
 }
 

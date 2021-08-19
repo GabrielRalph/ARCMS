@@ -1,4 +1,4 @@
-import {SvgPlus} from 'https://www.svg.plus/3.js'
+import {SvgPlus} from '../3.js'
 
 import {isJSON, deleteFilesFromCloud} from '../Utilities/Functions.js'
 import {VList} from '../Utilities/VList.js'
