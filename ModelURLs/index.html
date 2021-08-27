@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Model URLs</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
+    <link rel="stylesheet" href="../Assets/Supreme/stylesheet.css">
+  </head>
+  <body>
+
+    <table>
+      <tbody id = "urls">
+
+      </tbody>
+
+    </table>
+
+  </body>
+  <script type="module">
+    import {ModelURLs} from "./ModelURLs.js"
+    let urls = new ModelURLs("urls");
+    urls.getURLs();
+  </script>
+
+  <style>
+    table {
+      width: 100%;
+    }
+    body{
+      font-family: 'Supreme LL TT Book';
+      font-weight: 500;
+      font-style: normal;
+    }
+    #urls tr td:first-of-type {
+      /* font-size: 1.5em; */
+    }
+    #urls tr td:last-of-type{
+      font-size: 1em;
+      width: 50%;
+    }
+  </style>
+</html>
