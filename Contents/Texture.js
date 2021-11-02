@@ -57,6 +57,14 @@ class Texture extends SvgPlus{
     this.textureName.styles = {
       'line-height': '2.5em',
     }
+
+    this.fileSizeElement = row.createChild("TD", {
+      styles: {
+        opacity: 0.5,
+        "font-size": "0.85em"
+      }
+    });
+
     this.buttonsPanel = row.createChild('TD');
     this.buttonsPanel.styles = {
       margin: '0.75em 0',
@@ -349,10 +357,12 @@ class Texture extends SvgPlus{
 
     return `${this.parentVariant.path}/${this.name}`
   }
+
   get fireRef(){
     if ( this.path == null ) return null;
     return firebase.database().ref(this.path);
   }
+
   get filename(){
     let variant = this.parentVariant;
     let model = this.parentModel;
@@ -389,6 +399,18 @@ class Texture extends SvgPlus{
       console.log(log);
     }
   }
+
+  async getSize(){
+    let glb = this.path + "/" + this.filename + ".glb";
+    let ref = firebase.storage().ref(glb);
+    let meta = await ref.getMetadata();
+    if (meta != null && "size" in meta) {
+      let size_mb = Math.round(meta.size / 1e6);
+      this.fileSizeElement.innerHTML = `${size_mb}Mb`;
+    }else{
+      this.fileSizeElement.innerHTML = '';
+    }
+  }
 }
 
 class LiveTexture extends Texture{
@@ -399,6 +421,7 @@ class LiveTexture extends Texture{
       try{
         await this.fireRef.on('value', (sc) => {
           this.json = sc.val();
+          this.getSize();
           resolve(this.isValid);
         })
         this._synced = true;
