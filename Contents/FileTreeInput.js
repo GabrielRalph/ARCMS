@@ -1,4 +1,4 @@
-import {SvgPlus} from '../3.js'
+import {SvgPlus} from '../SvgPlus/4.js'
 
 import {UploadFilesIcon} from '../Utilities/Icons.js'
 

@@ -1,4 +1,4 @@
-import {SvgPlus, SvgPath, Vector} from '../3.js'
+import {SvgPlus, SvgPath, Vector} from '../SvgPlus/svg-path.js'
 
 
 class Icon extends SvgPlus{
@@ -217,13 +217,15 @@ class LockIcon extends Icon{
     this.lockPath.d_string = 'M39.720,48.780C39.720,48.780,39.030,51.150,35.180,51.150S30.540,49.670,31.130,48.780C31.130,48.780,32.070,36.790,32.070,30.170c0.0000-12.050,9.1800-27.410,22.320-28.190c10.860-0.64000,14.660,10.570,14.660,16.930s0.0000,18.710,0.0000,18.710s-0.89000,2.1700-3.9000,2.0200c-3.0100-0.15000-4.9400-1.5300-4.4400-2.5200c0.49000-0.99000,0.39000-13.230,0.39000-18.120s-3.0600-11.800-9.5300-7.9000s-10.660,10.610-11.210,19.800z';
     this.lockPoint = this.lockPath.d.start.next.next.next;
 
+    console.log(this.lockPoint);
+
     this.startC1 = this.lockPoint.c1.clone();
     this.startC2 = this.lockPoint.c2.clone();
     this.startP = this.lockPoint.p.clone();
-
     this.lockPath.class = "st3"
     this.reference = ref;
-    this.appendChild(this.lockPath)
+    this.appendChild(this.lockPath);
+    this.yPos = 0;
   }
 
   set reference(val){
@@ -314,7 +316,7 @@ class LockIcon extends Icon{
       this.lockPoint.p = this.startP.add(new Vector(0, val))
       this.lockPoint.c1 = this.startC1.add(new Vector(0, val))
       this.lockPoint.c2 = this.startC2.add(new Vector(0, val))
-      this.lockPath.d._update();
+      this.lockPath.update();
     }
   }
 }
@@ -381,6 +383,7 @@ class LoaderIcon extends SvgPlus{
     this.path.M(new Vector(0)).L(new Vector(this.r, 0)).A(new Vector(this.r), 0, 0, 1, new Vector(this.r, 0));
     this._progressPoint = this.path.d.end;
     this.path.Z();
+    this.path.update();
 
     this.text = new SvgPlus('text');
     this.text.props = {
@@ -421,7 +424,7 @@ class LoaderIcon extends SvgPlus{
     r = r.rotate(Math.PI*val/50);
     this._progressPoint.large_arc_flag = val > 50 ? 1 : 0;
     this._progressPoint.p = r;
-    this.path.d._update();
+    this.path.update();
     this._progress = val;
 
     this.text.innerHTML = val;

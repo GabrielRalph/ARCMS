@@ -1,4 +1,4 @@
-import {SvgPlus} from "../3.js"
+import {SvgPlus} from '../SvgPlus/4.js'
 
 var firebaseConfig = {
    apiKey: "AIzaSyBKpHxX0GdVnbdyW_Y3F94t9deXHg5prLQ",

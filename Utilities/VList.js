@@ -1,4 +1,4 @@
-import {SvgPlus} from '../3.js'
+import {SvgPlus} from '../SvgPlus/4.js'
 
 class VList extends SvgPlus{
   constructor(name, master, list){
@@ -59,7 +59,7 @@ class VList extends SvgPlus{
       }
       this._listElement.appendChild(element);
       let dh = this.height - height;
-      await this.waveTransistion((t) => {
+      await this.waveTransition((t) => {
         this._listElement.styles = {
           height: `${height + dh*t}`
         }
@@ -108,7 +108,7 @@ class VList extends SvgPlus{
 
   async show(){
     let height = this.height;
-    await this.waveTransistion((t) => {
+    await this.waveTransition((t) => {
       this._listElement.styles = {
         height: `${t*height}px`
       }
@@ -120,7 +120,7 @@ class VList extends SvgPlus{
 
   async hide(){
     let height = this.height;
-    await this.waveTransistion((t) => {
+    await this.waveTransition((t) => {
       this._listElement.styles = {
         height: `${t*height}px`
       }

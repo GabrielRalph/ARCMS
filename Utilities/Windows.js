@@ -1,4 +1,4 @@
-import {SvgPlus} from '../3.js'
+import {SvgPlus} from '../SvgPlus/4.js'
 
 class Windows extends SvgPlus{
   constructor(){
@@ -56,7 +56,7 @@ class Windows extends SvgPlus{
   async moveTo(element, direction){
     this.scrollTo(0, 0);
     if (element instanceof Element){
-      await this.waveTransistion(element, direction);
+      await this.waveTransition(element, direction);
     }
   }
 
@@ -67,7 +67,7 @@ class Windows extends SvgPlus{
     this.right = null;
   }
 
-   async waveTransistion(element, direction, duration = 400){
+   async waveTransition(element, direction, duration = 400){
     return new Promise((resolve, reject) => {
       let done = false;
       let theta = 0;

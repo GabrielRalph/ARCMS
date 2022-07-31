@@ -1,4 +1,4 @@
-import {SvgPlus} from '../3.js'
+import {SvgPlus} from '../SvgPlus/4.js'
 
 import {LockIcon, TrashIcon, AdminIcon, ContentAdminIcon} from '../Utilities/Icons.js'
 class Admin extends SvgPlus{

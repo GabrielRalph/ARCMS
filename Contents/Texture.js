@@ -1,4 +1,4 @@
-import {SvgPlus} from '../3.js'
+import {SvgPlus} from '../SvgPlus/4.js'
 
 import {getExt, loadURL, contains, isJSON, isImage, isThumbanil, isGLB, isUSDZ, isURL, uploadFileToCloud, deleteFilesFromCloud} from "../Utilities/Functions.js"
 import {Variant, LiveVariant} from "./Variant.js"

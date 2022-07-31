@@ -1,4 +1,4 @@
-import {SvgPlus} from '../3.js'
+import {SvgPlus} from '../SvgPlus/4.js'
 
 import {uploadFileToCloud, deleteFilesFromCloud, contains, isImage, isURL, getExt} from '../Utilities/Functions.js'
 import {VList} from '../Utilities/VList.js'

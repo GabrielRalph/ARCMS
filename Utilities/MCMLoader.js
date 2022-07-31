@@ -1,4 +1,4 @@
-import {SvgPlus, SvgPath, Vector} from '../3.js'
+import {SvgPlus, SvgPath, Vector} from '../SvgPlus/svg-path.js'
 
 
 class AnimationSvg extends SvgPlus{
